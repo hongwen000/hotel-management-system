@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Hotel System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script> -->
+    <script src="/static/js/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 
@@ -38,20 +39,11 @@
         <div class="container">
             <div class="columns">
 
-                <!-- <div class="column">
-                    <div class="field">
-                        <label class="label"> User Id</label>
-                        <div class="control">
-                            <input class="input" type="text" placeholder="let it alone to ignore this filter." id="user-id">
-                        </div>
-                    </div>
-                </div> -->
-
                 <div class="column">
                     <div class="field">
                         <label class="label"> User Name</label>
                         <div class="control">
-                            <input class="input" type="text" placeholder="let it alone to ignore this filter." id="user-name">
+                            <input class="input" v-model="name" type="text" placeholder="let it alone to ignore this filter.">
                         </div>
                     </div>
                 </div>
@@ -62,7 +54,7 @@
                     <div class="field">
                         <label class="label"> Phone Number</label>
                         <div class="control">
-                            <input class="input" type="text" placeholder="let it alone to ignore this filter." id="user-phone">
+                            <input class="input" v-model="phone" type="text" placeholder="let it alone to ignore this filter." >
                         </div>
                     </div>
                 </div>
@@ -74,7 +66,7 @@
                     <div class="field">
                         <label class="label"> Credential</label>
                         <div class="control">
-                            <input class="input" type="text" placeholder="let it alone to ignore this filter." id="user-credential">
+                            <input class="input" v-model="credential" type="text" placeholder="let it alone to ignore this filter." >
                         </div>
                     </div>
                 </div>
@@ -84,7 +76,7 @@
                     <div class="field">
                         <label class="label"> Balance range</label>
                         <div class="control">
-                            <input class="input" type="text" placeholder="please input 'low-hight' or nothing" id="user-balance">
+                            <input class="input" v-model="balance" type="text" placeholder="please input 'low-hight' or nothing" >
                         </div>
                     </div>
                 </div>
@@ -93,7 +85,7 @@
                     <div class="field">
                         <label class="label"> Bonus range</label>
                         <div class="control">
-                            <input class="input" type="text" placeholder="please input 'low-hight' or nothing" id="user-bonus">
+                            <input class="input" v-model="bonus" type="text" placeholder="please input 'low-hight' or nothing" >
                         </div>
                     </div>
 
@@ -105,21 +97,21 @@
                 <label class="label"> Gender</label>
                 <div class="control">
                     <label class="checkbox">
-                        <input type="checkbox" id="user-isman">
+                        <input type="checkbox"  value="man" v-model="genders">
                         Man
                     </label>
                     <label class="checkbox">
-                        <input type="checkbox" id="user-iswoman">
+                        <input type="checkbox" value="woman" v-model="genders">
                         Woman
                     </label>
                 </div>
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <button id="user-submit" class="button is-link">Submit</button>
+                    <button @click="submit" class="button is-link">Submit</button>
                 </div>
                 <div class="control">
-                    <button class="button is-text">clear</button>
+                    <button @click="clear" class="button is-text">clear</button>
                 </div>
             </div>
 
@@ -134,19 +126,13 @@
             <br>
             <textarea id="output">
 
-
-
-
-
-
-
             </textarea>
         </div>
     </section>
 
     <section id="res-table">
         <div class="container">
-            <table class="table">
+            <table class="table" v-if="users.length > 0">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -160,25 +146,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
-                    </tr>
-                    <tr>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
-                        <td> 1</td>
+                    <tr v-for="user in users">
+                        <td> {{ user.id }} </td>
+                        <td> {{ user.credential }}</td>
+                        <td> {{ user.name }}</td>
+                        <td> {{ user.gender }}</td>
+                        <td> {{ user.birthdate }}</td>
+                        <td> {{ user.phone }}</td>
+                        <td> {{ user.balance }}</td>
+                        <td> {{ user.bonus }} </td>
                     </tr>
                 </tbody>
             </table>
