@@ -121,6 +121,49 @@
 
 \section{逻辑设计}
 
+在完成数据库的概念设计后，接下来要做的是将所有实体集合联系集分别转换为关系模式$R$。
+
+有关实体集的转换规则如下：
+
+\begin{itemize}
+	\item 具有$n$个简单描述性属性的强实体集转换为具有$n$个属性的关系模式
+	\item 为复合属性的每个子属性在$R$中创建一个单独的属性
+	\item 为多值属性$M$创建一个单独的关系模式，该模式中包含了$M$所在的实体集或联系集的主码
+	\item 将派生属性实现为方法
+	\item 将弱实体集表示为包含所有弱实体集属性以及所依赖的强实体集的主码的关系模式。$R$的主码包括弱实体集的部分码和所以来的强实体集的主码。
+\end{itemize}
+
+有关联系集的转换规则如下：
+
+\begin{itemize}
+	\item 联系集转换为由联系集的描述性属性以及相关实体集的主码组成的关系模式
+	\item 对于多对多的联系集，$R$的主码包含所有相关实体集的主码
+	\item 对于一对一的联系集，任意一个相关实体集的主码都可以作为$R$的主码
+	\item 对于一对多的联系集，用关联的映射基数为"多"的那个实体集作为$R$的主码
+\end{itemize}
+
+转换完成后，还要消除关系模式的冗余，并合并部分关系模式。具体而言包括以下两种情况：
+
+\begin{itemize}
+	\item 连接弱实体集与其依赖的强实体集的联系集的模式是多对一且没有描述性属性的，另外弱实体集的主码包含强实体集的主码，因此这样的联系集对应的关系模式是冗余的。
+	\item 考虑多对一的联系集$AB$和相关的实体集$A$, $B$, ，若$A$在联系中的参与是全部的，那么可以将$A$与$AB$模式属性合并得到$A^*$，主码是$A$的主码，外码加入$A^*$中。
+\end{itemize}
+
+依照上述规则，由于Type、Room、Operation、Order、User均为简单强实体集于是可以首先生成包含对应属性的关系模式。再考虑联系集，由于OrderUser、RoomType、OrderRoom、OrderOp均为一对多的联系集，因此均可以按照上述规则消除。
+
+最后得到以下关系模式：
+
+RoomType(\textbf{id}, breakfast, wifi, \textit{type\_id})
+
+Room(\textbf{id}, floor, room\_num, price)
+
+Operation(\textbf{id}, time, operation. \textit{order\_id})
+
+Order(\textbf{id}, time, status, \textit{room\_id}, \textit{user\_id})
+
+User(\textbf{id}, region, credential, name, gender, birthday, phone, balance)
+
+
 \section{物理设计}
 
 \chapter{数据库创建和数据加载}
