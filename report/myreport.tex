@@ -149,7 +149,7 @@
 	\item 考虑多对一的联系集$AB$和相关的实体集$A$, $B$, ，若$A$在联系中的参与是全部的，那么可以将$A$与$AB$模式属性合并得到$A^*$，主码是$A$的主码，外码加入$A^*$中。
 \end{itemize}
 
-依照上述规则，由于Type、Room、Operation、Order、User均为简单强实体集于是可以首先生成包含对应属性的关系模式。再考虑联系集，由于OrderUser、RoomType、OrderRoom、OrderOp均为一对多的联系集，因此均可以按照上述规则消除。
+依照上述规则，由于Type、Room、Operation、Order、User、Region均为简单强实体集于是可以首先生成包含对应属性的关系模式。再考虑联系集，由于OrderUser、RoomType、OrderRoom、OrderOp、UserRegion均为一对多的联系集，因此均可以按照上述规则消除。
 
 最后得到以下关系模式：
 
@@ -161,7 +161,9 @@ Operation(\textbf{id}, time, operation. \textit{order\_id})
 
 Order(\textbf{id}, time, status, \textit{room\_id}, \textit{user\_id})
 
-User(\textbf{id}, region, credential, name, gender, birthday, phone, balance)
+Region(\textbf{id}, name)
+
+User(\textbf{id}, credential, name, gender, birthday, phone, balance, \textit{region\_id})
 
 
 \section{物理设计}
