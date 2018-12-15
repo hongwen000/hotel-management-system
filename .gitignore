@@ -341,6 +341,7 @@ dkms.conf
 *.exe
 *.out
 *.app
+report/myreport.pdf
 # Logs
 logs
 *.log
