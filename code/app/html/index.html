@@ -9,6 +9,9 @@
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script> -->
     <script src="/static/js/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="/static/js/datepicker.js"></script>
+    <!-- <script src="https://unpkg.com/vuejs-datepicker"></script> -->
+    <link rel="stylesheet" href="/static/css/datepicker.css">
 </head>
 
 <body>
@@ -24,15 +27,7 @@
             </div>
         </div>
     </section>
-
-
-    <!-- <div class="field">
-        <label class="label">Name</label>
-        <div class="control">
-            <input class="input" type="text" placeholder="Text input">
-        </div>
-    </div> -->
-
+    <br>
 
 
     <section id="user" class="content">
@@ -54,7 +49,7 @@
                     <div class="field">
                         <label class="label"> Phone Number</label>
                         <div class="control">
-                            <input class="input" v-model="phone" type="text" placeholder="let it alone to ignore this filter." >
+                            <input class="input" v-model="phone" type="text" placeholder="let it alone to ignore this filter.">
                         </div>
                     </div>
                 </div>
@@ -66,7 +61,7 @@
                     <div class="field">
                         <label class="label"> Credential</label>
                         <div class="control">
-                            <input class="input" v-model="credential" type="text" placeholder="let it alone to ignore this filter." >
+                            <input class="input" v-model="credential" type="text" placeholder="let it alone to ignore this filter.">
                         </div>
                     </div>
                 </div>
@@ -76,7 +71,7 @@
                     <div class="field">
                         <label class="label"> Balance range</label>
                         <div class="control">
-                            <input class="input" v-model="balance" type="text" placeholder="please input 'low-hight' or nothing" >
+                            <input class="input" v-model="balance" type="text" placeholder="please input 'low-hight' or nothing">
                         </div>
                     </div>
                 </div>
@@ -85,7 +80,7 @@
                     <div class="field">
                         <label class="label"> Bonus range</label>
                         <div class="control">
-                            <input class="input" v-model="bonus" type="text" placeholder="please input 'low-hight' or nothing" >
+                            <input class="input" v-model="bonus" type="text" placeholder="please input 'low-hight' or nothing">
                         </div>
                     </div>
 
@@ -97,7 +92,7 @@
                 <label class="label"> Gender</label>
                 <div class="control">
                     <label class="checkbox">
-                        <input type="checkbox"  value="man" v-model="genders">
+                        <input type="checkbox" value="man" v-model="genders">
                         Man
                     </label>
                     <label class="checkbox">
@@ -118,6 +113,15 @@
         </div>
     </section>
 
+    <section id="room" class="content">
+        <div class="container">
+            <vue-datepicker-local v-model="time">
+
+            </vue-datepicker-local>
+        </div>
+    </section>
+
+
 
     <section id="root" class="content">
         <div class="container">
@@ -125,6 +129,8 @@
             <button id="q-button"> submit</button>
             <br>
             <textarea id="output">
+
+
 
             </textarea>
         </div>
@@ -161,6 +167,7 @@
         </div>
     </section>
     <script type="text/javascript" src="/static/js/index.js"></script>
+    <script src="/static/js/datepicker.js"></script>
 </body>
 
 </html>

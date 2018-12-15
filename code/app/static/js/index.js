@@ -1,3 +1,5 @@
+
+
 $('.content').hide();
 $('#user').show();
 
@@ -80,4 +82,11 @@ let user_app = new Vue({
         }
     }
 
+})
+
+let room_app = new Vue({
+    el: '#room',
+    data: {
+        time: new Date()
+    }
 })
