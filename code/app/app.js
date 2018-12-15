@@ -16,12 +16,10 @@ app.get('/',function(req,res){
 });
 
 app.all('/api/query', function(req, res) {
-    // console.log(req.body);
     pool.getConnection()
         .then(conn => {
             conn.query(req.body.query)
                 .then((rows) => {
-                    // console.log(rows);
                     res.json({
                         'data': rows
                     });
