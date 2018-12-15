@@ -48,7 +48,6 @@
 
 \chapter{系统分析}
 
-
 随着信息化时代的到来，使用数据库来对酒店客房预订信息进行管理能够大大提高信息管理的效率。基于网络对酒店管理系统的了解，我们从以下两个方面来对系统所需要满足的需求进行分析：
 
 \begin{itemize}
@@ -68,19 +67,53 @@
 
 \section{需求分析}
 
-在酒店预定管理系统中，系统应该需要具有以下这几部分的功能：
+在酒店预定管理系统中，需要建立房间预订子系统，在该子系统中，需要实现顾客所需的以下几点需求：
 
 \begin{itemize}
-    \item 房间查询功能
+    \item 根据可用时间段、房型、住客人数、价格区间等指标搜索符合条件的房间。
+    \item 指定入离日期与房间类型后可提交预订订单。
+    \item 顾客可以在未入住的情况下取消预定订单。
+\end{itemize}
+
+对于酒店前台，除去上述顾客所具有的需求外，还应该对数据库具有更高的权限，实现用户信息档案子系统与订单管理子系统。
+
+\begin{itemize}
+    \item 在用户信息档案子系统中，酒店前台有以下需求：
     \begin{itemize}
-        \item 可以通过时间，房型，
+        \item 可以根据姓名或者身份证号查询某一个用户的所有信息
+        \item 能够录入与新用户相关的信息
+    \end{itemize}
+    \item 在订单管理子系统中，酒店前台有以下几点需求：
+    \begin{itemize}
+        \item 查看当前仍未处理的订单，并根据需要设置某些订单的状态
     \end{itemize}
 \end{itemize}
 
-1. 房间查询功能
-    1. 可以通过多维的指标来查询当前房间的状况。
-2. 预定房间
-3. 订单管理
+
+对于酒店经理，则应该在酒店前台的基础上，对数据库拥有更高的权限，该权限提升主要体现在以下几点
+
+\begin{itemize}
+    \item 能够根据实际情况修改房间的价格与房间的类型等信息
+\end{itemize}
+
+\section{子系统设计}
+
+本系统可以分为这4个子系统，可见\autoref{fig:sub-system-design}。
+
+%\usepackage{changepage}
+%\usepackage{rotating}
+%\usepackage{float}
+%\usepackage[section]{placeins}
+%\begin{sidewaystable}[!Htp]
+\begin{figure}[htp]
+    %\begin{adjustwidth}{-1.5cm}{-1cm}
+    \centering
+    \includegraphics[width=15cm]{figure/2018-12-15-19-12-55.png}
+    \caption{子系统设计}
+    \label{fig:sub-system-design}
+    %\end{adjustwidth}
+\end{figure}
+
 
 \chapter{数据库设计}
 在本节中，我们会按照概念设计、逻辑设计到物理设计的顺序讲解本项目的具体设计方式。
@@ -190,11 +223,55 @@
 
 \section{逻辑设计}
 
+在完成数据库的概念设计后，接下来要做的是将所有实体集合联系集分别转换为关系模式$R$。
+
+有关实体集的转换规则如下：
+
+\begin{itemize}
+	\item 具有$n$个简单描述性属性的强实体集转换为具有$n$个属性的关系模式
+	\item 为复合属性的每个子属性在$R$中创建一个单独的属性
+	\item 为多值属性$M$创建一个单独的关系模式，该模式中包含了$M$所在的实体集或联系集的主码
+	\item 将派生属性实现为方法
+	\item 将弱实体集表示为包含所有弱实体集属性以及所依赖的强实体集的主码的关系模式。$R$的主码包括弱实体集的部分码和所以来的强实体集的主码。
+\end{itemize}
+
+有关联系集的转换规则如下：
+
+\begin{itemize}
+	\item 联系集转换为由联系集的描述性属性以及相关实体集的主码组成的关系模式
+	\item 对于多对多的联系集，$R$的主码包含所有相关实体集的主码
+	\item 对于一对一的联系集，任意一个相关实体集的主码都可以作为$R$的主码
+	\item 对于一对多的联系集，用关联的映射基数为"多"的那个实体集作为$R$的主码
+\end{itemize}
+
+转换完成后，还要消除关系模式的冗余，并合并部分关系模式。具体而言包括以下两种情况：
+
+\begin{itemize}
+	\item 连接弱实体集与其依赖的强实体集的联系集的模式是多对一且没有描述性属性的，另外弱实体集的主码包含强实体集的主码，因此这样的联系集对应的关系模式是冗余的。
+	\item 考虑多对一的联系集$AB$和相关的实体集$A$, $B$, ，若$A$在联系中的参与是全部的，那么可以将$A$与$AB$模式属性合并得到$A^*$，主码是$A$的主码，外码加入$A^*$中。
+\end{itemize}
+
+依照上述规则，由于Type、Room、Operation、Order、User均为简单强实体集于是可以首先生成包含对应属性的关系模式。再考虑联系集，由于OrderUser、RoomType、OrderRoom、OrderOp均为一对多的联系集，因此均可以按照上述规则消除。
+
+最后得到以下关系模式：
+
+RoomType(\textbf{id}, breakfast, wifi)
+
+Room(\textbf{id}, floor, room\_num, price, \textit{type\_id})
+
+Operation(\textbf{id}, time, operation. \textit{order\_id})
+
+Order(\textbf{id}, time, status, \textit{room\_id}, \textit{user\_id})
+
+User(\textbf{id}, region, credential, name, gender, birthday, phone, balance)
+
+
 \section{物理设计}
 
 \chapter{数据库创建和数据加载}
 
 \chapter{数据库应用软件设计与开发}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 参考文献
