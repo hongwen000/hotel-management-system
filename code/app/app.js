@@ -10,7 +10,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
   }));
 
-
 app.get('/',function(req,res){
     res.sendFile(path.join(__dirname, 'html/index.html'));
 });
