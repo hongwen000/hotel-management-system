@@ -76,7 +76,58 @@ app.all('/api/query_user', function (req, res) {
         conn.query(query)
             .then(function (table) {
             res.json({
-                'data': JSON.stringify(table)
+                "users": [
+                    {
+                        "id": "XXXX",
+                        "credential": "XXXXX",
+                        "name": "XXXX",
+                        "gender": -1,
+                        "birthday": "2018-01-01",
+                        "phone": "13534343434",
+                        "balance": 45,
+                        "bonus": 100
+                    },
+                    {
+                        "id": "XXXX",
+                        "credential": "XXXXX",
+                        "name": "XXXX",
+                        "gender": -1,
+                        "birthday": "2018-01-01",
+                        "phone": "13534343434",
+                        "balance": 45,
+                        "bonus": 100
+                    },
+                    {
+                        "id": "XXXX",
+                        "credential": "XXXXX",
+                        "name": "XXXX",
+                        "gender": -1,
+                        "birthday": "2018-01-01",
+                        "phone": "13534343434",
+                        "balance": 45,
+                        "bonus": 100
+                    },
+                    {
+                        "id": "XXXX",
+                        "credential": "XXXXX",
+                        "name": "XXXX",
+                        "gender": -1,
+                        "birthday": "2018-01-01",
+                        "phone": "13534343434",
+                        "balance": 45,
+                        "bonus": 100
+                    },
+                    {
+                        "id": "XXXX",
+                        "credential": "XXXXX",
+                        "name": "XXXX",
+                        "gender": -1,
+                        "birthday": "2018-01-01",
+                        "phone": "13534343434",
+                        "balance": 45,
+                        "bonus": 100
+                    }
+                ]
             });
             console.log(table);
         });
