@@ -83,8 +83,110 @@
 3. 订单管理
 
 \chapter{数据库设计}
-
+在本节中，我们会按照概念设计、逻辑设计到物理设计的顺序讲解本项目的具体设计方式。
 \section{概念设计}
+概念设计包括数据库的实体集、联系集和ER图。
+\subsection{实体集}
+描述酒店的房间需要房间实体集(\autoref{tab:E-room})和房型实体集(\autoref{tab:E-type})。
+房型是指房间的
+\begin{table}[htp]
+    \caption{房间实体集}
+    \centering
+    \rowcolors{1}{White}{Lavender}
+    \begin{tabular}{cccp{11cm}<{\centering}}
+    \toprule
+        \emph{属性}  & \emph{备注} \\
+    \midrule
+        \underline{id}  & 唯一 \\
+        floor & 层数\\
+        room\_num  & 不包括floor的房间号 \\
+        price &  \\
+    \bottomrule
+    \hiderowcolors
+    \end{tabular}
+    \label{tab:E-room}
+\end{table}
+
+\begin{table}[htp]
+    \caption{房型实体集}
+    \centering
+    \rowcolors{1}{White}{Lavender}
+    \begin{tabular}{cccp{11cm}<{\centering}}
+    \toprule
+        \emph{属性}  & \emph{备注} \\
+    \midrule
+        \underline{id} & 唯一 \\
+        breakfast  & 是否包含早餐 \\
+        wifi & 是否包含无线网络 \\
+    \bottomrule
+    \hiderowcolors
+    \end{tabular}
+    \label{tab:E-type}
+\end{table} 
+
+
+\begin{table}[htp]
+    \caption{用户实体集}
+    \centering
+    \rowcolors{1}{White}{Lavender}
+    \begin{tabular}{cccp{11cm}<{\centering}}
+    \toprule
+        \emph{属性}  & \emph{备注} \\
+    \midrule
+        \underline{id}  & 唯一 \\
+        region & 顾客来自的地区 \\
+        credential & 证件号，唯一 \\
+        name & 姓名 \\
+        gender & 性别 \\
+        birthdate & 出生日期 \\
+        phone & 电话号码 \\
+        balance & 余额 \\
+    \bottomrule
+    \hiderowcolors
+    \end{tabular}
+    \label{tab:E-user}
+\end{table}
+
+\begin{table}[htp]
+    \caption{订单时实体集}
+    \centering
+    \rowcolors{1}{White}{Lavender}
+    \begin{tabular}{cccp{11cm}<{\centering}}
+    \toprule
+        \emph{属性} & \emph{备注} \\
+    \midrule
+        id & 唯一 \\
+        time & 房间的预订日期 \\
+        status & 订单状态（正常、取消）\\
+        
+    \bottomrule
+    \hiderowcolors
+    \end{tabular}
+    \label{tab:E-order}
+\end{table}
+
+\begin{table}[htp]
+    \caption{操作明细实体集}
+    \centering
+    \rowcolors{1}{White}{Lavender}
+    \begin{tabular}{cccp{11cm}<{\centering}}
+    \toprule
+        \emph{属性} & \emph{备注} \\
+    \midrule
+        id & 唯一 \\
+        time & 操作的发生时间 \\
+        operation& 操作类型（发起订单、取消订单）\\
+        
+    \bottomrule
+    \hiderowcolors
+    \end{tabular}
+    \label{tab:E-operation}
+\end{table}
+
+
+
+\subsection{联系集}
+\subsection{E-R图}
 
 \section{逻辑设计}
 
