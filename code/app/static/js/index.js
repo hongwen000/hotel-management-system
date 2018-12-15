@@ -41,13 +41,13 @@ $('#user-submit').on('click', function() {
     if (balance !== '') {
         balance = balance.split('-');
     } else {
-        balance = [-1, -1];
+        balance = ['', ''];
     }
     let bonus = $('#user-bonus').val();
     if (bonus !== '') {
         bonus = bonus.split('-');
     } else {
-        bonus = [-1, -1];
+        bonus = ['', ''];
     }
     let credential = $('#user-credential').val();
     let data = {
