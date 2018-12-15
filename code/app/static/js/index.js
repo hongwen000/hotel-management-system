@@ -27,12 +27,48 @@ $('#tab ul li').on('click', function() {
 $('#user-submit').on('click', function() {
     let isMan = document.getElementById("user-isman").checked;
     let isWoman = document.getElementById("user-iswoman").checked;
-    let userid = $('#user-id').val();
+    let gender;
+    if (isMan && isWoman){
+        gender = -1;
+    } else if (isMan) {
+        gender = 0;
+    } else {
+        gender = 1;
+    }
     let username = $('#user-name').val();
     let phone = $('#user-phone').val();
-    let balance = $('#user-balance').val().split('-');
-    let bonus = $('#user-bonus').val().split('-');
-    console.log({
-        
+    let balance = $('#user-balance').val();
+    if (balance !== '') {
+        balance = balance.split('-');
+    } else {
+        balance = [-1, -1];
+    }
+    let bonus = $('#user-bonus').val();
+    if (bonus !== '') {
+        bonus = bonus.split('-');
+    } else {
+        bonus = [-1, -1];
+    }
+    let credential = $('#user-credential').val();
+    let data = {
+        'credential': credential,
+        'name': username,
+        'gender': gender,
+        'phone': phone,
+        'balance_min': balance[0],
+        'balance_max': balance[1],
+        'bonus_min': bonus[0],
+        'bonus_max': bonus[1]
+    }
+    console.log(data);
+
+    $.ajax({
+        'method': 'POST',
+        'url': '/api/query_user',
+        'data': data,
+        'success': function() {
+            //TODO:
+            console.log('success!');
+        }
     })
 })
