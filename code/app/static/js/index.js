@@ -1,5 +1,18 @@
-$('.content:not(:first)').hide();
 let username;
+let role;
+$.ajax({
+    url: '/api/i',
+    method: 'GET',
+    success: function(data) {
+        username = data.username;
+        role = data.role;
+    },
+    async: false
+});
+
+
+
+$('.content:not(:first)').hide();
 $('#tab ul li').on('click', function() {
     $('#tab ul li').removeClass('is-active');
     $target = $('#' + $(this).attr('name'));
@@ -22,8 +35,18 @@ let user_app = new Vue({
         users: [],
         iserror: false,
         msg: '',
+        role: 3,
         birthdate: new Date(),
     },
+    // created: function() {
+    //     $.ajax({
+    //         'url': '/api/i',
+    //         'method': 'GET',
+    //         'success': function(data) {
+    //             user_app.role = data.role;
+    //         }
+    //     })
+    // },
     methods: {
         submit: function() {
             console.log(this.$data);
@@ -303,5 +326,13 @@ let root_app = new Vue({
                 }
             })
         }
+    }
+})
+
+
+let tab_app = new Vue({
+    el: '#tab',
+    data: {
+        role: 3
     }
 })
