@@ -10,13 +10,6 @@ $('#tab ul li').on('click', function() {
     $('#' + $(this).attr('name')).show();
 })
 
-let res_table = new Vue({
-    el: '#res-table',
-    data: {
-        users: []
-    }
-});
-
 let user_app = new Vue({
     el: '#user',
     data: {
@@ -25,7 +18,8 @@ let user_app = new Vue({
         credential: '',
         balance: '',
         bonus: '',
-        genders: []
+        genders: [],
+        users: []
     },
     methods: {
         submit: function() {
@@ -87,6 +81,56 @@ let user_app = new Vue({
 let room_app = new Vue({
     el: '#room',
     data: {
-        time: new Date()
+        checkin: new Date(),
+        checkout: new Date(),
+        capacity: '',
+        reqs: [],
+        rooms: [] //result
+    },
+    methods: {
+        submit: function() {
+            let data = {
+                'checkin': this.checkin_format,
+                'checkout': this.checkout_format,
+                'capacity': this.capacity,
+                'breakfast': this.reqs.indexOf('breakfast') === -1 ? false : true,
+                'wifi': this.reqs.indexOf('wifi') === -1 ? false : true
+            };
+            console.log(data);
+            $.ajax({
+                'method': 'POST',
+                'url': '', //TODO:
+                'data': data,
+                'success': function(data) {
+                }
+            })
+        },
+        clear: function() {
+            this.$data.capacity = '';
+            this.$data.checkin = new Date();
+            this.$data.checkout = new Date();
+            this.$data.rooms = [];
+        },
+        date2format: function(date) {
+            let _date = date.getDate();
+            let Month = date.getMonth();
+            let Year = date.getFullYear();
+            if (_date.length < 2) {
+                _date = '0' + _date;
+            }
+            if (Month.length < 2) {
+                Month = '0' + Month;
+            }
+            return `${Year}-${Month}-${_date}`;
+
+        }
+    },
+    computed: {
+        checkin_format: function() {
+            return this.date2format(this.checkin);
+        },
+        checkout_format: function() {
+            return this.date2format(this.checkout);
+        }
     }
-})
+});
