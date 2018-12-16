@@ -107,11 +107,48 @@ app.all('/api/insert_user', (req: Request, res: Response)=>{
   let gender: string = req.body.gender;
   let birthdate: string = req.body.birthdate;
   let phone: string = req.body.phone;
-  let balance: string = req.body.string;
-  let bonus: string = req.body.string;
+  let balance: string = req.body.balance;
+  let bonus: string = req.body.bonus;
   console.log(req.body)
-  let query: string = `insert into User(credential, name, gender, birthdate, phone, bonus, balance)
-    values(${credential}, ${name}, ${gender}, ${birthdate}, ${phone}, ${bonus}, ${balance})`;
+  let query: string = 'insert into User(credential, name, gender, birthdate, phone, bonus, balance) values(';
+  if(credential != '') {
+    query = query + "'" + credential + "',";
+  } else {
+    query = query + 'null,';
+  }
+  if(name != '') {
+    query = query + "'" + name + "',";
+  } else {
+    query = query + 'null,';
+  }
+  if(gender != '') {
+    query = query +  gender + ',';
+  } else {
+    query = query + 'null,';
+  }
+  if(birthdate != '') {
+    query = query + "'" + birthdate + "',";
+  } else {
+    query = query + 'null,';
+  }
+  if(phone != '') {
+    query = query + "'" + phone + "',";
+  } else {
+    query = query + 'null,';
+  }
+  if(bonus != '') {
+    console.debug('here')
+    query = query +  bonus + ',';
+  } else {
+    query = query + 'null,';
+  }
+  if(balance != '') {
+    query = query +  balance +')';
+  } else {
+    query = query + 'null)';
+  }
+  console.log(query);
+
   pool.getConnection()
     .then(conn=>{
       conn.query(query)
