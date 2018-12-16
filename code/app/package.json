@@ -10,10 +10,14 @@
   "license": "ISC",
   "dependencies": {
     "@types/body-parser": "^1.17.0",
+    "@types/cookie-parser": "^1.4.1",
     "@types/express": "^4.16.0",
+    "@types/express-session": "^1.15.11",
     "@types/node": "^10.12.15",
     "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
+    "express-session": "^1.15.6",
     "mariadb": "^2.0.2-rc",
     "path": "^0.12.7"
   }

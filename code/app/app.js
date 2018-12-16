@@ -4,13 +4,52 @@ var express = require("express");
 var path = require("path");
 var bodyParser = require("body-parser");
 var pool = require("./sql");
+var cookieParser = require("cookie-parser");
+var session = require("express-session");
 var app = express();
 var port = 8080;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.get('/', function (req, res) {
+app.use(cookieParser());
+app.use(session({ secret: "wyf and lxr NB!" }));
+app.get('/login', function (req, res) {
+    res.sendFile(path.join(__dirname, 'html/login.html'));
+});
+app.get('/api/login', function (req, res) {
+    console.log(req.query.username);
+    console.log(req.query.password);
+    if (req.query.username === '' || req.query.password === '') {
+        res.json({
+            'msg': 'error, please input not empty username and password',
+            'errno': -1
+        });
+        return;
+    }
+    if (req.query.username === 'root' && req.query.password === 'rootpassword') {
+        req.session.user = req.query.username;
+        res.json({
+            'msg': 'success',
+            'errno': 0
+        });
+        return;
+    }
+    else {
+        res.json({
+            'msg': 'error password or usernmame',
+            'errno': -1
+        });
+        return;
+    }
+});
+app.use('/query', function (req, res, next) {
+    // if (!req.session.user) {
+    //   res.redirect('/login');
+    // }
+    next();
+});
+app.get('/query', function (req, res) {
     res.sendFile(path.join(__dirname, 'html/index.html'));
 });
 app.all('/api/query', function (req, res) {

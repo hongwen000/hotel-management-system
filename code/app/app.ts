@@ -3,6 +3,10 @@ import {Request, Response} from "express";
 import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as pool from "./sql";
+import { NextFunction } from "connect";
+import * as cookieParser from "cookie-parser";
+import * as session from "express-session";
+
 import { connect } from "net";
 const app = express();
 const port = 8080;
@@ -10,8 +14,47 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+app.use(cookieParser());
+app.use(session({secret: "wyf and lxr NB!"}));
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/login', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, 'html/login.html'));
+})
+
+app.get('/api/login', (req: Request, res: Response) => {
+  console.log(req.query.username);
+  console.log(req.query.password);
+  if (req.query.username === '' || req.query.password === '') {
+    res.json({
+      'msg': 'error, please input not empty username and password',
+      'errno': -1
+    });
+    return;
+  }
+  if (req.query.username === 'root' && req.query.password === 'rootpassword') {
+    req.session.user = req.query.username;
+    res.json({
+      'msg': 'success',
+      'errno': 0
+    })
+    return;
+  } else {
+    res.json({
+      'msg': 'error password or usernmame',
+      'errno': -1
+    });
+    return;
+  }
+})
+
+app.use('/query', (req: Request, res: Response, next : NextFunction) => {
+  // if (!req.session.user) {
+  //   res.redirect('/login');
+  // }
+  next();
+});
+
+app.get('/query', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, 'html/index.html'));
 })
 
