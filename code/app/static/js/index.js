@@ -138,7 +138,8 @@ let room_app = new Vue({
         //     'age': 40
         // }] //result
         rooms: [],
-        room_types: []
+        room_types: [],
+        add_type: ''
     },
     created: function() {
         $.ajax({
@@ -192,6 +193,22 @@ let room_app = new Vue({
             })
 
         },
+        add_room_type: function() {
+            let data = {
+                'name': this.add_type,
+                'capacity': this.capacity,
+                'wifi': this.wifi ? 1 : 0,
+                'breakfast': this.breakfast ? 1 : 0
+            }
+
+            $.ajax({
+                'url': '/api/insert_room_type',
+                'method': 'POST',
+                'data': data,
+                'success': this.success
+            });
+
+        },
         clear: function() {
             this.$data.capacity = '';
             this.$data.checkin = new Date();
@@ -217,7 +234,7 @@ let room_app = new Vue({
             } else {
                 this.iserror = true;
             }
-            this.msg = data.msg;
+            this.msg = data.error_msg;
         }
     },
     computed: {
