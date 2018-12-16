@@ -184,6 +184,20 @@
 
 
             <div class="columns">
+
+                <div class="column">
+                    <label class="label">
+                        Room Type
+                    </label>
+                    <div class="select">
+                        <select>
+                            <option v-for="type in room_types"> {{ type }} </option>
+                        </select>
+                    </div>
+                </div>
+
+
+
                 <div class="column">
                     <div class="field">
                         <label class="label"> requirment</label>
@@ -226,9 +240,7 @@
             </div>
         </div>
 
-        <general-message
-            v-bind:iserror="iserror"
-            v-bind:msg="msg">
+        <general-message v-bind:iserror="iserror" v-bind:msg="msg">
         </general-message>
 
         <result-table v-bind:result="rooms"> </result-table>
@@ -256,9 +268,7 @@
                     <button class="button is-link" @click="submit"> submit</button>
                 </div>
             </div>
-            <general-message
-                v-bind:iserror="error"
-                v-bind:msg="output">
+            <general-message v-bind:iserror="error" v-bind:msg="output">
 
             </general-message>
         </div>
