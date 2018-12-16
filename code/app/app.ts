@@ -105,7 +105,7 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
                     "credential":"XXXXX",
                     "name":"XXXX",
                     "gender":-1,
-                    "birthday":"2018-01-01",
+                    "birthdate":"2018-01-01",
                     "phone":"13534343434",
                     "balance":45,
                     "bonus":100
@@ -115,7 +115,7 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
                     "credential":"XXXXX",
                     "name":"XXXX",
                     "gender":-1,
-                    "birthday":"2018-01-01",
+                    "birthdate":"2018-01-01",
                     "phone":"13534343434",
                     "balance":45,
                     "bonus":100
@@ -125,7 +125,7 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
                     "credential":"XXXXX",
                     "name":"XXXX",
                     "gender":-1,
-                    "birthday":"2018-01-01",
+                    "birthdate":"2018-01-01",
                     "phone":"13534343434",
                     "balance":45,
                     "bonus":100
@@ -135,7 +135,7 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
                     "credential":"XXXXX",
                     "name":"XXXX",
                     "gender":-1,
-                    "birthday":"2018-01-01",
+                    "birthdate":"2018-01-01",
                     "phone":"13534343434",
                     "balance":45,
                     "bonus":100
@@ -145,21 +145,26 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
                     "credential":"XXXXX",
                     "name":"XXXX",
                     "gender":-1,
-                    "birthday":"2018-01-01",
+                    "birthdate":"2018-01-01",
                     "phone":"13534343434",
                     "balance":45,
                     "bonus":100
                 }
               ]
           })
-          // Not working
-          for (let val in table) {
-            console.log(val);
+          for (let i = 0; i < table.length; ++i) {
+            if(table[i].gender == 0) {
+              table[i].gender = 'man';
+            } else if (table[i].gender == 0) {
+              table[i].gender = 'woman';
+            }
+            let birthdate: string = table[i].birthdate;
+            table[i].birthdate = birthdate.substr(0,10);
           }
-          table.array.forEach(element => {
-            console.log(element)
-          });
+          console.log(JSON.stringify(table));
         })
+    }).catch(err => {
+      console.log('ERROR' + err);
     })
 
 });

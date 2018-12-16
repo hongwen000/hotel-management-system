@@ -108,7 +108,7 @@ app.all('/api/query_user', function (req, res) {
                         "credential": "XXXXX",
                         "name": "XXXX",
                         "gender": -1,
-                        "birthday": "2018-01-01",
+                        "birthdate": "2018-01-01",
                         "phone": "13534343434",
                         "balance": 45,
                         "bonus": 100
@@ -118,7 +118,7 @@ app.all('/api/query_user', function (req, res) {
                         "credential": "XXXXX",
                         "name": "XXXX",
                         "gender": -1,
-                        "birthday": "2018-01-01",
+                        "birthdate": "2018-01-01",
                         "phone": "13534343434",
                         "balance": 45,
                         "bonus": 100
@@ -128,7 +128,7 @@ app.all('/api/query_user', function (req, res) {
                         "credential": "XXXXX",
                         "name": "XXXX",
                         "gender": -1,
-                        "birthday": "2018-01-01",
+                        "birthdate": "2018-01-01",
                         "phone": "13534343434",
                         "balance": 45,
                         "bonus": 100
@@ -138,7 +138,7 @@ app.all('/api/query_user', function (req, res) {
                         "credential": "XXXXX",
                         "name": "XXXX",
                         "gender": -1,
-                        "birthday": "2018-01-01",
+                        "birthdate": "2018-01-01",
                         "phone": "13534343434",
                         "balance": 45,
                         "bonus": 100
@@ -148,15 +148,27 @@ app.all('/api/query_user', function (req, res) {
                         "credential": "XXXXX",
                         "name": "XXXX",
                         "gender": -1,
-                        "birthday": "2018-01-01",
+                        "birthdate": "2018-01-01",
                         "phone": "13534343434",
                         "balance": 45,
                         "bonus": 100
                     }
                 ]
             });
-            console.log(table);
+            for (var i = 0; i < table.length; ++i) {
+                if (table[i].gender == 0) {
+                    table[i].gender = 'man';
+                }
+                else if (table[i].gender == 0) {
+                    table[i].gender = 'woman';
+                }
+                var birthdate = table[i].birthdate;
+                table[i].birthdate = birthdate.substr(0, 10);
+            }
+            console.log(JSON.stringify(table));
         });
+    })["catch"](function (err) {
+        console.log('ERROR' + err);
     });
 });
 app.listen(port, function () { return console.log("Example app listening on port " + port + "!"); });
