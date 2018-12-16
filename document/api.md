@@ -25,7 +25,9 @@ get方法
 ```json
 {
     "user_id" : 234,
-    "username":"wyf"
+    "username":"wyf",
+    "role":0,
+    "error_code":0
 }
 ```
 
@@ -34,6 +36,8 @@ get方法
 | --------- | ------ | ---------------------------------- |
 | user_id   | int | 用户在数据库中的唯一id                       |
 | username    | string   | 用户名         |
+| role | int | 0 : root ,3 : user |
+| error_code | int | 0 表示无异常，1表示异常 |
 
 
 
