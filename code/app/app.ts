@@ -465,7 +465,7 @@ app.get('/api/get_room_type', (req: Request, res: Response) => {
         //   table[i].birthdate = birthdate.substr(0, 10);
         // }
         res.json({
-          "users": JSON.stringify(table)
+          "types": JSON.stringify(table)
         })
       })
     conn.end();
