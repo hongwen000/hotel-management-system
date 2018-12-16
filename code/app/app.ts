@@ -451,7 +451,97 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
     })
   }
 })
+// app.all('/api/query_user_info', (req: Request, res: Response) => {
+//   let user_id: string = req.body.user_id;
+//   console.log(req.body)
+//   let query: string = 'select * from User as u.id = ?';
+//   try {
+//     if (user_id == '' || user_id == undefined) {
+//       throw "user_id is empty or underfined!!"
+//     }
+//     pool.getConnection()
+//       .then(conn => {
+//         conn.query(query, user_id)
+//           .then((ret) => {
+//             console.log(ret);
+//             ret.json({
 
+//             })
+//       })
+//       .catch((error) =>{
+//         console.log(error)
+//         res.json({
+//           'error_code': 1,
+//           'error_msg': JSON.stringify(error),
+//         })
+//       });
+//       conn.end();
+//     })
+//     .catch((error) => {
+//       console.log(error)
+//       res.json({
+//         'error_code': 1,
+//         'error_msg': JSON.stringify(error),
+//       })
+//     });
+//   } catch (error) {
+//     res.json({
+//       'error_code': 1,
+//       'error_msg': JSON.stringify(error)
+//     })
+//   }
+// })
+app.all('/api/query_user_info', (req: Request, res: Response) => {
+  let user_id: number = parseInt(req.body.user_id);
+  console.log(user_id)
+  let query: string = 'select * from User as u where u.id = ?';
+  try {
+    if (user_id == undefined) {
+      throw "user_id is empty or underfined!!"
+    }
+    pool.getConnection()
+      .then(conn => {
+        conn.query(query, user_id)
+          .then((table) => {
+            console.log(table);
+            if(table.length != 1)
+            {
+              throw("Result contains zero or more than one row")
+            }
+            for (let i = 0; i < table.length; ++i) {
+              if (table[i].gender == 0) {
+                table[i].gender = 'man';
+              } else if (table[i].gender == 0) {
+                table[i].gender = 'woman';
+              }
+              let birthdate: string = table[i].birthdate.toISOString();
+              table[i].birthdate = birthdate.substr(0, 10);
+            }
+            res.json({
+            })
+      })
+      .catch((error) =>{
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      });
+      conn.end();
+    })
+    .catch((error) => {
+      console.log(error)
+      res.json({
+        'error_code': 1,
+        'error_msg': JSON.stringify(error),
+      })
+    });
+  } catch (error) {
+    res.json({
+      'error_code': 1,
+      'error_msg': JSON.stringify(error)
+    })
+  }
 app.get('/api/get_room_type', (req: Request, res: Response) => {
   let query = 'select * from RoomType'
   pool.getConnection()
