@@ -42,8 +42,8 @@ let user_app = new Vue({
                 'url': '/api/query_user',
                 'data': data,
                 'success': function(data) {
-                    //TODO:
-                    console.log('success!');
+                    console.log(data);
+                    user_app.users = JSON.parse(data.users);
                 }
             })
         },

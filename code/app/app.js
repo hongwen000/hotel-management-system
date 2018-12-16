@@ -108,8 +108,7 @@ app.all('/api/query_user', function (req, res) {
                 else if (table[i].gender == 0) {
                     table[i].gender = 'woman';
                 }
-                var birthdate = table[i].birthdate;
-                console.log(table[i].birthdate);
+                var birthdate = table[i].birthdate.toISOString();
                 table[i].birthdate = birthdate.substr(0, 10);
             }
             res.json({
