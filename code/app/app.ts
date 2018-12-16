@@ -159,6 +159,7 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
               table[i].gender = 'woman';
             }
             let birthdate: string = table[i].birthdate;
+            console.log(table[i].birthdate);
             table[i].birthdate = birthdate.substr(0,10);
           }
           console.log(JSON.stringify(table));
