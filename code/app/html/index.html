@@ -214,11 +214,13 @@
                 </div>
 
                 <div class="column">
-                    <label class="label">
-                        Birthdate
-                    </label>
-                    <vue-datepicker-local v-model="birthdate">
-                    </vue-datepicker-local>
+                    <div class="field" v-if="role <= 1">
+                        <label class="label">
+                            Birthdate
+                        </label>
+                        <vue-datepicker-local v-model="birthdate">
+                        </vue-datepicker-local>
+                    </div>
                 </div>
 
 
