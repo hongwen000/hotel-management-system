@@ -269,11 +269,16 @@ app.all('/api/insert_user', (req: Request, res: Response)=>{
         .then((ret)=>{
           console.log(ret);
           res.json({
-            "users": JSON.stringify(ret)
+            "error_code": 0,
+            "error_msg": JSON.stringify(ret)
           })
         })
     }).catch(err => {
       console.log('ERROR' + err);
+      res.json({
+        "error_code": 1,
+        "error_msg": JSON.stringify(err)
+      })
     })
 });
 
