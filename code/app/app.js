@@ -155,7 +155,13 @@ app.all('/api/query_user', function (req, res) {
                     }
                 ]
             });
-            console.log(table);
+            // Not working
+            for (var val in table) {
+                console.log(val);
+            }
+            table.array.forEach(function (element) {
+                console.log(element);
+            });
         });
     });
 });
