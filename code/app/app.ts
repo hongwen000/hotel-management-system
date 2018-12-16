@@ -542,6 +542,8 @@ app.all('/api/query_user_info', (req: Request, res: Response) => {
       'error_msg': JSON.stringify(error)
     })
   }
+});
+
 app.get('/api/get_room_type', (req: Request, res: Response) => {
   let query = 'select * from RoomType'
   pool.getConnection()
@@ -565,8 +567,7 @@ app.get('/api/get_room_type', (req: Request, res: Response) => {
   }).catch(err => {
     console.log('ERROR' + err);
   })
-
-})
+});
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
