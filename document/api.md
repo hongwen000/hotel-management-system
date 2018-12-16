@@ -7,7 +7,7 @@
 
 ###  API：查询可用房间
 
-### URL
+#### URL
 
 `/api/query_room`
 
@@ -139,7 +139,7 @@ TODO:
 | credential  | string | 身份证号                   |
 | name        | string | 用户名称                   |
 | gender      | string | 'man'是雄性，'woman'是雌性,空表示未知 |
-|birthday | string | 生日“2018-01-01” |
+|birthdate | string | 出生日期“2018-01-01” |
 | phone       | string | 手机号码                   |
 | balance     | int    | 余额（单位为元）       |
 | bonus   | int    | 积分                   |
