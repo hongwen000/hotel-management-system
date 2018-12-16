@@ -422,3 +422,4 @@ typings/
 
 #DynamoDB Local files 
 .dynamodb/ 
+*/app.js
