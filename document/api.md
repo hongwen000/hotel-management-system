@@ -1,8 +1,15 @@
 # 后端接口说明
 
+1. 请求参数中，若为空串均为不指定（因此大多数字段都使用了string类型）
+2. 相应的参数具有明确类型（如果int类型的就返回int类型二不是string）
+
 ## 房间预订子系统
 
 ###  API：查询可用房间
+
+### URL
+
+`/api/query_room`
 
 #### 请求示例及参数
 
@@ -16,13 +23,13 @@
 
 发送的json请求需要含有以下属性：
 
-| 属性名    | 类型   | 值                                         |
-| --------- | ------ | ------------------------------------------ |
-| check_in  | string | 入住时间（%Y-%M-%D 如 2018-02-12)          |
-| check_out | string | 退房时间（%Y-%M-%D 如 2018-02-15)          |
-| capacity  | int    | 最小容纳人数                               |
-| wifi      | bool   | 是否要求wifi，0表示不限定，1表示必须有wifi |
-| breakfast | bool   | 是否要求早餐，0表示不限定，1表示必须有早餐 |
+| 属性名    | 类型   | 值                                          |
+| --------- | ------ | ------------------------------------------- |
+| check_in  | string | 入住时间（%Y-%M-%D 如 2018-02-12)           |
+| check_out | string | 退房时间（%Y-%M-%D 如 2018-02-15)           |
+| capacity  | string | 最小容纳人数                                |
+| wifi      | string | 是否要求wifi，空表示不指定，1表示必须有wifi |
+| breakfast | string | 是否要求早餐，空表示不限定，1表示必须有早餐 |
 
 #### 响应示例及参数
 
@@ -34,8 +41,8 @@
             "floor" : 4,
             "room_num" : 1103,
             "price" : 100,
-            "breakfast" : 1,
-            "wifi" : 0,
+            "breakfast" : "Yes",
+            "wifi" : "No",
             "name" : "豪华双人房",
             "capacity" : 2
         },
@@ -48,16 +55,16 @@
 
 
 
-| 属性名    | 类型   | 值                             |
-| --------- | ------ | ------------------------------ |
-| room_id   | string | 房间的唯一id                   |
-| floor     | int    | 房间所在层数（1,2,3,4....)     |
-| room_num  | int    | 房间的房号(如 101,503,1103等 ) |
-| price     | int    | 房价(单位为元)                 |
-| breakfast | bool   | 0 表示没有早餐，1表示有早餐    |
-| wifi      | bool   | 0表示没有wifi，1表示有wifi     |
-| name      | string | 房型的名称（豪华双人房）       |
-| capacity  | int    | 房间所能容纳的最大人数         |
+| 属性名    | 类型   | 值                                 |
+| --------- | ------ | ---------------------------------- |
+| room_id   | string | 房间的唯一id                       |
+| floor     | int    | 房间所在层数（1,2,3,4....)         |
+| room_num  | int    | 房间的房号(如 101,503,1103等 )     |
+| price     | int    | 房价(单位为元)                     |
+| breakfast | string | 'No' 表示没有早餐，'Yes'表示有早餐 |
+| wifi      | string | 'No'表示没有wifi，'Yes'表示有wifi  |
+| name      | string | 房型的名称（豪华双人房）           |
+| capacity  | int    | 房间所能容纳的最大人数             |
 
 ### API：预订房间
 
@@ -78,7 +85,6 @@ TODO:
 输入一些条件，返回满足这些条件的用户列表
 
 1. string类型的参数，空串表示不指定
-2. int类型的参数，-1表示不指定
 
 #### URL
 
@@ -134,7 +140,7 @@ TODO:
 | id          | string | 用户id                     |
 | credential  | string | 身份证号                   |
 | name        | string | 用户名称                   |
-| gender      | int    | -1不指定，0是雄性，1是雌性 |
+| gender      | int    | 0是雄性，1是雌性 |
 |birthday | string | 生日“2018-01-01” |
 | phone       | string | 手机号码                   |
 | balance     | int    | 余额（单位为元）       |
