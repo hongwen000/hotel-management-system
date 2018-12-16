@@ -337,19 +337,18 @@ app.all('/api/insert_room_type', (req: Request, res: Response) => {
   console.log(req.body)
 
   let query: string = 'insert into RoomType (name, capacity, wifi,breakfast) value (?, ?, ?, ?);';
-  // TODO: 没有处理输入值为空的情况
   let arg: string[] = [];
   try {
-    if (name === undefined) {
+    if (name == '') {
       throw "name is empty !!"
     }
-    if (capacity === undefined) {
+    if (capacity == '') {
       throw "capacity is empty !!"
     }
-    if (wifi === undefined) {
+    if (wifi == '') {
       throw "wifi is empty !!"
     }
-    if (breakfast === undefined) {
+    if (breakfast == '') {
       throw "breakfast is empty !!"
     }
     arg.push(name);
@@ -371,8 +370,7 @@ app.all('/api/insert_room_type', (req: Request, res: Response) => {
             console.log(error)
             res.json({
               'error_code': 1,
-              // TODO: 错误信息不是字符串，可能需要改一下，如果输入重复的房型，如何让前端知道？
-              'error_msg': error,
+              'error_msg': JSON.stringify(error),
             })
           });
         conn.end();
@@ -381,21 +379,18 @@ app.all('/api/insert_room_type', (req: Request, res: Response) => {
         console.log(error)
         res.json({
           'error_code': 1,
-          // TODO: 错误信息不是字符串，可能需要改一下
-          'error_msg': error,
+          'error_msg': JSON.stringify(error),
         })
       });
   } catch (error) {
     res.json({
       'error_code': 1,
-      'error_msg': error
+      'error_msg': JSON.stringify(error)
     })
   }
 })
 
 app.all('/api/insert_room', (req: Request, res: Response) => {
-  // TODO:未测试，先做房型
-  // console.log(req)
   let floor: string = req.body.floor;
   let room_num: string = req.body.room_num;
   let price: string = req.body.price;
@@ -404,16 +399,15 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
 
 
   let query: string = 'insert into Room (floor, room_num, price) value (?, ?, ?);';
-  // TODO: 没有处理输入值为空的情况
   let arg: string[] = [];
   try {
-    if (floor === undefined) {
+    if (floor == '') {
       throw "floor is empty !!"
     }
-    if (room_num === undefined) {
+    if (room_num == '') {
       throw "room_num is empty !!"
     }
-    if (price === undefined) {
+    if (price == '') {
       throw "price is empty !!"
     }
     arg.push(floor);
@@ -434,7 +428,7 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
             console.log(error)
             res.json({
               'error_code': 1,
-              'error_msg': error,
+              'error_msg': JSON.stringify(error),
             })
           });
         conn.end();
@@ -443,14 +437,14 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
         console.log(error)
         res.json({
           'error_code': 1,
-          'error_msg': error,
+          'error_msg': JSON.stringify(error),
         })
       });
 
   } catch (error) {
     res.json({
       'error_code': 1,
-      'error_msg': error
+      'error_msg': JSON.stringify(error)
     })
   }
 })
