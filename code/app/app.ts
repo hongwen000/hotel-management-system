@@ -570,8 +570,7 @@ app.get('/api/get_room_type', (req: Request, res: Response) => {
   }).catch(err => {
     console.log('ERROR' + err);
   })
-
-})
+});
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
