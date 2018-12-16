@@ -10,6 +10,7 @@ import * as session from "express-session";
 import { connect } from "net";
 import { ResolveOptions } from "dns";
 import { createDiffieHellman } from "crypto";
+import { strict } from "assert";
 const app = express();
 const port = 8080;
 app.use(bodyParser.json());
@@ -121,9 +122,9 @@ app.post('/api/signup', (req: Request, res: Response) => {
 app.get('/api/i', (req: Request, res: Response) => {
   let username = req.session.user;
   // let username = 'wyf';
-  let usernames:string[] = [username];
+  let usernames: string[] = [username];
   console.log(usernames);
-  let query:string = "select id,role from Account where username = ?"
+  let query: string = "select id,role from Account where username = ?"
   pool.getConnection()
     .then(conn => {
       conn.query(query, usernames)
@@ -133,7 +134,7 @@ app.get('/api/i', (req: Request, res: Response) => {
           // let user_id = row
           res.json({
             'user_id': rows[0]['id'],
-            'role':rows[0]['role'],
+            'role': rows[0]['role'],
             'username': username,
             'error_code': 0
           });
@@ -510,9 +511,8 @@ app.all('/api/query_user_info', (req: Request, res: Response) => {
         conn.query(query, user_id)
           .then((table) => {
             console.log(table);
-            if(table.length != 1)
-            {
-              throw("Result contains zero or more than one row")
+            if (table.length != 1) {
+              throw ("Result contains zero or more than one row")
             }
             for (let i = 0; i < table.length; ++i) {
               if (table[i].gender == 0) {
@@ -524,24 +524,32 @@ app.all('/api/query_user_info', (req: Request, res: Response) => {
               table[i].birthdate = birthdate.substr(0, 10);
             }
             res.json({
+              'id': table[0].id,
+              'credential': table[0].credential,
+              'name': table[0].name,
+              'gender': table[0].gender,
+              'birthdate': table[0].birthdate,
+              'phone': table[0].phone,
+              'balance': table[0].balance,
+              'bonus': table[0].bonus
             })
+          })
+          .catch((error) => {
+            console.log(error)
+            res.json({
+              'error_code': 1,
+              'error_msg': JSON.stringify(error),
+            })
+          });
+        conn.end();
       })
-      .catch((error) =>{
+      .catch((error) => {
         console.log(error)
         res.json({
           'error_code': 1,
           'error_msg': JSON.stringify(error),
         })
       });
-      conn.end();
-    })
-    .catch((error) => {
-      console.log(error)
-      res.json({
-        'error_code': 1,
-        'error_msg': JSON.stringify(error),
-      })
-    });
   } catch (error) {
     res.json({
       'error_code': 1,
@@ -553,26 +561,26 @@ app.all('/api/query_user_info', (req: Request, res: Response) => {
 app.get('/api/get_room_type', (req: Request, res: Response) => {
   let query = 'select * from RoomType'
   pool.getConnection()
-  .then(conn => {
-    conn.query(query)
-      .then((table) => {
-        // for (let i = 0; i < table.length; ++i) {
-        //   if (table[i].gender == 0) {
-        //     table[i].gender = 'man';
-        //   } else if (table[i].gender == 0) {
-        //     table[i].gender = 'woman';
-        //   }
-        //   let birthdate: string = table[i].birthdate.toISOString();
-        //   table[i].birthdate = birthdate.substr(0, 10);
-        // }
-        res.json({
-          "types": JSON.stringify(table)
+    .then(conn => {
+      conn.query(query)
+        .then((table) => {
+          // for (let i = 0; i < table.length; ++i) {
+          //   if (table[i].gender == 0) {
+          //     table[i].gender = 'man';
+          //   } else if (table[i].gender == 0) {
+          //     table[i].gender = 'woman';
+          //   }
+          //   let birthdate: string = table[i].birthdate.toISOString();
+          //   table[i].birthdate = birthdate.substr(0, 10);
+          // }
+          res.json({
+            "types": JSON.stringify(table)
+          })
         })
-      })
-    conn.end();
-  }).catch(err => {
-    console.log('ERROR' + err);
-  })
+      conn.end();
+    }).catch(err => {
+      console.log('ERROR' + err);
+    })
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
