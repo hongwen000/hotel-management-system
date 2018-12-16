@@ -138,7 +138,7 @@ let room_app = new Vue({
             console.log(data);
             $.ajax({
                 'method': 'POST',
-                'url': '', //TODO:
+                'url': '/api/query_room', 
                 'data': data,
                 'success': function(data) {
                 }
