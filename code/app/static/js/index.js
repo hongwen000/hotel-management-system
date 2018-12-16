@@ -1,5 +1,5 @@
 $('.content:not(:first)').hide();
-
+let username;
 $('#tab ul li').on('click', function() {
     $('#tab ul li').removeClass('is-active');
     $target = $('#' + $(this).attr('name'));
@@ -138,7 +138,12 @@ let room_app = new Vue({
         //     'age': 40
         // }] //result
         rooms: [],
-        room_types: []
+        room_types: [],
+        room_types2id: {},
+        add_type: '',
+        selected_room_type: '',
+        price: '',
+        floor: ''
     },
     created: function() {
         $.ajax({
@@ -149,6 +154,7 @@ let room_app = new Vue({
                 for (let i = 0; i < d.length; ++i) {
                     console.log(d[i]);
                     room_app.room_types.push(d[i].name);
+                    room_app.room_types2id[d[i].name] = d[i].id;
                 }
             }
         })
@@ -174,11 +180,17 @@ let room_app = new Vue({
         insert: function() {
             let data = {
                 'floor': this.floor,
-                'room_num': this.room_num,
+                'room_num': this.room_id,
                 'price': this.price,
-                // 'type_id': 
-                //TODO:
+                'type_id': this.room_types2id[this.selected_room_type]
             }
+            console.log(data);
+            $.ajax({
+                'url': '/api/insert_room',
+                'method': 'POST',
+                'data': data,
+                'success': this.success
+            })
         },
         remove: function() {
             let data = {
@@ -190,6 +202,22 @@ let room_app = new Vue({
                 'data': data,
                 'success': this.success
             })
+
+        },
+        add_room_type: function() {
+            let data = {
+                'name': this.add_type,
+                'capacity': this.capacity,
+                'wifi': this.wifi ? 1 : 0,
+                'breakfast': this.breakfast ? 1 : 0
+            }
+
+            $.ajax({
+                'url': '/api/insert_room_type',
+                'method': 'POST',
+                'data': data,
+                'success': this.success
+            });
 
         },
         clear: function() {
@@ -217,7 +245,7 @@ let room_app = new Vue({
             } else {
                 this.iserror = true;
             }
-            this.msg = data.msg;
+            this.msg = data.error_msg;
         }
     },
     computed: {

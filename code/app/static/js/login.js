@@ -1,4 +1,5 @@
-new Vue({
+let username;
+let login_app = new Vue({
     el: '#login',
     data: {
         username: '',
@@ -16,6 +17,7 @@ new Vue({
                 },
                 success: function(data) {
                     if (data.error === 0) {
+                        username = login_app.username;
                         window.location.href = '/query';
                     } else {
                         alert(data.msg);

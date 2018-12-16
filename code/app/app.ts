@@ -46,7 +46,7 @@ app.get('/api/login', (req: Request, res: Response) => {
         .then(rows => {
           // console.log(rows);
           // console.log(rows.length);
-          req.session.user = 'root';
+          req.session.user = username;
           conn.end();
           if (rows.length == 0) {
             res.json({
@@ -120,24 +120,26 @@ app.post('/api/signup', (req: Request, res: Response) => {
 app.get('/api/i', (req: Request, res: Response) => {
   let username = req.session.user;
   let usernames:string[] = [username];
+  console.log(usernames);
   let query:string = "select id from Account where username = ?"
   pool.getConnection()
     .then(conn => {
-      conn.query(query, username)
+      conn.query(query, usernames)
         .then((rows) => {
           console.log(rows)
           console.log(rows[0])
           // let user_id = row
           res.json({
             'user_id': rows[0]['id'],
-            'username': username
+            'username': username,
+            'error_code': 0
           });
         })
         .catch(err => {
           res.json({
             'error_code': 1,
-            'error_msg': username + " maybe not exist in database."
-          })
+            'error_msg': JSON.stringify(err)
+          });
         })
         .finally(() => {
           conn.end();
@@ -145,7 +147,8 @@ app.get('/api/i', (req: Request, res: Response) => {
     })
     .catch(err => {
       res.json({
-        'error_code': 1
+        'error_code': 1,
+        'msg': JSON.stringify(err)
       })
     })
 });

@@ -172,6 +172,9 @@
                         <input class="input" type="text" v-model="capacity" placeholder="let it empty to ignore">
                     </div>
                 </div>
+            </div>
+
+            <div class="columns">
                 <div class="column">
                     <label class="label">
                         room id
@@ -180,21 +183,26 @@
                         <input class="input" type="text" v-model="room_id" placeholder="let it empty to ignore">
                     </div>
                 </div>
+                <div class="column">
+                    <label class="label">
+                        price
+                    </label>
+                    <div class="control">
+                        <input class="input" type="text" v-model="price" placeholder="let it empty to ignore">
+                    </div>
+                </div>
+                <div class="column">
+                    <label class="label">
+                        floor
+                    </label>
+                    <div class="control">
+                        <input class="input" type="text" v-model="floor" placeholder="let it empty to ignore">
+                    </div>
+                </div>
             </div>
-
 
             <div class="columns">
 
-                <div class="column">
-                    <label class="label">
-                        Room Type
-                    </label>
-                    <div class="select">
-                        <select>
-                            <option v-for="type in room_types"> {{ type }} </option>
-                        </select>
-                    </div>
-                </div>
 
 
 
@@ -221,9 +229,6 @@
                 </div>
             </div>
 
-
-
-
             <div class="field is-grouped">
                 <div class="control">
                     <button @click="submit" class="button is-link">Query</button>
@@ -231,13 +236,50 @@
                 <div class="control">
                     <button @click="insert" class="button is-link">Add</button>
                 </div>
-                <!-- <div class="control">
-                    <button @click="remove" class="button is-link">Remove</button>
-                </div> -->
                 <div class="control">
                     <button @click="clear" class="button is-text">clear</button>
                 </div>
             </div>
+
+            <div class="container">
+                <div class="columns">
+                    <div class="column">
+                        <label class="label">
+                            Room Type
+                        </label>
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <div class="select">
+                                    <select v-model="selected_room_type">
+                                        <option v-for="type in room_types"> {{ type }} </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="control">
+                                <input class="input" type="text" v-model="add_type" placeholder="new room type name here">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="column">
+                        <label class="label">
+                            room number
+                        </label>
+                        <div class="control">
+                            <input class="input" type="text" v-model="room_number" placeholder="let it empty to ignore">
+                        </div>
+                    </div> -->
+
+                </div>
+
+
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button @click="add_room_type" class="button is-link">Add Type</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <general-message v-bind:iserror="iserror" v-bind:msg="msg">
