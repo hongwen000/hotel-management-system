@@ -1,5 +1,3 @@
-
-
 $('.content:not(:first)').hide();
 
 $('#tab ul li').on('click', function() {
@@ -147,7 +145,7 @@ let room_app = new Vue({
 });
 
 new Vue({
-    el: '#logout-app',
+    el: '#bars',
     methods: {
         logout: function() {
             $.ajax({
@@ -155,6 +153,39 @@ new Vue({
                 url: '/api/logout'
             });
             window.location.href = '/login';
+        },
+        profile: function() {
+            window.location.href = '/profile';
         }
     }
 });
+
+let root_app = new Vue({
+    el: '#root',
+    data: {
+        query: '',
+        output: '',
+        table: ''
+    },
+    methods: {
+        submit: function() {
+            $.ajax({
+                method: 'POST',
+                url: '/api/query',
+                data: {
+                    query: this.query
+                },
+                success: function(data) {
+                    if (data.error_code === 0) {
+                        root_app.output = JSON.parse(data.data);
+                        root_app.table = JSON.parse(data.data);
+                    } else {
+                        root_app.output = JSON.parse(data.data);
+                        root_app.table = '';
+
+                    }
+                }
+            })
+        }
+    }
+})

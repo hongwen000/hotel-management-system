@@ -28,14 +28,20 @@
                         </ul>
                     </div>
                 </div>
-                <div class="level-right" id="logout-app">
-                    <button class="button is-danger" @click.prevent="logout"> logout </button>
+                <div class="level-right" id="bars">
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <button class="button is-danger" @click.prevent="logout"> logout </button>
+                        </div>
+                        <div class="control">
+                            <button class="button" @click.prevent="profile"> profile </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
     <br>
-
 
     <section id="user" class="content">
         <div class="container">
@@ -50,7 +56,6 @@
                     </div>
                 </div>
 
-
                 <div class="column">
 
                     <div class="field">
@@ -63,7 +68,6 @@
             </div>
 
             <div class="columns">
-
                 <div class="column">
                     <div class="field">
                         <label class="label"> Credential</label>
@@ -187,27 +191,38 @@
         </div>
 
         <result-table v-bind:result="rooms"> </result-table>
+    </section>
 
 
+    <section id="order" class="content">
+        <div class="container">
+
+        </div>
     </section>
 
 
 
     <section id="root" class="content">
         <div class="container">
-            <input type="text" id="query">
-            <button id="q-button"> submit</button>
-            <br>
-            <textarea id="output">
-
-
-
-
-
-
-
-            </textarea>
+            <div class="field">
+                <label class="label"> Your SQL below</label>
+                <div class="control">
+                    <input class="input" type="text" v-model="query">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <button class="button is-link" @click="submit"> submit</button>
+                </div>
+            </div>
+            <article class="message is-danger" v-if="output != ''">
+                <div class="message-body">
+                    {{ output }}
+                </div>
+            </article>
         </div>
+        <result-table v-bind:result="table">
+        </result-table>
     </section>
 
 
