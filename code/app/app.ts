@@ -38,6 +38,107 @@ app.all('/api/query', (req: Request, res: Response) => {
 });
 
 app.use('/static', express.static(path.join(__dirname, 'static/')));
+
+app.all('/api/query_user', (req: Request, res: Response)=>{
+  let credential: string =  req.body.credential;
+  let name: string = req.body.name;
+  let gender: string = req.body.number;
+  let phone: string = req.body.phone;
+  let balance_min: string = req.body.balance_min;
+  let balance_max: string = req.body.balance_max;
+  let bonus_min: string = req.body.bonus_min;
+  let bonus_max: string = req.body.bonus_max;
+  console.log(req.body)
+  let query: string = 'select * from User as u where 1 = 1';
+  // 精确匹配证件号
+  if(credential != '') {
+    query.concat(' and u.credential = ' + credential);
+  }
+  // 模糊匹配姓名
+  if(name != '') {
+    query.concat(" and u.name LIKE'%"+ name +"%'")
+  }
+  if(gender != '') {
+    query.concat(" and u.gender = " + gender);
+  }
+  if(phone != '') {
+    query.concat(' and u.phone = ' + phone);
+  }
+  if(balance_min != '') {
+    query.concat(" and u.balance >= " + balance_min);
+  }
+  if(balance_max != '') {
+    query.concat(" and u.balance <= " + balance_max);
+  }
+  if(bonus_min != '') {
+    query.concat(" and u.bonus >= " + bonus_min);
+  }
+  if(bonus_max != '') {
+    query.concat(" and u.bonus <= " + bonus_max);
+  }
+  pool.getConnection()
+    .then(conn=>{
+      conn.query(query)
+        .then((table)=>{
+          res.json({
+            "users":[
+              {
+                    "id":"XXXX",
+                    "credential":"XXXXX",
+                    "name":"XXXX",
+                    "gender":-1,
+                    "birthday":"2018-01-01",
+                    "phone":"13534343434",
+                    "balance":45,
+                    "bonus":100
+                },
+              {
+                    "id":"XXXX",
+                    "credential":"XXXXX",
+                    "name":"XXXX",
+                    "gender":-1,
+                    "birthday":"2018-01-01",
+                    "phone":"13534343434",
+                    "balance":45,
+                    "bonus":100
+                },
+              {
+                    "id":"XXXX",
+                    "credential":"XXXXX",
+                    "name":"XXXX",
+                    "gender":-1,
+                    "birthday":"2018-01-01",
+                    "phone":"13534343434",
+                    "balance":45,
+                    "bonus":100
+                },
+              {
+                    "id":"XXXX",
+                    "credential":"XXXXX",
+                    "name":"XXXX",
+                    "gender":-1,
+                    "birthday":"2018-01-01",
+                    "phone":"13534343434",
+                    "balance":45,
+                    "bonus":100
+                },
+              {
+                    "id":"XXXX",
+                    "credential":"XXXXX",
+                    "name":"XXXX",
+                    "gender":-1,
+                    "birthday":"2018-01-01",
+                    "phone":"13534343434",
+                    "balance":45,
+                    "bonus":100
+                }
+              ]
+          })
+          console.log(table);
+        })
+    })
+
+});
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 
