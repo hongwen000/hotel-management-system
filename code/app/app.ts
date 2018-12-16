@@ -449,6 +449,31 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
   }
 })
 
+app.get('/api/get_room_type', (req: Request, res: Response) => {
+  let query = 'select * from RoomType'
+  pool.getConnection()
+  .then(conn => {
+    conn.query(query)
+      .then((table) => {
+        // for (let i = 0; i < table.length; ++i) {
+        //   if (table[i].gender == 0) {
+        //     table[i].gender = 'man';
+        //   } else if (table[i].gender == 0) {
+        //     table[i].gender = 'woman';
+        //   }
+        //   let birthdate: string = table[i].birthdate.toISOString();
+        //   table[i].birthdate = birthdate.substr(0, 10);
+        // }
+        res.json({
+          "types": JSON.stringify(table)
+        })
+      })
+    conn.end();
+  }).catch(err => {
+    console.log('ERROR' + err);
+  })
+
+})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
