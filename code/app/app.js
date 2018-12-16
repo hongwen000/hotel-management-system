@@ -37,43 +37,69 @@ app.use('/static', express.static(path.join(__dirname, 'static/')));
 app.all('/api/query_user', function (req, res) {
     var credential = req.body.credential;
     var name = req.body.name;
-    var gender = req.body.number;
+    var gender = req.body.gender;
     var phone = req.body.phone;
     var balance_min = req.body.balance_min;
     var balance_max = req.body.balance_max;
     var bonus_min = req.body.bonus_min;
     var bonus_max = req.body.bonus_max;
     console.log(req.body);
-    var query = 'select * from User as u where 1 = 1';
+    var query = 'select * from User as u where ? and ? and ? and ? and ? and ? and ? and ?';
+    var arg = [];
     // 精确匹配证件号
     if (credential != '') {
-        query.concat(' and u.credential = ' + credential);
+        arg.push('u.credential = ' + credential);
+    }
+    else {
+        arg.push('1=1');
     }
     // 模糊匹配姓名
     if (name != '') {
-        query.concat(" and u.name LIKE'%" + name + "%'");
+        arg.push("u.name LIKE'%" + name + "%'");
     }
-    if (gender != '') {
-        query.concat(" and u.gender = " + gender);
+    else {
+        arg.push('1=1');
+    }
+    if (gender != '-1') {
+        arg.push("u.gender = " + gender);
+    }
+    else {
+        arg.push('1=1');
     }
     if (phone != '') {
-        query.concat(' and u.phone = ' + phone);
+        arg.push('u.phone = ' + phone);
+    }
+    else {
+        arg.push('1=1');
     }
     if (balance_min != '') {
-        query.concat(" and u.balance >= " + balance_min);
+        arg.push("u.balance >= " + balance_min);
+    }
+    else {
+        arg.push('1=1');
     }
     if (balance_max != '') {
-        query.concat(" and u.balance <= " + balance_max);
+        arg.push("u.balance <= " + balance_max);
+    }
+    else {
+        arg.push('1=1');
     }
     if (bonus_min != '') {
-        query.concat(" and u.bonus >= " + bonus_min);
+        arg.push("u.bonus >= " + bonus_min);
+    }
+    else {
+        arg.push('1=1');
     }
     if (bonus_max != '') {
-        query.concat(" and u.bonus <= " + bonus_max);
+        arg.push("u.bonus <= " + bonus_max);
     }
+    else {
+        arg.push('1=1');
+    }
+    console.debug(arg);
     pool.getConnection()
         .then(function (conn) {
-        conn.query(query)
+        conn.query(query, arg)
             .then(function (table) {
             res.json({
                 "users": [
