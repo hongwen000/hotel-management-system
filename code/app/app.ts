@@ -118,22 +118,25 @@ app.post('/api/signup', (req: Request, res: Response) => {
 
 
 app.get('/api/i', (req: Request, res: Response) => {
-  let username:string = 'wyf';
-  let query:string = "select user_id from Account where username = ?"
+  let username = req.session.user;
+  let usernames:string[] = [username];
+  let query:string = "select id from Account where username = ?"
   pool.getConnection()
     .then(conn => {
       conn.query(query, username)
         .then((rows) => {
           console.log(rows)
+          console.log(rows[0])
           // let user_id = row
           res.json({
-            'user_id': JSON.stringify(rows),
+            'user_id': rows[0]['id'],
             'username': username
           });
         })
         .catch(err => {
           res.json({
-            'error_code': 1
+            'error_code': 1,
+            'error_msg': username + " maybe not exist in database."
           })
         })
         .finally(() => {
