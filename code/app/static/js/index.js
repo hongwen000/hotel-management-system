@@ -165,7 +165,8 @@ let root_app = new Vue({
     data: {
         query: '',
         output: '',
-        table: ''
+        table: '',
+        error: false
     },
     methods: {
         submit: function() {
@@ -179,10 +180,11 @@ let root_app = new Vue({
                     if (data.error_code === 0) {
                         root_app.output = JSON.parse(data.data);
                         root_app.table = JSON.parse(data.data);
+                        root_app.error = false;
                     } else {
                         root_app.output = JSON.parse(data.data);
                         root_app.table = '';
-
+                        root_app.error = true;
                     }
                 }
             })

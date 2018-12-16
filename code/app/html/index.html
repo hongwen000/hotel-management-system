@@ -215,7 +215,7 @@
                     <button class="button is-link" @click="submit"> submit</button>
                 </div>
             </div>
-            <article class="message is-danger" v-if="output != ''">
+            <article class="message is-danger" v-if="error && output != ''">
                 <div class="message-body">
                     {{ output }}
                 </div>
