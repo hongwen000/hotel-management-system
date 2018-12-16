@@ -19,7 +19,9 @@ let user_app = new Vue({
         balance: '',
         bonus: '',
         genders: [],
-        users: []
+        users: [],
+        iserror: false,
+        msg: ''
     },
     methods: {
         submit: function() {
@@ -50,6 +52,31 @@ let user_app = new Vue({
                 this.$data[key] = '';
             }
         },
+        insert: function() {
+            let data = {
+                'credential': this.credential,
+                'name': this.name,
+                'gender': this.ajaxGender,
+                'birthdate': '',
+                'phone': this.phone,
+                'balance': this.balance,
+                'bonus': this.bonus
+            };
+            $.ajax({
+                'url': '/api/insert_user',
+                'method': 'POST',
+                'data': data,
+                'success': function(data) {
+                    if (data.error_code === 0) {
+                        user_app.iserror = false;
+                        user_app.msg = data.error_msg;
+                    } else {
+                        user_app.iserror = true;
+                        user_app.msg = data.error_msg;
+                    }
+                }
+            })
+        }
     },
     computed: {
         balance_bound: function() {
@@ -85,6 +112,9 @@ let room_app = new Vue({
         checkout: new Date(),
         capacity: '',
         reqs: [],
+        iserror: false,
+        msg: '',
+        room_id: '',
         // rooms: [{
         //     'id': 123,
         //     'name': 'yanbin',
@@ -114,6 +144,27 @@ let room_app = new Vue({
                 }
             })
         },
+        insert: function() {
+            let data = {
+                'floor': this.floor,
+                'room_num': this.room_num,
+                'price': this.price,
+                // 'type_id': 
+                //TODO:
+            }
+        },
+        remove: function() {
+            let data = {
+                'room_id': this.room_id
+            };
+            $.ajax({
+                'url': '/api/drop_room',
+                'method': 'POST',
+                'data': data,
+                'success': this.success
+            })
+
+        },
         clear: function() {
             this.$data.capacity = '';
             this.$data.checkin = new Date();
@@ -132,6 +183,14 @@ let room_app = new Vue({
             }
             return `${Year}-${Month}-${_date}`;
 
+        },
+        success: function(data) {
+            if (data.error_code === 0) {
+                this.iserror = false;
+            } else {
+                this.iserror = true;
+            }
+            this.msg = data.msg;
         }
     },
     computed: {
