@@ -190,27 +190,104 @@ TODO:
 ### API：增加房间
 #### URL
 
-`insert_room`
+`/api/insert_room`
 
 #### 请求示例与参数
 
 ```json
 {
-    "floor":"3",
+    "floor":3,
     "room_num":"304",
-    "price":"100"
+    "price":100,
+    "type_id":4
 }
 ```
 
 
 
-| 属性名   | 类型   | 值                    |
-| -------- | ------ | --------------------- |
-| floor    | string | 该房间的层数          |
-| room_num | string | 房号                  |
-| price    | string | 房间的价格（元/每晚） |
+| 属性名   | 类型   | 值                                   |
+| -------- | ------ | ------------------------------------ |
+| floor    | int    | 该房间的层数                         |
+| room_num | string | 房号                                 |
+| price    | int    | 房间的价格（元/每晚）                |
+| type_id  | int    | 房间类型的id，与RoomType表内的id对应 |
+
+#### 相应示例与参数
+
+```json
+{
+    "error_code":0,
+    "error_msg":"XXX"
+}
+```
+
+| 属性名     | 类型   | 值                         |
+| ---------- | ------ | -------------------------- |
+| error_code | int    | 0表示无异常，1表示发生错误 |
+| error_msg  | string | 错误信息                   |
 
 
+
+### API：减少房间
+
+#### URL
+
+`/api/drop_room`
+
+#### 请求示例与参数
+
+```json
+{
+    "room_id":3
+}
+```
+
+
+| 属性名   | 类型   | 值                                   |
+| -------- | ------ | ------------------------------------ |
+| room_id  | int    | 房间的id |
+
+#### 相应示例与参数
+
+```json
+{
+    "error_code":0,
+    "error_msg":"XXX"
+}
+```
+
+| 属性名     | 类型   | 值                         |
+| ---------- | ------ | -------------------------- |
+| error_code | int    | 0表示无异常，1表示发生错误 |
+| error_msg  | string | 错误信息                   |
+
+
+### API：修改房间
+
+#### URL
+
+`/api/alter_room`
+
+#### 请求示例与参数
+
+```json
+{
+    "room_id":3,
+    "floor":3,
+    "room_num":"304",
+    "price":100,
+    "type_id":4
+}
+```
+
+
+| 属性名   | 类型   | 值                                   |
+| -------- | ------ | ------------------------------------ |
+| room_id  | int    | 房间的id |
+| floor    | int    | 该房间的层数                         |
+| room_num | string | 房号                                 |
+| price    | int    | 房间的价格（元/每晚）                |
+| type_id  | int    | 房间类型的id，与RoomType表内的id对应 |
 
 #### 相应示例与参数
 
@@ -224,20 +301,15 @@ TODO:
 | 属性名     | 类型             | 值                         |
 | ---------- | ---------------- | -------------------------- |
 | error_code | int              | 0表示无异常，1表示发生错误 |
-| error_msg  | string( dict?? ) | 目前没有处理好，为一个字典 |
+| error_msg  | string | 错误信息 |
 
 
 
-### API：减少房间
-TODO:
-
-### API：修改房间
-TODO:
 
 ### API：增加房型
 #### URL
 
-`insert_room_type`
+`/api/insert_room_type`
 
 #### 请求实例与参数
 
@@ -309,6 +381,8 @@ TODO:
 
 ### API：查询满足条件的房间
 TODO:
+
+
 
 
 ## 订单管理子系统
