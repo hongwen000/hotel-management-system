@@ -22,7 +22,7 @@ let user_app = new Vue({
         users: [],
         iserror: false,
         msg: '',
-        birthdate: new Date()
+        birthdate: new Date(),
     },
     methods: {
         submit: function() {
@@ -137,7 +137,21 @@ let room_app = new Vue({
         //     'name': 'ybyb',
         //     'age': 40
         // }] //result
-        rooms: []
+        rooms: [],
+        room_types: []
+    },
+    created: function() {
+        $.ajax({
+            'url': '/api/get_room_type',
+            'method': 'GET',
+            'success': function(data) {
+                let d = JSON.parse(data.types);
+                for (let i = 0; i < d.length; ++i) {
+                    console.log(d[i]);
+                    room_app.room_types.push(d[i].name);
+                }
+            }
+        })
     },
     methods: {
         submit: function() {
