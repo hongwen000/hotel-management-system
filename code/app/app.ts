@@ -134,19 +134,24 @@ app.all('/api/query', (req: Request, res: Response) => {
       conn.query(req.body.query)
         .then((rows) => {
           res.json({
-            'data': rows
+            'data': JSON.stringify(rows),
+            'error_code': 0
           });
         })
         .catch(err => {
           res.json({
-            'data': `err in sql: ${err}`
+            'data': JSON.stringify(`err in sql: ${err}`),
+            'error_code': 1
           })
         })
-      conn.end();
+        .finally(() => {
+          conn.end();
+        })
     })
     .catch(() => {
       res.json({
-        'data': 'ERROR, connection failed'
+        'data': JSON.stringify('ERROR, connection failed'),
+        'error_code': 2
       });
       return;
     });
