@@ -15,7 +15,7 @@ new Vue({
                     'password': this.password
                 },
                 success: function(data) {
-                    if (data.errno === 0) {
+                    if (data.error === 0) {
                         window.location.href = '/query';
                     } else {
                         alert(data.msg);

@@ -38,7 +38,7 @@ let user_app = new Vue({
             }
 
             $.ajax({
-                'method': 'GET',
+                'method': 'POST',
                 'url': '/api/query_user',
                 'data': data,
                 'success': function(data) {
@@ -142,6 +142,19 @@ let room_app = new Vue({
         },
         checkout_format: function() {
             return this.date2format(this.checkout);
+        }
+    }
+});
+
+new Vue({
+    el: '#logout-app',
+    methods: {
+        logout: function() {
+            $.ajax({
+                method: "GET",
+                url: '/api/logout'
+            });
+            window.location.href = '/login';
         }
     }
 });
