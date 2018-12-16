@@ -3,6 +3,12 @@ import {Request, Response} from "express";
 import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as pool from "./sql";
+import { NextFunction } from "connect";
+import * as cookieParser from "cookie-parser";
+import * as session from "express-session";
+
+import { connect } from "net";
+import { ResolveOptions } from "dns";
 import { createDiffieHellman } from "crypto";
 const app = express();
 const port = 8080;
@@ -10,8 +16,115 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+app.use(cookieParser());
+app.use(session({secret: "wyf and lxr NB!"}));
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/login', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, 'html/login.html'));
+});
+
+app.get('/signup', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, 'html/signup.html'));
+});
+
+app.get('/api/login', (req: Request, res: Response) => {
+  let username = req.query.username;
+  let password = req.query.password;
+  console.log(req.query.username);
+  console.log(req.query.password);
+  if (req.query.username === '' || req.query.password === '') {
+    res.json({
+      'msg': 'error, please input not empty username and password',
+      'errno': -1
+    });
+    return;
+  }
+
+  pool.getConnection()
+    .then(conn => {
+      conn.query('select * from Account where username = ? and password = ?', [username, password])
+        .then(rows => {
+          // console.log(rows);
+          // console.log(rows.length);
+          req.session.user = 'root';
+          conn.end();
+          if (rows.length == 0) {
+            res.json({
+              error: 1,
+              msg: 'error password or username'
+            })
+          } else {
+            res.json({
+              error: 0,
+              msg: JSON.stringify(rows)
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          conn.end();
+          res.json({
+            error: 1,
+            msg: JSON.stringify(err)
+          })
+        })
+    })
+    .catch(err => {
+      console.log(err);
+      res.json({
+        error: 2,
+        msg: JSON.stringify(err)
+      })
+    });
+})
+
+app.get('/api/logout', (req: Request, res: Response) => {
+  req.session.user = undefined;
+  res.json({
+    msg: 'ok',
+    error: 0
+  });
+});
+
+app.post('/api/signup', (req: Request, res: Response) => {
+  let username = req.body.username;
+  let password = req.body.password;
+  pool.getConnection()
+    .then(conn => {
+      conn.query('insert into Account(username, password) value(?,?)', [username, password])
+        .then(rows => {
+          console.log(rows);
+          res.json({
+            msg: JSON.stringify(rows),
+            error: 0
+          });
+          req.session.user = username;
+        })
+        .catch(err => {
+          res.json({
+            msg: JSON.stringify(err),
+            error: 1
+          });
+        });
+      conn.end();
+    })
+    .catch(err => {
+      res.json({
+        msg: JSON.stringify(err),
+        error: 2
+      });
+    });
+});
+
+app.use('/query', (req: Request, res: Response, next : NextFunction) => {
+  if (!req.session.user) {
+    res.redirect('/login');
+    return;
+  }
+  next();
+});
+
+app.get('/query', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, 'html/index.html'));
 })
 
@@ -35,6 +148,7 @@ app.all('/api/query', (req: Request, res: Response) => {
       res.json({
         'data': 'ERROR, connection failed'
       });
+      return;
     });
 });
 

@@ -145,3 +145,16 @@ let room_app = new Vue({
         }
     }
 });
+
+new Vue({
+    el: '#logout-app',
+    methods: {
+        logout: function() {
+            $.ajax({
+                method: "GET",
+                url: '/api/logout'
+            });
+            window.location.href = '/login';
+        }
+    }
+});
