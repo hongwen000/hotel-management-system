@@ -6,6 +6,12 @@ $.ajax({
     success: function(data) {
         username = data.username;
         role = data.role;
+        if (role === 3) {
+            $('#tab-user').hide();
+        }
+        if (role !== 0) {
+            $('#tab-root').hide();
+        }
     },
     async: false
 });
@@ -35,7 +41,7 @@ let user_app = new Vue({
         users: [],
         iserror: false,
         msg: '',
-        role: 3,
+        role: role,
         birthdate: new Date(),
     },
     // created: function() {
@@ -166,7 +172,8 @@ let room_app = new Vue({
         add_type: '',
         selected_room_type: '',
         price: '',
-        floor: ''
+        floor: '',
+        role: role
     },
     created: function() {
         $.ajax({
@@ -303,7 +310,8 @@ let root_app = new Vue({
         query: '',
         output: '',
         table: '',
-        error: false
+        error: false,
+        role: role
     },
     methods: {
         submit: function() {
@@ -326,13 +334,5 @@ let root_app = new Vue({
                 }
             })
         }
-    }
-})
-
-
-let tab_app = new Vue({
-    el: '#tab',
-    data: {
-        role: 3
     }
 })

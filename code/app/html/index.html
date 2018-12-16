@@ -22,10 +22,10 @@
                 <div class="level-left">
                     <div class="tabs" id="tab">
                         <ul>
-                            <li class="is-active" name="user"><a>Users</a></li>
-                            <li name="room"><a>Rooms</a></li>
+                            <li class="is-active" name="room"><a>Rooms</a></li>
+                            <li id="tab-user" name="user"><a>Users</a></li>
                             <li name="order"><a>Orders</a></li>
-                            <li name="root"><a>Root</a></li>
+                            <li id="tab-root" name="root"><a>Root</a></li>
                         </ul>
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                     <button @click="submit" class="button is-link">Submit</button>
                 </div>
                 <div class="control">
-                    <button @click="insert" class="button is-link"> Add </button>
+                    <button v-if="role <= 1" @click="insert" class="button is-link"> Add </button>
                 </div>
                 <div class="control">
                     <button @click="clear" class="button is-text">clear</button>
@@ -234,14 +234,14 @@
                     <button @click="submit" class="button is-link">Query</button>
                 </div>
                 <div class="control">
-                    <button @click="insert" class="button is-link">Add</button>
+                    <button v-if="role <= 1" @click="insert" class="button is-link">Add</button>
                 </div>
                 <div class="control">
                     <button @click="clear" class="button is-text">clear</button>
                 </div>
             </div>
 
-            <div class="container">
+            <div class="container" v-if="role <= 0">
                 <div class="columns">
                     <div class="column">
                         <label class="label">
