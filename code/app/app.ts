@@ -42,43 +42,61 @@ app.use('/static', express.static(path.join(__dirname, 'static/')));
 app.all('/api/query_user', (req: Request, res: Response)=>{
   let credential: string =  req.body.credential;
   let name: string = req.body.name;
-  let gender: string = req.body.number;
+  let gender: string = req.body.gender;
   let phone: string = req.body.phone;
   let balance_min: string = req.body.balance_min;
   let balance_max: string = req.body.balance_max;
   let bonus_min: string = req.body.bonus_min;
   let bonus_max: string = req.body.bonus_max;
   console.log(req.body)
-  let query: string = 'select * from User as u where 1 = 1';
+  let query: string = 'select * from User as u where ? and ? and ? and ? and ? and ? and ? and ?';
+  let arg: string[] = [];
   // 精确匹配证件号
   if(credential != '') {
-    query.concat(' and u.credential = ' + credential);
+    arg.push('u.credential = ' + credential);
+  } else {
+    arg.push('1=1');
   }
   // 模糊匹配姓名
   if(name != '') {
-    query.concat(" and u.name LIKE'%"+ name +"%'")
+    arg.push("u.name LIKE'%"+ name +"%'")
+  } else {
+    arg.push('1=1');
   }
-  if(gender != '') {
-    query.concat(" and u.gender = " + gender);
+  if(gender != '-1') {
+    arg.push("u.gender = " + gender);
+  } else {
+    arg.push('1=1');
   }
   if(phone != '') {
-    query.concat(' and u.phone = ' + phone);
+    arg.push('u.phone = ' + phone);
+  } else {
+    arg.push('1=1');
   }
   if(balance_min != '') {
-    query.concat(" and u.balance >= " + balance_min);
+    arg.push("u.balance >= " + balance_min);
+  } else {
+    arg.push('1=1');
   }
   if(balance_max != '') {
-    query.concat(" and u.balance <= " + balance_max);
+    arg.push("u.balance <= " + balance_max);
+  } else {
+    arg.push('1=1');
   }
   if(bonus_min != '') {
-    query.concat(" and u.bonus >= " + bonus_min);
+    arg.push("u.bonus >= " + bonus_min);
+  } else {
+    arg.push('1=1');
   }
   if(bonus_max != '') {
-    query.concat(" and u.bonus <= " + bonus_max);
+    arg.push("u.bonus <= " + bonus_max);
+  } else {
+    arg.push('1=1');
   }
+  console.debug(arg)
   pool.getConnection()
     .then(conn=>{
-      conn.query(query)
+      conn.query(query, arg)
         .then((table)=>{
           res.json({
             "users":[
@@ -134,7 +152,13 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
                 }
               ]
           })
-          console.log(table);
+          // Not working
+          for (let val in table) {
+            console.log(val);
+          }
+          table.array.forEach(element => {
+            console.log(element)
+          });
         })
     })
 
