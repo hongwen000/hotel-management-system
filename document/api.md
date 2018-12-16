@@ -1,3 +1,7 @@
+---
+typora-copy-images-to: figure
+---
+
 # 后端接口说明
 
 1. 请求参数中，若为空串均为不指定（因此大多数字段都使用了string类型）
@@ -281,6 +285,42 @@ get方法
 | error_msg  | string | 错误信息                                      |
 
 ## 房间信息子系统
+
+### API：得到所有房型
+方法：get
+使用截图：
+
+![1544965249259](figure/1544965249259.png)
+
+#### URL
+
+`/api/get_room_type`
+
+#### 响应示例与参数
+
+```json
+{
+	"types":[
+        "type_id":1,
+        "name":"豪华大房",
+        "capacity":2,
+        "wifi":1,
+        "breakfast":0
+	]
+}
+```
+
+| 属性名    | 类型   | 值                         |
+| --------- | ------ | -------------------------- |
+| type_id | int  | 这是数据库中对房型的唯一id |
+| name      | string | 这一种房间类型的名字       |
+| capacity  | int    | 这一种房间的人数           |
+| wifi      | int    | 0表示没有wifi，1表示有wifi |
+| breakfast | int    | 0表示没有wifi，1表示有wifi |
+
+
+
+
 
 ### API：增加房间
 #### URL
