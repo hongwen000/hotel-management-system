@@ -3,15 +3,18 @@ let result_table = {
     template: `
         <section v-if="result.length > 0">
             <div class="container">
+                <content class="has-text-centered">
+                    <h1 class="title"> result </h1>
+                </content>
                 <table class="table">
                     <thead>
-                        <tr v-for="key in result[0]">
-                            <th> {{key}} </th>
+                        <tr>
+                            <th v-for="(_, key) in result[0]"> {{ key }} </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="res in result">
-                            <td v-for="key in res"> {{ res[key] }} </td>
+                            <td v-for="val in res"> {{ val }} </td>
                         </tr>
                     </tbody>
                 </table>

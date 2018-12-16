@@ -7,7 +7,7 @@
 
 ###  API：查询可用房间
 
-### URL
+#### URL
 
 `/api/query_room`
 
@@ -139,7 +139,7 @@ TODO:
 | credential  | string | 身份证号                   |
 | name        | string | 用户名称                   |
 | gender      | string | 'man'是雄性，'woman'是雌性,空表示未知 |
-|birthday | string | 生日“2018-01-01” |
+|birthdate | string | 出生日期“2018-01-01” |
 | phone       | string | 手机号码                   |
 | balance     | int    | 余额（单位为元）       |
 | bonus   | int    | 积分                   |
@@ -187,7 +187,45 @@ TODO:
 ## 房间信息子系统
 
 ### API：增加房间
-TODO:
+#### URL
+
+`insert_room`
+
+#### 请求示例与参数
+
+```json
+{
+    "floor":"3",
+    "room_num":"304",
+    "price":"100"
+}
+```
+
+
+
+| 属性名   | 类型   | 值                    |
+| -------- | ------ | --------------------- |
+| floor    | string | 该房间的层数          |
+| room_num | string | 房号                  |
+| price    | string | 房间的价格（元/每晚） |
+
+
+
+#### 相应示例与参数
+
+```json
+{
+    "error_code":0,
+    "error_msg":"XXX"
+}
+```
+
+| 属性名     | 类型             | 值                         |
+| ---------- | ---------------- | -------------------------- |
+| error_code | int              | 0表示无异常，1表示发生错误 |
+| error_msg  | string( dict?? ) | 目前没有处理好，为一个字典 |
+
+
 
 ### API：减少房间
 TODO:
