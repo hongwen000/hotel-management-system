@@ -116,6 +116,37 @@ app.post('/api/signup', (req: Request, res: Response) => {
     });
 });
 
+
+app.get('/api/i', (req: Request, res: Response) => {
+  let username:string = 'wyf';
+  let query:string = "select user_id from Account where username = ?"
+  pool.getConnection()
+    .then(conn => {
+      conn.query(query, username)
+        .then((rows) => {
+          console.log(rows)
+          // let user_id = row
+          res.json({
+            'user_id': JSON.stringify(rows),
+            'username': username
+          });
+        })
+        .catch(err => {
+          res.json({
+            'error_code': 1
+          })
+        })
+        .finally(() => {
+          conn.end();
+        })
+    })
+    .catch(err => {
+      res.json({
+        'error_code': 1
+      })
+    })
+});
+
 app.use('/query', (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.user) {
     res.redirect('/login');
@@ -508,6 +539,30 @@ app.all('/api/query_user_info', (req: Request, res: Response) => {
       'error_msg': JSON.stringify(error)
     })
   }
+app.get('/api/get_room_type', (req: Request, res: Response) => {
+  let query = 'select * from RoomType'
+  pool.getConnection()
+  .then(conn => {
+    conn.query(query)
+      .then((table) => {
+        // for (let i = 0; i < table.length; ++i) {
+        //   if (table[i].gender == 0) {
+        //     table[i].gender = 'man';
+        //   } else if (table[i].gender == 0) {
+        //     table[i].gender = 'woman';
+        //   }
+        //   let birthdate: string = table[i].birthdate.toISOString();
+        //   table[i].birthdate = birthdate.substr(0, 10);
+        // }
+        res.json({
+          "types": JSON.stringify(table)
+        })
+      })
+    conn.end();
+  }).catch(err => {
+    console.log('ERROR' + err);
+  })
+
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

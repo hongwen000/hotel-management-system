@@ -1,3 +1,7 @@
+---
+typora-copy-images-to: figure
+---
+
 # 后端接口说明
 
 1. 请求参数中，若为空串均为不指定（因此大多数字段都使用了string类型）
@@ -282,6 +286,42 @@ get方法
 
 ## 房间信息子系统
 
+### API：得到所有房型
+方法：get
+使用截图：
+
+![1544965249259](figure/1544965249259.png)
+
+#### URL
+
+`/api/get_room_type`
+
+#### 响应示例与参数
+
+```json
+{
+	"types":[
+        "type_id":1,
+        "name":"豪华大房",
+        "capacity":2,
+        "wifi":1,
+        "breakfast":0
+	]
+}
+```
+
+| 属性名    | 类型   | 值                         |
+| --------- | ------ | -------------------------- |
+| type_id | int  | 这是数据库中对房型的唯一id |
+| name      | string | 这一种房间类型的名字       |
+| capacity  | int    | 这一种房间的人数           |
+| wifi      | int    | 0表示没有wifi，1表示有wifi |
+| breakfast | int    | 0表示没有wifi，1表示有wifi |
+
+
+
+
+
 ### API：增加房间
 #### URL
 
@@ -449,7 +489,7 @@ get方法
 ### API：修改房型
 #### URL
 
-`/api/alther_room_type`
+`/api/alter_room_type`
 
 
 #### 请求实例与参数
@@ -484,7 +524,30 @@ TODO:
 
 ### API：查询符合条件的订单的状态及信息
 
-TODO:
+查询符合条件的订单的状态及信息
+在查询中，所有请求都是字符串，然后若用户未指定某参数的值，则为空串。
+
+#### URL
+
+`/api/query_order`
+
+
+#### 请求实例与参数
+
+| 属性名    | 类型   | 值                         |
+| --------- | ------ | -------------------------- |
+| time | string  | 被查询订单的时间 |
+| status      | string | 房间的状态      |
+| room_id  | string    | room在数据库中对应的唯一id           |
+| user_id     | string    | user对应在数据库中的唯一id |
+
+
+
+#### 响应示例与参数
+
+
+TODO:还在想
+
 
 ### API：设置指定订单状态
 TODO:
