@@ -101,7 +101,7 @@ app.all('/api/query_user', function (req, res) {
         .then(function (conn) {
         conn.query(query, arg)
             .then(function (table) {
-            console.log(table);
+            // console.log(table)
             for (var i = 0; i < table.length; ++i) {
                 if (table[i].gender == 0) {
                     table[i].gender = 'man';
@@ -116,6 +116,7 @@ app.all('/api/query_user', function (req, res) {
                 "users": JSON.stringify(table)
             });
         });
+        conn.end();
     })["catch"](function (err) {
         console.log('ERROR' + err);
     });
@@ -125,20 +126,26 @@ app.all('/api/insert_user', function (req, res) {
     var credential = req.body.credential;
     var name = req.body.name;
     var gender = req.body.gender;
-    var phone = req.body.phone;
     var birthdate = req.body.birthdate;
+    var phone = req.body.phone;
     // TODO:前端应该可以不用下面这两项？可以设置成默认值0吗
     var balance = req.body.balance;
     var bonus = req.body.bonus;
     console.log(req.body);
-    var query = 'insert into Hotel.User(credential, name, gender, birthdate, phone, balance, bonus) values (?, ?, ?, ?, ?, ?,?);';
+    var query = 'insert into User (credential, name, gender, birthdate, phone, balance, bonus) value (?, ?, ?, ?, ?, ?, ?);';
     // TODO: 构造arg列表
     var arg = [];
     arg.push(credential);
     arg.push(name);
-    arg.push(gender);
-    arg.push(phone);
+    if (gender === 'man') {
+        arg.push('0');
+    }
+    else {
+        arg.push('1');
+    }
+    // arg.push(gender)
     arg.push(birthdate);
+    arg.push(phone);
     arg.push(balance);
     arg.push(bonus);
     // match the credential
@@ -147,14 +154,27 @@ app.all('/api/insert_user', function (req, res) {
     pool.getConnection()
         .then(function (conn) {
         conn.query(query, arg)
-            .then(function (res) {
-            console.log(res);
-            conn.end();
-        })["catch"](function (err) {
+            .then(function (msg) {
+            console.log(msg);
+            res.json({
+                'error_code': 0,
+                'error_msg': undefined
+            });
+        })["catch"](function (error) {
+            console.log(error);
+            res.json({
+                'error_code': 1,
+                'error_msg': error
+            });
             // TODO: handle the error
-            conn.end();
         });
+        conn.end();
     })["catch"](function (error) {
+        console.log(error);
+        res.json({
+            'error_code': 1,
+            'error_msg': error
+        });
         // TODO: handle the error
     });
 });
