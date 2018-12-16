@@ -111,14 +111,135 @@
             </div>
 
         </div>
+
+        <section id="user-table">
+            <div class="container">
+                <table class="table" v-if="users.length > 0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>name</th>
+                            <th>gender</th>
+                            <th>credential</th>
+                            <th>birthdate</th>
+                            <th>phone</th>
+                            <th>balance</th>
+                            <th>bonus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="user in users">
+                            <td> {{ user.id }} </td>
+                            <td> {{ user.credential }}</td>
+                            <td> {{ user.name }}</td>
+                            <td> {{ user.gender }}</td>
+                            <td> {{ user.birthdate }}</td>
+                            <td> {{ user.phone }}</td>
+                            <td> {{ user.balance }}</td>
+                            <td> {{ user.bonus }} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </section>
 
     <section id="room" class="content">
         <div class="container">
-            <vue-datepicker-local v-model="time">
+            <div class="columns">
+                <div class="column">
+                    <label class="label">
+                        check in
+                    </label>
+                    <vue-datepicker-local v-model="checkin">
+                    </vue-datepicker-local>
+                </div>
 
-            </vue-datepicker-local>
+                <div class="column">
+                    <label class="label">
+                        check out
+                    </label>
+                    <vue-datepicker-local v-model="checkout">
+                    </vue-datepicker-local>
+                </div>
+
+                <div class="column">
+                    <label class="label">
+                        capacity
+                    </label>
+                    <div class="control">
+                        <input class="input" type="text" v-model="capacity" placeholder="let it empty to ignore">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label class="label"> requirment</label>
+                        <div class="field">
+                            <div class="control">
+                                <label class="checkbox">
+                                    <input type="checkbox" value="wifi" v-model="reqs">
+                                    wifi
+                                </label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <label class="checkbox">
+                                    <input type="checkbox" value="breakfast" v-model="reqs">
+                                    breakfast included
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button @click="submit" class="button is-link">Submit</button>
+                </div>
+                <div class="control">
+                    <button @click="clear" class="button is-text">clear</button>
+                </div>
+            </div>
         </div>
+
+
+        <section id="room-table">
+            <div class="container">
+                <table class="table" v-if="rooms.length > 0">
+                    <thead>
+                        <tr>
+                            <th> room id </th>
+                            <th> floor </th>
+                            <th> room number </th>
+                            <th> price </th>
+                            <th> breakfast included</th>
+                            <th> has wifi </th>
+                            <th> room type </th>
+                            <th> capacity </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="room in rooms">
+                            <td> {{ room.room_id }} </td>
+                            <td> {{ room.floor }}</td>
+                            <td> {{ room.room_num }}</td>
+                            <td> {{ room.price }}</td>
+                            <td> {{ room.breakfast }}</td>
+                            <td> {{ room.wifi }}</td>
+                            <td> {{ room.name }}</td>
+                            <td> {{ room.capacity }} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+
     </section>
 
 
@@ -136,36 +257,7 @@
         </div>
     </section>
 
-    <section id="res-table">
-        <div class="container">
-            <table class="table" v-if="users.length > 0">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>name</th>
-                        <th>gender</th>
-                        <th>credential</th>
-                        <th>birthdate</th>
-                        <th>phone</th>
-                        <th>balance</th>
-                        <th>bonus</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="user in users">
-                        <td> {{ user.id }} </td>
-                        <td> {{ user.credential }}</td>
-                        <td> {{ user.name }}</td>
-                        <td> {{ user.gender }}</td>
-                        <td> {{ user.birthdate }}</td>
-                        <td> {{ user.phone }}</td>
-                        <td> {{ user.balance }}</td>
-                        <td> {{ user.bonus }} </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
+
     <script type="text/javascript" src="/static/js/index.js"></script>
     <script src="/static/js/datepicker.js"></script>
 </body>
