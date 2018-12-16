@@ -99,6 +99,7 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
     .then(conn=>{
       conn.query(query, arg)
         .then((table)=>{
+          console.log(table)
           for (let i = 0; i < table.length; ++i) {
             if(table[i].gender == 0) {
               table[i].gender = 'man';
@@ -120,7 +121,7 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
 
 
 app.all('/api/insert_user', (req: Request, res: Response)=>{
-  console.log(req)
+  // console.log(req)
   let credential: string =  req.body.credential;
   let name: string = req.body.name;
   let gender: string = req.body.gender;

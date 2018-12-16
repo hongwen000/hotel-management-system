@@ -101,6 +101,7 @@ app.all('/api/query_user', function (req, res) {
         .then(function (conn) {
         conn.query(query, arg)
             .then(function (table) {
+            console.log(table);
             for (var i = 0; i < table.length; ++i) {
                 if (table[i].gender == 0) {
                     table[i].gender = 'man';
@@ -109,7 +110,6 @@ app.all('/api/query_user', function (req, res) {
                     table[i].gender = 'woman';
                 }
                 var birthdate = table[i].birthdate.toISOString();
-                console.log(birthdate);
                 table[i].birthdate = birthdate.substr(0, 10);
             }
             res.json({
@@ -120,9 +120,8 @@ app.all('/api/query_user', function (req, res) {
         console.log('ERROR' + err);
     });
 });
-
 app.all('/api/insert_user', function (req, res) {
-    console.log(req);
+    // console.log(req)
     var credential = req.body.credential;
     var name = req.body.name;
     var gender = req.body.gender;
