@@ -1,5 +1,5 @@
 $('.content:not(:first)').hide();
-
+let username;
 $('#tab ul li').on('click', function() {
     $('#tab ul li').removeClass('is-active');
     $target = $('#' + $(this).attr('name'));
@@ -139,7 +139,11 @@ let room_app = new Vue({
         // }] //result
         rooms: [],
         room_types: [],
-        add_type: ''
+        room_types2id: {},
+        add_type: '',
+        selected_room_type: '',
+        price: '',
+        floor: ''
     },
     created: function() {
         $.ajax({
@@ -150,6 +154,7 @@ let room_app = new Vue({
                 for (let i = 0; i < d.length; ++i) {
                     console.log(d[i]);
                     room_app.room_types.push(d[i].name);
+                    room_app.room_types2id[d[i].name] = d[i].id;
                 }
             }
         })
@@ -175,11 +180,17 @@ let room_app = new Vue({
         insert: function() {
             let data = {
                 'floor': this.floor,
-                'room_num': this.room_num,
+                'room_num': this.room_id,
                 'price': this.price,
-                // 'type_id': 
-                //TODO:
+                'type_id': this.room_types2id[this.selected_room_type]
             }
+            console.log(data);
+            $.ajax({
+                'url': '/api/insert_room',
+                'method': 'POST',
+                'data': data,
+                'success': this.success
+            })
         },
         remove: function() {
             let data = {
