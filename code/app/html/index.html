@@ -22,10 +22,10 @@
                 <div class="level-left">
                     <div class="tabs" id="tab">
                         <ul>
-                            <li class="is-active" name="user"><a>Users</a></li>
-                            <li name="room"><a>Rooms</a></li>
+                            <li class="is-active" name="room"><a>Rooms</a></li>
+                            <li id="tab-user" name="user"><a>Users</a></li>
                             <li name="order"><a>Orders</a></li>
-                            <li name="root"><a>Root</a></li>
+                            <li id="tab-root" name="root"><a>Root</a></li>
                         </ul>
                     </div>
                 </div>
@@ -44,105 +44,6 @@
     </section>
     <br>
 
-    <section id="user" class="content">
-        <div class="container">
-            <div class="columns">
-
-                <div class="column">
-                    <div class="field">
-                        <label class="label"> User Name</label>
-                        <div class="control">
-                            <input class="input" v-model="name" type="text" placeholder="let it alone to ignore this filter.">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="column">
-
-                    <div class="field">
-                        <label class="label"> Phone Number</label>
-                        <div class="control">
-                            <input class="input" v-model="phone" type="text" placeholder="let it alone to ignore this filter.">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="column">
-                    <label class="label">
-                        Birthdate
-                    </label>
-                    <vue-datepicker-local v-model="birthdate">
-                    </vue-datepicker-local>
-                </div>
-
-
-            </div>
-
-            <div class="columns">
-                <div class="column">
-                    <div class="field">
-                        <label class="label"> Credential</label>
-                        <div class="control">
-                            <input class="input" v-model="credential" type="text" placeholder="let it alone to ignore this filter.">
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="column">
-                    <div class="field">
-                        <label class="label"> Balance range</label>
-                        <div class="control">
-                            <input class="input" v-model="balance" type="text" placeholder="please input 'low-hight' or nothing">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="column">
-                    <div class="field">
-                        <label class="label"> Bonus range</label>
-                        <div class="control">
-                            <input class="input" v-model="bonus" type="text" placeholder="please input 'low-hight' or nothing">
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div class="field">
-                <label class="label"> Gender</label>
-                <div class="control">
-                    <label class="checkbox">
-                        <input type="checkbox" value="man" v-model="genders">
-                        Man
-                    </label>
-                    <label class="checkbox">
-                        <input type="checkbox" value="woman" v-model="genders">
-                        Woman
-                    </label>
-                </div>
-            </div>
-            <div class="field is-grouped">
-                <div class="control">
-                    <button @click="submit" class="button is-link">Submit</button>
-                </div>
-                <div class="control">
-                    <button @click="insert" class="button is-link"> Add </button>
-                </div>
-                <div class="control">
-                    <button @click="clear" class="button is-text">clear</button>
-                </div>
-            </div>
-        </div>
-
-        <general-message v-bind:iserror="iserror" v-bind:msg="msg">
-
-        </general-message>
-
-        <result-table v-bind:result="users">
-        </result-table>
-    </section>
 
 
     <section id="room" class="content">
@@ -234,14 +135,14 @@
                     <button @click="submit" class="button is-link">Query</button>
                 </div>
                 <div class="control">
-                    <button @click="insert" class="button is-link">Add</button>
+                    <button v-if="role <= 1" @click="insert" class="button is-link">Add</button>
                 </div>
                 <div class="control">
                     <button @click="clear" class="button is-text">clear</button>
                 </div>
             </div>
 
-            <div class="container">
+            <div class="container" v-if="role <= 0">
                 <div class="columns">
                     <div class="column">
                         <label class="label">
@@ -289,6 +190,107 @@
     </section>
 
 
+    <section id="user" class="content">
+        <div class="container">
+            <div class="columns">
+
+                <div class="column">
+                    <div class="field">
+                        <label class="label"> User Name</label>
+                        <div class="control">
+                            <input class="input" v-model="name" type="text" placeholder="let it alone to ignore this filter.">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+
+                    <div class="field">
+                        <label class="label"> Phone Number</label>
+                        <div class="control">
+                            <input class="input" v-model="phone" type="text" placeholder="let it alone to ignore this filter.">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field" v-if="role <= 1">
+                        <label class="label">
+                            Birthdate
+                        </label>
+                        <vue-datepicker-local v-model="birthdate">
+                        </vue-datepicker-local>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label class="label"> Credential</label>
+                        <div class="control">
+                            <input class="input" v-model="credential" type="text" placeholder="let it alone to ignore this filter.">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="column">
+                    <div class="field">
+                        <label class="label"> Balance range</label>
+                        <div class="control">
+                            <input class="input" v-model="balance" type="text" placeholder="please input 'low-hight' or nothing">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <label class="label"> Bonus range</label>
+                        <div class="control">
+                            <input class="input" v-model="bonus" type="text" placeholder="please input 'low-hight' or nothing">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="field">
+                <label class="label"> Gender</label>
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" value="man" v-model="genders">
+                        Man
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" value="woman" v-model="genders">
+                        Woman
+                    </label>
+                </div>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button @click="submit" class="button is-link">Submit</button>
+                </div>
+                <div class="control">
+                    <button v-if="role <= 1" @click="insert" class="button is-link"> Add </button>
+                </div>
+                <div class="control">
+                    <button @click="clear" class="button is-text">clear</button>
+                </div>
+            </div>
+        </div>
+
+        <general-message v-bind:iserror="iserror" v-bind:msg="msg">
+
+        </general-message>
+
+        <result-table v-bind:result="users">
+        </result-table>
+    </section>
     <section id="order" class="content">
         <div class="container">
 

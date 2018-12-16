@@ -48,7 +48,6 @@ app.get('/api/login', (req: Request, res: Response) => {
           // console.log(rows);
           // console.log(rows.length);
           req.session.user = username;
-          conn.end();
           if (rows.length == 0) {
             res.json({
               error: 1,
@@ -63,11 +62,13 @@ app.get('/api/login', (req: Request, res: Response) => {
         })
         .catch(err => {
           console.log(err);
-          conn.end();
           res.json({
             error: 1,
             msg: JSON.stringify(err)
           })
+        })
+        .finally(() => {
+          conn.end();
         })
     })
     .catch(err => {
@@ -101,14 +102,15 @@ app.post('/api/signup', (req: Request, res: Response) => {
             error: 0
           });
           req.session.user = username;
+          conn.end();
         })
         .catch(err => {
           res.json({
             msg: JSON.stringify(err),
             error: 1
           });
+          conn.end();
         });
-      conn.end();
     })
     .catch(err => {
       res.json({
@@ -255,8 +257,17 @@ app.all('/api/query_user', (req: Request, res: Response) => {
             "users": JSON.stringify(table)
           })
         })
-      conn.end();
-    }).catch(err => {
+        .catch(err => {
+          res.json({
+            'error_code': 1,
+            'error_msg': JSON.stringify(err)
+          })
+        })
+        .finally(() => {
+          conn.end();
+        })
+    })
+    .catch(err => {
       console.log('ERROR' + err);
     })
 
@@ -327,15 +338,18 @@ app.all('/api/insert_user', (req: Request, res: Response) => {
             'error_msg': error,
           })
         })
-        .catch(err => {
-          console.log('ERROR' + err);
-          res.json({
-            "error_code": 1,
-            "error_msg": JSON.stringify(err)
-          })
+        .finally(() => {
+          conn.end();
         })
     })
-})
+    .catch(err => {
+      console.log('ERROR' + err);
+      res.json({
+        "error_code": 1,
+        "error_msg": JSON.stringify(err)
+      })
+    })
+});
 
 app.all('/api/insert_room_type', (req: Request, res: Response) => {
   // console.log(req)
@@ -382,8 +396,10 @@ app.all('/api/insert_room_type', (req: Request, res: Response) => {
               'error_code': 1,
               'error_msg': JSON.stringify(error),
             })
-          });
-        conn.end();
+          })
+          .finally(() => {
+            conn.end();
+          })
       })
       .catch((error) => {
         console.log(error)
@@ -440,8 +456,10 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
               'error_code': 1,
               'error_msg': JSON.stringify(error),
             })
-          });
-        conn.end();
+          })
+          .finally(() => {
+            conn.end();
+          })
       })
       .catch((error) => {
         console.log(error)
@@ -540,8 +558,10 @@ app.all('/api/query_user_info', (req: Request, res: Response) => {
               'error_code': 1,
               'error_msg': JSON.stringify(error),
             })
-          });
-        conn.end();
+          })
+          .finally(() => {
+            conn.end();
+          })
       })
       .catch((error) => {
         console.log(error)
@@ -577,7 +597,9 @@ app.get('/api/get_room_type', (req: Request, res: Response) => {
             "types": JSON.stringify(table)
           })
         })
-      conn.end();
+        .finally(() => {
+          conn.end();
+        })
     }).catch(err => {
       console.log('ERROR' + err);
     })
