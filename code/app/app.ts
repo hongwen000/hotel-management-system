@@ -89,9 +89,10 @@ app.get('/api/logout', (req: Request, res: Response) => {
 app.post('/api/signup', (req: Request, res: Response) => {
   let username = req.body.username;
   let password = req.body.password;
+  let role = 3;
   pool.getConnection()
     .then(conn => {
-      conn.query('insert into Account(username, password) value(?,?)', [username, password])
+      conn.query('insert into Account(username, password, role) value(?,?,?)', [username, password, role])
         .then(rows => {
           console.log(rows);
           res.json({
@@ -119,9 +120,10 @@ app.post('/api/signup', (req: Request, res: Response) => {
 
 app.get('/api/i', (req: Request, res: Response) => {
   let username = req.session.user;
+  // let username = 'wyf';
   let usernames:string[] = [username];
   console.log(usernames);
-  let query:string = "select id from Account where username = ?"
+  let query:string = "select id,role from Account where username = ?"
   pool.getConnection()
     .then(conn => {
       conn.query(query, usernames)
@@ -131,6 +133,7 @@ app.get('/api/i', (req: Request, res: Response) => {
           // let user_id = row
           res.json({
             'user_id': rows[0]['id'],
+            'role':rows[0]['role'],
             'username': username,
             'error_code': 0
           });
