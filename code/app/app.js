@@ -101,60 +101,6 @@ app.all('/api/query_user', function (req, res) {
         .then(function (conn) {
         conn.query(query, arg)
             .then(function (table) {
-            res.json({
-                "users": [
-                    {
-                        "id": "XXXX",
-                        "credential": "XXXXX",
-                        "name": "XXXX",
-                        "gender": -1,
-                        "birthdate": "2018-01-01",
-                        "phone": "13534343434",
-                        "balance": 45,
-                        "bonus": 100
-                    },
-                    {
-                        "id": "XXXX",
-                        "credential": "XXXXX",
-                        "name": "XXXX",
-                        "gender": -1,
-                        "birthdate": "2018-01-01",
-                        "phone": "13534343434",
-                        "balance": 45,
-                        "bonus": 100
-                    },
-                    {
-                        "id": "XXXX",
-                        "credential": "XXXXX",
-                        "name": "XXXX",
-                        "gender": -1,
-                        "birthdate": "2018-01-01",
-                        "phone": "13534343434",
-                        "balance": 45,
-                        "bonus": 100
-                    },
-                    {
-                        "id": "XXXX",
-                        "credential": "XXXXX",
-                        "name": "XXXX",
-                        "gender": -1,
-                        "birthdate": "2018-01-01",
-                        "phone": "13534343434",
-                        "balance": 45,
-                        "bonus": 100
-                    },
-                    {
-                        "id": "XXXX",
-                        "credential": "XXXXX",
-                        "name": "XXXX",
-                        "gender": -1,
-                        "birthdate": "2018-01-01",
-                        "phone": "13534343434",
-                        "balance": 45,
-                        "bonus": 100
-                    }
-                ]
-            });
             for (var i = 0; i < table.length; ++i) {
                 if (table[i].gender == 0) {
                     table[i].gender = 'man';
@@ -162,15 +108,19 @@ app.all('/api/query_user', function (req, res) {
                 else if (table[i].gender == 0) {
                     table[i].gender = 'woman';
                 }
-                var birthdate = table[i].birthdate;
+                var birthdate = table[i].birthdate.toISOString();
+                console.log(birthdate);
                 table[i].birthdate = birthdate.substr(0, 10);
             }
-            console.log(JSON.stringify(table));
+            res.json({
+                "users": JSON.stringify(table)
+            });
         });
     })["catch"](function (err) {
         console.log('ERROR' + err);
     });
 });
+
 app.all('/api/insert_user', function (req, res) {
     console.log(req);
     var credential = req.body.credential;

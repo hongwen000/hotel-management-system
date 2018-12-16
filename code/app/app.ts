@@ -99,70 +99,18 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
     .then(conn=>{
       conn.query(query, arg)
         .then((table)=>{
-          res.json({
-            "users":[
-              {
-                    "id":"XXXX",
-                    "credential":"XXXXX",
-                    "name":"XXXX",
-                    "gender":-1,
-                    "birthdate":"2018-01-01",
-                    "phone":"13534343434",
-                    "balance":45,
-                    "bonus":100
-                },
-              {
-                    "id":"XXXX",
-                    "credential":"XXXXX",
-                    "name":"XXXX",
-                    "gender":-1,
-                    "birthdate":"2018-01-01",
-                    "phone":"13534343434",
-                    "balance":45,
-                    "bonus":100
-                },
-              {
-                    "id":"XXXX",
-                    "credential":"XXXXX",
-                    "name":"XXXX",
-                    "gender":-1,
-                    "birthdate":"2018-01-01",
-                    "phone":"13534343434",
-                    "balance":45,
-                    "bonus":100
-                },
-              {
-                    "id":"XXXX",
-                    "credential":"XXXXX",
-                    "name":"XXXX",
-                    "gender":-1,
-                    "birthdate":"2018-01-01",
-                    "phone":"13534343434",
-                    "balance":45,
-                    "bonus":100
-                },
-              {
-                    "id":"XXXX",
-                    "credential":"XXXXX",
-                    "name":"XXXX",
-                    "gender":-1,
-                    "birthdate":"2018-01-01",
-                    "phone":"13534343434",
-                    "balance":45,
-                    "bonus":100
-                }
-              ]
-          })
           for (let i = 0; i < table.length; ++i) {
             if(table[i].gender == 0) {
               table[i].gender = 'man';
             } else if (table[i].gender == 0) {
               table[i].gender = 'woman';
             }
-            let birthdate: string = table[i].birthdate;
+            let birthdate: string = table[i].birthdate.toISOString();
             table[i].birthdate = birthdate.substr(0,10);
           }
-          console.log(JSON.stringify(table));
+          res.json({
+            "users": JSON.stringify(table)
+          })
         })
     }).catch(err => {
       console.log('ERROR' + err);
