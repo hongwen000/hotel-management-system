@@ -21,7 +21,8 @@ let user_app = new Vue({
         genders: [],
         users: [],
         iserror: false,
-        msg: ''
+        msg: '',
+        birthdate: new Date()
     },
     methods: {
         submit: function() {
@@ -52,12 +53,24 @@ let user_app = new Vue({
                 this.$data[key] = '';
             }
         },
+        date2format: function(date) {
+            let _date = date.getDate();
+            let Month = date.getMonth();
+            let Year = date.getFullYear();
+            if (_date.length < 2) {
+                _date = '0' + _date;
+            }
+            if (Month.length < 2) {
+                Month = '0' + Month;
+            }
+            return `${Year}-${Month}-${_date}`;
+        },
         insert: function() {
             let data = {
                 'credential': this.credential,
                 'name': this.name,
                 'gender': this.ajaxGender,
-                'birthdate': '',
+                'birthdate': this.date2format(this.birthdate),
                 'phone': this.phone,
                 'balance': this.balance,
                 'bonus': this.bonus
