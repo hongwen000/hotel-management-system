@@ -18,8 +18,8 @@
 
 | 属性名    | 类型   | 值                                         |
 | --------- | ------ | ------------------------------------------ |
-| check_in  | string | 入住时间（%Y-%M-%D 如 2018-02-12)          |
-| check_out | string | 退房时间（%Y-%M-%D 如 2018-02-15)          |
+| check_in  | string | 入住时间（%YYYY-%MM-%DD 如 2018-02-12)          |
+| check_out | string | 退房时间（%YYYY-%MM-%DD 如 2018-02-15)          |
 | capacity  | int    | 最小容纳人数                               |
 | wifi      | bool   | 是否要求wifi，0表示不限定，1表示必须有wifi |
 | breakfast | bool   | 是否要求早餐，0表示不限定，1表示必须有早餐 |
