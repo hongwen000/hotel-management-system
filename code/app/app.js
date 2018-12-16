@@ -218,5 +218,123 @@ app.all('/api/insert_user', function (req, res) {
         });
     });
 });
+app.all('/api/insert_room_type', function (req, res) {
+    // console.log(req)
+    var name = req.body.name;
+    var capacity = req.body.capacity;
+    var wifi = req.body.wifi;
+    var breakfast = req.body.breakfast;
+    console.log(req.body);
+    var query = 'insert into RoomType (name, capacity, wifi,breakfast) value (?, ?, ?, ?);';
+    // TODO: 没有处理输入值为空的情况
+    var arg = [];
+    try {
+        if (name === undefined) {
+            throw "floor is empty !!";
+        }
+        if (capacity === undefined) {
+            throw "capacity is empty !!";
+        }
+        if (wifi === undefined) {
+            throw "wifi is empty !!";
+        }
+        if (breakfast === undefined) {
+            throw "breakfast is empty !!";
+        }
+        arg.push(name);
+        arg.push(capacity);
+        arg.push(wifi);
+        arg.push(breakfast);
+        console.debug(arg);
+        pool.getConnection()
+            .then(function (conn) {
+            conn.query(query, arg)
+                .then(function (msg) {
+                console.log(msg);
+                res.json({
+                    'error_code': 0,
+                    'error_msg': undefined
+                });
+            })["catch"](function (error) {
+                console.log(error);
+                res.json({
+                    'error_code': 1,
+                    // TODO: 错误信息不是字符串，可能需要改一下
+                    'error_msg': error
+                });
+            });
+            conn.end();
+        })["catch"](function (error) {
+            console.log(error);
+            res.json({
+                'error_code': 1,
+                // TODO: 错误信息不是字符串，可能需要改一下
+                'error_msg': error
+            });
+        });
+    }
+    catch (error) {
+        res.json({
+            'error_code': 1,
+            'error_msg': error
+        });
+    }
+});
+app.all('/api/insert_room', function (req, res) {
+    // TODO:未测试，先做房型
+    // console.log(req)
+    var floor = req.body.floor;
+    var room_num = req.body.room_num;
+    var price = req.body.price;
+    console.log(req.body);
+    var query = 'insert into Room (floor, room_num, price) value (?, ?, ?);';
+    // TODO: 没有处理输入值为空的情况
+    var arg = [];
+    try {
+        if (floor === undefined) {
+            throw "floor is empty !!";
+        }
+        if (room_num === undefined) {
+            throw "room_num is empty !!";
+        }
+        if (price === undefined) {
+            throw "price is empty !!";
+        }
+        arg.push(floor);
+        arg.push(room_num);
+        arg.push(price);
+        console.debug(arg);
+        pool.getConnection()
+            .then(function (conn) {
+            conn.query(query, arg)
+                .then(function (msg) {
+                console.log(msg);
+                res.json({
+                    'error_code': 0,
+                    'error_msg': undefined
+                });
+            })["catch"](function (error) {
+                console.log(error);
+                res.json({
+                    'error_code': 1,
+                    'error_msg': error
+                });
+            });
+            conn.end();
+        })["catch"](function (error) {
+            console.log(error);
+            res.json({
+                'error_code': 1,
+                'error_msg': error
+            });
+        });
+    }
+    catch (error) {
+        res.json({
+            'error_code': 1,
+            'error_msg': error
+        });
+    }
+});
 app.listen(port, function () { return console.log("Example app listening on port " + port + "!"); });
 exports["default"] = app;

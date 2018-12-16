@@ -234,7 +234,29 @@ TODO:
 TODO:
 
 ### API：增加房型
-TODO:
+#### URL
+
+`insert_room_type`
+
+#### 请求实例与参数
+
+| 属性名    | 类型   | 值                         |
+| --------- | ------ | -------------------------- |
+| name      | string | 这一种房间类型的名字       |
+| capacity  | int    | 这一种房间的人数           |
+| wifi      | int    | 0表示没有wifi，1表示有wifi |
+| breakfast | int    | 0表示没有wifi，1表示有wifi |
+
+
+
+#### 相应示例与参数
+
+| 属性名     | 类型   | 值               |
+| ---------- | ------ | ---------------- |
+| error_code | int    | 0为正常，1为异常 |
+| error_msg  | string | 错误信息         |
+
+
 
 ### API：减少房型
 TODO:
