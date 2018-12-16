@@ -99,18 +99,16 @@ TODO:
 }
 ```
 
-
-
-| 属性        | 类型   | 值                         |
-| ----------- | ------ | -------------------------- |
-| credential  | string | 身份证号                   |
-| name        | string | 用户名称                   |
-| gender      | int    | -1不指定，0是雄性，1是雌性 |
-| phone       | string | 手机号码                   |
-| balance_min | int    | 余额下限（单位为元）       |
-| balance_max | int    | 余额上限（单位为元）       |
-| bonus_min   | int    | 积分下限                   |
-| bonus_max   | int    | 积分上限                   |
+| 属性        | 类型   | 值                                       |
+| ----------- | ------ | ---------------------------------------- |
+| credential  | string | 身份证号                                 |
+| name        | string | 用户名称                                 |
+| gender      | string | 空表示不指定，'man'是雄性，'woman'是雌性 |
+| phone       | string | 手机号码                                 |
+| balance_min | string | 余额下限（单位为元）                     |
+| balance_max | string | 余额上限（单位为元）                     |
+| bonus_min   | string | 积分下限                                 |
+| bonus_max   | string | 积分上限                                 |
 
 #### 响应示例与参数
 
@@ -121,7 +119,7 @@ TODO:
             "id":"XXXX",
             "credential":"XXXXX",
             "name":"XXXX",
-            "gender":-1,
+            "gender":"man",
             "birthday":"2018-01-01",
             "phone":"13534343434",
             "balance":45,
@@ -140,7 +138,7 @@ TODO:
 | id          | string | 用户id                     |
 | credential  | string | 身份证号                   |
 | name        | string | 用户名称                   |
-| gender      | int    | 0是雄性，1是雌性 |
+| gender      | string | 'man'是雄性，'woman'是雌性,空表示未知 |
 |birthday | string | 生日“2018-01-01” |
 | phone       | string | 手机号码                   |
 | balance     | int    | 余额（单位为元）       |
@@ -148,7 +146,43 @@ TODO:
 
 ### API：增加、修改、删除用户
 
-TODO:
+#### URL
+
+`/api/insert_user`
+
+#### 请求示例及参数说明
+
+```json
+{
+    "credential":"XXXXXXX",
+    "name":"XXX",
+    // ...
+}
+```
+
+| 属性       | 类型   | 值                                       |
+| ---------- | ------ | ---------------------------------------- |
+| credential | string | 身份证号                                 |
+| name       | string | 用户名称                                 |
+| gender     | string | 空表示不指定，'man'是雄性，'woman'是雌性 |
+| birthdate  | string | 用户出生日期（如“2018-01-01”）           |
+| phone      | string | 手机号码                                 |
+| balance    | string | 余额（单位为元）                         |
+| bonus | string | 积分下限                                 |
+
+#### 响应示例及参数说明
+
+```json
+{
+    "error_code":0,
+    "error_msg":""
+}
+```
+
+| 属性名     | 类型   | 值                                            |
+| ---------- | ------ | --------------------------------------------- |
+| errro_code | int    | 0 为无错误，1为有错误（按需求再细分错误类型） |
+| error_msg  | string | 错误信息                                      |
 
 ## 房间信息子系统
 
