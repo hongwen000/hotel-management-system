@@ -14,10 +14,12 @@ new Vue({
                     'password': this.password
                 },
                 success: function(res) {
-                    if (res.errno !== 0) {
-                        alert(res.msg);
-                    } else {
-                        alert(res.msg);
+                    if (res.error === 0) {
+                        window.location.href = '/query';
+                    } else if (res.error === 1){
+                        alert('try another username');
+                    } else if (res.error === 2) {
+                        alert('busy, try again later');
                     }
                 }
             })

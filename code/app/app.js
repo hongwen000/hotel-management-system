@@ -21,6 +21,8 @@ app.get('/signup', function (req, res) {
     res.sendFile(path.join(__dirname, 'html/signup.html'));
 });
 app.get('/api/login', function (req, res) {
+    var username = req.query.username;
+    var password = req.query.password;
     console.log(req.query.username);
     console.log(req.query.password);
     if (req.query.username === '' || req.query.password === '') {
@@ -30,44 +32,79 @@ app.get('/api/login', function (req, res) {
         });
         return;
     }
-    if (req.query.username === 'root' && req.query.password === 'rootpassword') {
-        req.session.user = req.query.username;
-        res.json({
-            'msg': 'success',
-            'errno': 0
+    pool.getConnection()
+        .then(function (conn) {
+        conn.query('select * from Account where username = ? and password = ?', [username, password])
+            .then(function (rows) {
+            console.log(rows);
+            console.log(rows.length);
+            req.session.user = 'root';
+            conn.end();
+            if (rows.length == 0) {
+                res.json({
+                    error: 1,
+                    msg: 'error password or username'
+                });
+            }
+            else {
+                res.json({
+                    error: 0,
+                    msg: JSON.stringify(rows)
+                });
+            }
+        })["catch"](function (err) {
+            console.log(err);
+            conn.end();
+            res.json({
+                error: 1,
+                msg: JSON.stringify(err)
+            });
         });
-        return;
-    }
-    else {
+    })["catch"](function (err) {
+        console.log(err);
         res.json({
-            'msg': 'error password or usernmame',
-            'errno': -1
+            error: 2,
+            msg: JSON.stringify(err)
         });
-        return;
-    }
+    });
+    // if (req.query.username === 'root' && req.query.password === 'rootpassword') {
+    //   req.session.user = req.query.username;
+    //   res.json({
+    //     'msg': 'success',
+    //     'errno': 0
+    //   })
+    // } else {
+    //   res.json({
+    //     'msg': 'error password or usernmame',
+    //     'errno': -1
+    //   });
+    // }
 });
 app.post('/api/signup', function (req, res) {
     var username = req.body.username;
     var password = req.body.password;
     pool.getConnection()
         .then(function (conn) {
-        conn.query('insert into Account values(?,?)', [username, password])
+        conn.query('insert into Account(username, password) value(?,?)', [username, password])
             .then(function (rows) {
             console.log(rows);
             res.json({
-                msg: JSON.stringify(rows)
+                msg: JSON.stringify(rows),
+                error: 0
             });
-            return;
+            req.session.user = username;
+        })["catch"](function (err) {
+            res.json({
+                msg: JSON.stringify(err),
+                error: 1
+            });
         });
+        conn.end();
     })["catch"](function (err) {
         res.json({
-            msg: JSON.stringify(err)
+            msg: JSON.stringify(err),
+            error: 2
         });
-        return;
-    });
-    res.json({
-        'errno': 0,
-        'msg': 'ok'
     });
 });
 app.use('/query', function (req, res, next) {
@@ -98,6 +135,7 @@ app.all('/api/query', function (req, res) {
         res.json({
             'data': 'ERROR, connection failed'
         });
+        return;
     });
 });
 app.use('/static', express.static(path.join(__dirname, 'static/')));
