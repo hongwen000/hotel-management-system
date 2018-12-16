@@ -44,62 +44,38 @@ app.all('/api/query_user', function (req, res) {
     var bonus_min = req.body.bonus_min;
     var bonus_max = req.body.bonus_max;
     console.log(req.body);
-    var query = 'select * from User as u where ? and ? and ? and ? and ? and ? and ? and ?';
-    var arg = [];
+    var query = 'select * from User as u where 1 = 1';
     // 精确匹配证件号
     if (credential != '') {
-        arg.push('u.credential = ' + credential);
-    }
-    else {
-        arg.push('1=1');
+        query = query + (' and u.credential = ' + credential);
     }
     // 模糊匹配姓名
     if (name != '') {
-        arg.push("u.name LIKE'%" + name + "%'");
-    }
-    else {
-        arg.push('1=1');
+        query = query + (" and u.name LIKE'%" + name + "%'");
     }
     if (gender != '-1') {
-        arg.push("u.gender = " + gender);
-    }
-    else {
-        arg.push('1=1');
+        query = query + (" and u.gender = " + gender);
     }
     if (phone != '') {
-        arg.push('u.phone = ' + phone);
-    }
-    else {
-        arg.push('1=1');
+        query = query + (' and u.phone = ' + phone);
     }
     if (balance_min != '') {
-        arg.push("u.balance >= " + balance_min);
-    }
-    else {
-        arg.push('1=1');
+        query = query + (" and u.balance >= " + balance_min);
     }
     if (balance_max != '') {
-        arg.push("u.balance <= " + balance_max);
-    }
-    else {
-        arg.push('1=1');
+        query = query + (" and u.balance <= " + balance_max);
     }
     if (bonus_min != '') {
-        arg.push("u.bonus >= " + bonus_min);
-    }
-    else {
-        arg.push('1=1');
+        query = query + (" and u.bonus >= " + bonus_min);
     }
     if (bonus_max != '') {
-        arg.push("u.bonus <= " + bonus_max);
+        console.log("here");
+        query = query + (" and u.bonus <= " + bonus_max);
     }
-    else {
-        arg.push('1=1');
-    }
-    console.debug(arg);
+    console.debug(query);
     pool.getConnection()
         .then(function (conn) {
-        conn.query(query, arg)
+        conn.query(query)
             .then(function (table) {
             for (var i = 0; i < table.length; ++i) {
                 if (table[i].gender == 0) {
@@ -109,11 +85,33 @@ app.all('/api/query_user', function (req, res) {
                     table[i].gender = 'woman';
                 }
                 var birthdate = table[i].birthdate.toISOString();
-                console.log(birthdate);
                 table[i].birthdate = birthdate.substr(0, 10);
             }
             res.json({
                 "users": JSON.stringify(table)
+            });
+        });
+    })["catch"](function (err) {
+        console.log('ERROR' + err);
+    });
+});
+app.all('/api/insert_user', function (req, res) {
+    var credential = req.body.credential;
+    var name = req.body.name;
+    var gender = req.body.gender;
+    var birthdate = req.body.birthdate;
+    var phone = req.body.phone;
+    var balance = req.body.string;
+    var bonus = req.body.string;
+    console.log(req.body);
+    var query = "insert into User(credential, name, gender, birthdate, phone, bonus, balance)\n    values(" + credential + ", " + name + ", " + gender + ", " + birthdate + ", " + phone + ", " + bonus + ", " + balance + ")";
+    pool.getConnection()
+        .then(function (conn) {
+        conn.query(query)
+            .then(function (ret) {
+            console.log(ret);
+            res.json({
+                "users": JSON.stringify(ret)
             });
         });
     })["catch"](function (err) {

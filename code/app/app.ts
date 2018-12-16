@@ -3,6 +3,7 @@ import {Request, Response} from "express";
 import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as pool from "./sql";
+import { createDiffieHellman } from "crypto";
 const app = express();
 const port = 8080;
 app.use(bodyParser.json());
@@ -49,54 +50,38 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
   let bonus_min: string = req.body.bonus_min;
   let bonus_max: string = req.body.bonus_max;
   console.log(req.body)
-  let query: string = 'select * from User as u where ? and ? and ? and ? and ? and ? and ? and ?';
-  let arg: string[] = [];
+  let query: string = 'select * from User as u where 1 = 1';
   // 精确匹配证件号
   if(credential != '') {
-    arg.push('u.credential = ' + credential);
-  } else {
-    arg.push('1=1');
+    query = query + (' and u.credential = ' + credential);
   }
   // 模糊匹配姓名
   if(name != '') {
-    arg.push("u.name LIKE'%"+ name +"%'")
-  } else {
-    arg.push('1=1');
+    query = query + (" and u.name LIKE'%"+ name +"%'")
   }
   if(gender != '-1') {
-    arg.push("u.gender = " + gender);
-  } else {
-    arg.push('1=1');
+    query = query + (" and u.gender = " + gender);
   }
   if(phone != '') {
-    arg.push('u.phone = ' + phone);
-  } else {
-    arg.push('1=1');
+    query = query + (' and u.phone = ' + phone);
   }
   if(balance_min != '') {
-    arg.push("u.balance >= " + balance_min);
-  } else {
-    arg.push('1=1');
+    query = query + (" and u.balance >= " + balance_min);
   }
   if(balance_max != '') {
-    arg.push("u.balance <= " + balance_max);
-  } else {
-    arg.push('1=1');
+    query = query + (" and u.balance <= " + balance_max);
   }
   if(bonus_min != '') {
-    arg.push("u.bonus >= " + bonus_min);
-  } else {
-    arg.push('1=1');
+    query = query + (" and u.bonus >= " + bonus_min);
   }
   if(bonus_max != '') {
-    arg.push("u.bonus <= " + bonus_max);
-  } else {
-    arg.push('1=1');
+    console.log("here")
+    query = query + (" and u.bonus <= " + bonus_max);
   }
-  console.debug(arg)
+  console.debug(query);
   pool.getConnection()
     .then(conn=>{
-      conn.query(query, arg)
+      conn.query(query)
         .then((table)=>{
           for (let i = 0; i < table.length; ++i) {
             if(table[i].gender == 0) {
@@ -114,8 +99,33 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
     }).catch(err => {
       console.log('ERROR' + err);
     })
-
 });
+
+app.all('/api/insert_user', (req: Request, res: Response)=>{
+  let credential: string =  req.body.credential;
+  let name: string = req.body.name;
+  let gender: string = req.body.gender;
+  let birthdate: string = req.body.birthdate;
+  let phone: string = req.body.phone;
+  let balance: string = req.body.string;
+  let bonus: string = req.body.string;
+  console.log(req.body)
+  let query: string = `insert into User(credential, name, gender, birthdate, phone, bonus, balance)
+    values(${credential}, ${name}, ${gender}, ${birthdate}, ${phone}, ${bonus}, ${balance})`;
+  pool.getConnection()
+    .then(conn=>{
+      conn.query(query)
+        .then((ret)=>{
+          console.log(ret);
+          res.json({
+            "users": JSON.stringify(ret)
+          })
+        })
+    }).catch(err => {
+      console.log('ERROR' + err);
+    })
+});
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 
