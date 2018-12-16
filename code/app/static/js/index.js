@@ -85,7 +85,15 @@ let room_app = new Vue({
         checkout: new Date(),
         capacity: '',
         reqs: [],
-        rooms: [] //result
+        rooms: [{
+            'id': 123,
+            'name': 'yanbin',
+            'age': 20
+        },{
+            'id': 124,
+            'name': 'ybyb',
+            'age': 40
+        }] //result
     },
     methods: {
         submit: function() {
