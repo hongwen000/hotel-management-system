@@ -38,7 +38,7 @@ let user_app = new Vue({
             }
 
             $.ajax({
-                'method': 'POST',
+                'method': 'GET',
                 'url': '/api/query_user',
                 'data': data,
                 'success': function(data) {
