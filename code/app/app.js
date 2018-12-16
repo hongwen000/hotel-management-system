@@ -17,6 +17,9 @@ app.use(session({ secret: "wyf and lxr NB!" }));
 app.get('/login', function (req, res) {
     res.sendFile(path.join(__dirname, 'html/login.html'));
 });
+app.get('/signup', function (req, res) {
+    res.sendFile(path.join(__dirname, 'html/signup.html'));
+});
 app.get('/api/login', function (req, res) {
     console.log(req.query.username);
     console.log(req.query.password);
@@ -43,10 +46,35 @@ app.get('/api/login', function (req, res) {
         return;
     }
 });
+app.post('/api/signup', function (req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+    pool.getConnection()
+        .then(function (conn) {
+        conn.query('insert into Account values(?,?)', [username, password])
+            .then(function (rows) {
+            console.log(rows);
+            res.json({
+                msg: JSON.stringify(rows)
+            });
+            return;
+        });
+    })["catch"](function (err) {
+        res.json({
+            msg: JSON.stringify(err)
+        });
+        return;
+    });
+    res.json({
+        'errno': 0,
+        'msg': 'ok'
+    });
+});
 app.use('/query', function (req, res, next) {
-    // if (!req.session.user) {
-    //   res.redirect('/login');
-    // }
+    if (!req.session.user) {
+        res.redirect('/login');
+        return;
+    }
     next();
 });
 app.get('/query', function (req, res) {

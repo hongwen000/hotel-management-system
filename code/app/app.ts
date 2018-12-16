@@ -8,6 +8,7 @@ import * as cookieParser from "cookie-parser";
 import * as session from "express-session";
 
 import { connect } from "net";
+import { ResolveOptions } from "dns";
 const app = express();
 const port = 8080;
 app.use(bodyParser.json());
@@ -19,7 +20,11 @@ app.use(session({secret: "wyf and lxr NB!"}));
 
 app.get('/login', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, 'html/login.html'));
-})
+});
+
+app.get('/signup', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, 'html/signup.html'));
+});
 
 app.get('/api/login', (req: Request, res: Response) => {
   console.log(req.query.username);
@@ -47,10 +52,37 @@ app.get('/api/login', (req: Request, res: Response) => {
   }
 })
 
+app.post('/api/signup', (req: Request, res: Response) => {
+  let username = req.body.username;
+  let password = req.body.password;
+  pool.getConnection()
+    .then(conn => {
+      conn.query('insert into Account values(?,?)', [username, password])
+        .then(rows => {
+          console.log(rows);
+          res.json({
+            msg: JSON.stringify(rows)
+          });
+          return;
+        });
+    })
+    .catch(err => {
+      res.json({
+        msg: JSON.stringify(err)
+      });
+      return;
+    });
+  res.json({
+    'errno': 0,
+    'msg': 'ok'
+  });
+});
+
 app.use('/query', (req: Request, res: Response, next : NextFunction) => {
-  // if (!req.session.user) {
-  //   res.redirect('/login');
-  // }
+  if (!req.session.user) {
+    res.redirect('/login');
+    return;
+  }
   next();
 });
 
