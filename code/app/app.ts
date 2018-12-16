@@ -173,7 +173,6 @@ app.all('/api/insert_user', (req: Request, res: Response)=>{
           'error_code':1,
           'error_msg': error,
         })
-        // TODO: handle the error
       });
       conn.end();
     })
@@ -183,10 +182,73 @@ app.all('/api/insert_user', (req: Request, res: Response)=>{
         'error_code':1,
         'error_msg': error,
       })
-      // TODO: handle the error
     });
-  
 })
+
+
+
+app.all('/api/insert_room', (req: Request, res: Response)=>{
+  // TODO:未测试，先做房型
+  // console.log(req)
+  let floor: string =  req.body.floor;
+  let room_num: string = req.body.room_num;
+  let price: string = req.body.price;
+
+  console.log(req.body)
+
+
+  let query: string =  'insert into Room (floor, room_num, price) value (?, ?, ?);';
+  // TODO: 没有处理输入值为空的情况
+  let arg: string[] = [];
+  try {
+    if (floor === undefined){
+      throw "floor is empty !!"
+    }
+    if (room_num === undefined){
+      throw "room_num is empty !!"
+    }
+    if (price === undefined){
+      throw "price is empty !!"
+    }
+    arg.push(floor);
+    arg.push(room_num);
+    arg.push(price);
+    console.debug(arg)
+    pool.getConnection()
+    .then(conn=>{
+      conn.query(query, arg)
+        .then((msg) => {
+          console.log(msg);
+          res.json({
+            'error_code':0,
+            'error_msg':undefined,
+          })
+      })
+      .catch((error) => {
+        console.log(error)
+        res.json({
+          'error_code':1,
+          'error_msg': error,
+        })
+      });
+      conn.end();
+    })
+    .catch((error) => {
+      console.log(error)
+      res.json({
+        'error_code':1,
+        'error_msg': error,
+      })
+    });
+
+  } catch (error) {
+    res.json({
+      'error_code':1,
+      'error_msg':error
+    })
+  }
+})
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 

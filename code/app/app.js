@@ -133,15 +133,18 @@ app.all('/api/insert_user', function (req, res) {
     var bonus = req.body.bonus;
     console.log(req.body);
     var query = 'insert into User (credential, name, gender, birthdate, phone, balance, bonus) value (?, ?, ?, ?, ?, ?, ?);';
-    // TODO: 构造arg列表
+    // TODO: 没有处理输入值为空的情况
     var arg = [];
     arg.push(credential);
     arg.push(name);
     if (gender === 'man') {
         arg.push('0');
     }
-    else {
+    else if (gender === 'woman') {
         arg.push('1');
+    }
+    else {
+        arg.push(undefined);
     }
     // arg.push(gender)
     arg.push(birthdate);
@@ -166,7 +169,6 @@ app.all('/api/insert_user', function (req, res) {
                 'error_code': 1,
                 'error_msg': error
             });
-            // TODO: handle the error
         });
         conn.end();
     })["catch"](function (error) {
@@ -175,7 +177,6 @@ app.all('/api/insert_user', function (req, res) {
             'error_code': 1,
             'error_msg': error
         });
-        // TODO: handle the error
     });
 });
 app.listen(port, function () { return console.log("Example app listening on port " + port + "!"); });
