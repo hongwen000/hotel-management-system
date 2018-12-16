@@ -164,8 +164,7 @@ app.all('/api/query_user', (req: Request, res: Response) => {
   let bonus_min: string = req.body.bonus_min;
   let bonus_max: string = req.body.bonus_max;
   console.log(req.body)
-  let query: string = 'select * from User as u where ? and ? and ? and ? and ? and ? and ? and ?';
-  let arg: string[] = [];
+  let query: string = 'select * from User as u where 1=1';
   // 精确匹配证件号
   if (credential != '') {
     query = query + (' and u.credential = ' + credential);
@@ -193,7 +192,6 @@ app.all('/api/query_user', (req: Request, res: Response) => {
     console.log("here")
     query = query + (" and u.bonus <= " + bonus_max);
   }
-  console.debug(arg)
   pool.getConnection()
     .then(conn => {
       conn.query(query)
