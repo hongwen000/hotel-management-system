@@ -48,7 +48,6 @@ app.get('/api/login', (req: Request, res: Response) => {
           // console.log(rows);
           // console.log(rows.length);
           req.session.user = username;
-          conn.end();
           if (rows.length == 0) {
             res.json({
               error: 1,
@@ -63,11 +62,13 @@ app.get('/api/login', (req: Request, res: Response) => {
         })
         .catch(err => {
           console.log(err);
-          conn.end();
           res.json({
             error: 1,
             msg: JSON.stringify(err)
           })
+        })
+        .finally(() => {
+          conn.end();
         })
     })
     .catch(err => {
