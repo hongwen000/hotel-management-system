@@ -1,5 +1,5 @@
 import * as express from "express";
-import {Request, Response} from "express";
+import { Request, Response } from "express";
 import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as pool from "./sql";
@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(cookieParser());
-app.use(session({secret: "wyf and lxr NB!"}));
+app.use(session({ secret: "wyf and lxr NB!" }));
 
 app.get('/login', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, 'html/login.html'));
@@ -116,7 +116,7 @@ app.post('/api/signup', (req: Request, res: Response) => {
     });
 });
 
-app.use('/query', (req: Request, res: Response, next : NextFunction) => {
+app.use('/query', (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.user) {
     res.redirect('/login');
     return;
@@ -125,26 +125,26 @@ app.use('/query', (req: Request, res: Response, next : NextFunction) => {
 });
 
 app.get('/query', (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, 'html/index.html'));
+  res.sendFile(path.join(__dirname, 'html/index.html'));
 })
 
 app.all('/api/query', (req: Request, res: Response) => {
   pool.getConnection()
-    .then(conn=>{
+    .then(conn => {
       conn.query(req.body.query)
         .then((rows) => {
           res.json({
             'data': rows
           });
         })
-        .catch(err=>{
+        .catch(err => {
           res.json({
             'data': `err in sql: ${err}`
           })
         })
       conn.end();
     })
-    .catch(()=>{
+    .catch(() => {
       res.json({
         'data': 'ERROR, connection failed'
       });
@@ -154,8 +154,8 @@ app.all('/api/query', (req: Request, res: Response) => {
 
 app.use('/static', express.static(path.join(__dirname, 'static/')));
 
-app.all('/api/query_user', (req: Request, res: Response)=>{
-  let credential: string =  req.body.credential;
+app.all('/api/query_user', (req: Request, res: Response) => {
+  let credential: string = req.body.credential;
   let name: string = req.body.name;
   let gender: string = req.body.gender;
   let phone: string = req.body.phone;
@@ -166,45 +166,45 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
   console.log(req.body)
   let query: string = 'select * from User as u where 1 = 1';
   // 精确匹配证件号
-  if(credential != '') {
+  if (credential != '') {
     query = query + (' and u.credential = ' + credential);
   }
   // 模糊匹配姓名
-  if(name != '') {
-    query = query + (" and u.name LIKE'%"+ name +"%'")
+  if (name != '') {
+    query = query + (" and u.name LIKE'%" + name + "%'")
   }
-  if(gender != '-1') {
+  if (gender != '-1') {
     query = query + (" and u.gender = " + gender);
   }
-  if(phone != '') {
+  if (phone != '') {
     query = query + (' and u.phone = ' + phone);
   }
-  if(balance_min != '') {
+  if (balance_min != '') {
     query = query + (" and u.balance >= " + balance_min);
   }
-  if(balance_max != '') {
+  if (balance_max != '') {
     query = query + (" and u.balance <= " + balance_max);
   }
-  if(bonus_min != '') {
+  if (bonus_min != '') {
     query = query + (" and u.bonus >= " + bonus_min);
   }
-  if(bonus_max != '') {
+  if (bonus_max != '') {
     console.log("here")
     query = query + (" and u.bonus <= " + bonus_max);
   }
   console.debug(query);
   pool.getConnection()
-    .then(conn=>{
+    .then(conn => {
       conn.query(query)
-        .then((table)=>{
+        .then((table) => {
           for (let i = 0; i < table.length; ++i) {
-            if(table[i].gender == 0) {
+            if (table[i].gender == 0) {
               table[i].gender = 'man';
             } else if (table[i].gender == 0) {
               table[i].gender = 'woman';
             }
             let birthdate: string = table[i].birthdate.toISOString();
-            table[i].birthdate = birthdate.substr(0,10);
+            table[i].birthdate = birthdate.substr(0, 10);
           }
           res.json({
             "users": JSON.stringify(table)
@@ -215,8 +215,8 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
     })
 });
 
-app.all('/api/insert_user', (req: Request, res: Response)=>{
-  let credential: string =  req.body.credential;
+app.all('/api/insert_user', (req: Request, res: Response) => {
+  let credential: string = req.body.credential;
   let name: string = req.body.name;
   let gender: string = req.body.gender;
   let birthdate: string = req.body.birthdate;
@@ -225,55 +225,63 @@ app.all('/api/insert_user', (req: Request, res: Response)=>{
   let bonus: string = req.body.bonus;
   console.log(req.body)
   let query: string = 'insert into User(credential, name, gender, birthdate, phone, bonus, balance) values(';
-  if(credential != '') {
+  if (credential != '') {
     query = query + "'" + credential + "',";
   } else {
     query = query + 'null,';
   }
-  if(name != '') {
+  if (name != '') {
     query = query + "'" + name + "',";
   } else {
     query = query + 'null,';
   }
-  if(gender != '') {
-    query = query +  gender + ',';
+  if (gender != '') {
+    query = query + gender + ',';
   } else {
     query = query + 'null,';
   }
-  if(birthdate != '') {
+  if (birthdate != '') {
     query = query + "'" + birthdate + "',";
   } else {
     query = query + 'null,';
   }
-  if(phone != '') {
+  if (phone != '') {
     query = query + "'" + phone + "',";
   } else {
     query = query + 'null,';
   }
-  if(bonus != '') {
+  if (bonus != '') {
     console.debug('here')
-    query = query +  bonus + ',';
+    query = query + bonus + ',';
   } else {
     query = query + 'null,';
   }
-  if(balance != '') {
-    query = query +  balance +')';
+  if (balance != '') {
+    query = query + balance + ')';
   } else {
     query = query + 'null)';
   }
   console.log(query);
 
   pool.getConnection()
-    .then(conn=>{
+    .then(conn => {
       conn.query(query)
-        .then((ret)=>{
+        .then((ret) => {
           console.log(ret);
           res.json({
             "error_code": 0,
             "error_msg": JSON.stringify(ret)
           })
         })
-    }).catch(err => {
+        .catch(err => {
+          console.log('ERROR' + err);
+          res.json({
+            "error_code": 1,
+            "error_msg": JSON.stringify(err)
+          })
+        })
+    })
+    .catch(err => {
       console.log('ERROR' + err);
       res.json({
         "error_code": 1,
