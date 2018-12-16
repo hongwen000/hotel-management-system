@@ -3,6 +3,7 @@ import {Request, Response} from "express";
 import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as pool from "./sql";
+import { connect } from "net";
 const app = express();
 const port = 8080;
 app.use(bodyParser.json());
@@ -168,6 +169,53 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
     })
 
 });
+
+
+app.all('/api/insert_user', (req: Request, res: Response)=>{
+  console.log(req)
+  let credential: string =  req.body.credential;
+  let name: string = req.body.name;
+  let gender: string = req.body.gender;
+  let phone: string = req.body.phone;
+  let birthdate : string = req.body.birthdate;
+  // TODO:前端应该可以不用下面这两项？可以设置成默认值0吗
+  let balance: string = req.body.balance;
+  let bonus: string = req.body.bonus;
+  console.log(req.body)
+
+
+  let query: string =  'insert into Hotel.User(credential, name, gender, birthdate, phone, balance, bonus) values (?, ?, ?, ?, ?, ?,?);';
+  // TODO: 构造arg列表
+  let arg: string[] = [];
+  arg.push(credential)
+  arg.push(name)
+  arg.push(gender)
+  arg.push(phone)
+  arg.push(birthdate)
+  arg.push(balance)
+  arg.push(bonus)
+  // match the credential
+  // ...
+
+  console.debug(arg)
+  pool.getConnection()
+    .then(conn=>{
+      conn.query(query, arg)
+        .then((res) => {
+          console.log(res);
+          conn.end();
+      })
+      .catch((err) => {
+        // TODO: handle the error
+        conn.end();
+      })
+    })
+    .catch((error) => {
+      // TODO: handle the error
+    });
+  
+})
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 
