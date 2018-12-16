@@ -113,6 +113,7 @@ app.all('/api/query_user', (req: Request, res: Response)=>{
             "users": JSON.stringify(table)
           })
         })
+      conn.end();
     }).catch(err => {
       console.log('ERROR' + err);
     })

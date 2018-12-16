@@ -1,13 +1,15 @@
 
 
-$('.content').hide();
-$('#user').show();
+$('.content:not(:first)').hide();
 
 $('#tab ul li').on('click', function() {
     $('#tab ul li').removeClass('is-active');
-    $(this).addClass('is-active');
-    $('.content').hide();
-    $('#' + $(this).attr('name')).show();
+    $target = $('#' + $(this).attr('name'));
+    $('.content:visible').fadeOut(150, function() {
+        $(this).addClass('is-active');
+        $target.fadeIn(150);
+    })
+    // $('.content').hide();
 })
 
 let user_app = new Vue({
@@ -40,8 +42,8 @@ let user_app = new Vue({
                 'url': '/api/query_user',
                 'data': data,
                 'success': function(data) {
-                    //TODO:
-                    console.log('success!');
+                    console.log(data);
+                    user_app.users = JSON.parse(data.users);
                 }
             })
         },
@@ -85,15 +87,16 @@ let room_app = new Vue({
         checkout: new Date(),
         capacity: '',
         reqs: [],
-        rooms: [{
-            'id': 123,
-            'name': 'yanbin',
-            'age': 20
-        },{
-            'id': 124,
-            'name': 'ybyb',
-            'age': 40
-        }] //result
+        // rooms: [{
+        //     'id': 123,
+        //     'name': 'yanbin',
+        //     'age': 20
+        // },{
+        //     'id': 124,
+        //     'name': 'ybyb',
+        //     'age': 40
+        // }] //result
+        rooms: []
     },
     methods: {
         submit: function() {

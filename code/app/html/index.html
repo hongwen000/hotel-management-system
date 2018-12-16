@@ -6,13 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Hotel System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script> -->
     <script src="/static/js/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="/static/js/datepicker.js"></script>
     <script src="/static/js/table.js"></script>
-    <!-- <script src="https://unpkg.com/vuejs-datepicker"></script> -->
     <link rel="stylesheet" href="/static/css/datepicker.css">
+    <link rel="stylesheet" href="/static/css/index.css">
 </head>
 
 <body>
@@ -110,40 +109,12 @@
                     <button @click="clear" class="button is-text">clear</button>
                 </div>
             </div>
-
         </div>
 
-        <section id="user-table">
-            <div class="container">
-                <table class="table" v-if="users.length > 0">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>name</th>
-                            <th>gender</th>
-                            <th>credential</th>
-                            <th>birthdate</th>
-                            <th>phone</th>
-                            <th>balance</th>
-                            <th>bonus</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="user in users">
-                            <td> {{ user.id }} </td>
-                            <td> {{ user.credential }}</td>
-                            <td> {{ user.name }}</td>
-                            <td> {{ user.gender }}</td>
-                            <td> {{ user.birthdate }}</td>
-                            <td> {{ user.phone }}</td>
-                            <td> {{ user.balance }}</td>
-                            <td> {{ user.bonus }} </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </section>
+        <result-table v-bind:result="users">
+        </result-table>
+    </section> 
+
 
     <section id="room" class="content">
         <div class="container">
@@ -207,38 +178,6 @@
                 </div>
             </div>
         </div>
-
-
-        <!-- <section id="room-table">
-            <div class="container">
-                <table class="table" v-if="rooms.length > 0">
-                    <thead>
-                        <tr>
-                            <th> room id </th>
-                            <th> floor </th>
-                            <th> room number </th>
-                            <th> price </th>
-                            <th> breakfast included</th>
-                            <th> has wifi </th>
-                            <th> room type </th>
-                            <th> capacity </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="room in rooms">
-                            <td> {{ room.room_id }} </td>
-                            <td> {{ room.floor }}</td>
-                            <td> {{ room.room_num }}</td>
-                            <td> {{ room.price }}</td>
-                            <td> {{ room.breakfast }}</td>
-                            <td> {{ room.wifi }}</td>
-                            <td> {{ room.name }}</td>
-                            <td> {{ room.capacity }} </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section> -->
 
         <result-table v-bind:result="rooms"> </result-table>
 
