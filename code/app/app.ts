@@ -116,6 +116,37 @@ app.post('/api/signup', (req: Request, res: Response) => {
     });
 });
 
+
+app.get('/api/i', (req: Request, res: Response) => {
+  let username:string = 'wyf';
+  let query:string = "select user_id from Account where username = ?"
+  pool.getConnection()
+    .then(conn => {
+      conn.query(query, username)
+        .then((rows) => {
+          console.log(rows)
+          // let user_id = row
+          res.json({
+            'user_id': JSON.stringify(rows),
+            'username': username
+          });
+        })
+        .catch(err => {
+          res.json({
+            'error_code': 1
+          })
+        })
+        .finally(() => {
+          conn.end();
+        })
+    })
+    .catch(err => {
+      res.json({
+        'error_code': 1
+      })
+    })
+});
+
 app.use('/query', (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.user) {
     res.redirect('/login');
@@ -169,8 +200,7 @@ app.all('/api/query_user', (req: Request, res: Response) => {
   let bonus_min: string = req.body.bonus_min;
   let bonus_max: string = req.body.bonus_max;
   console.log(req.body)
-  let query: string = 'select * from User as u where ? and ? and ? and ? and ? and ? and ? and ?';
-  let arg: string[] = [];
+  let query: string = 'select * from User as u where 1=1';
   // 精确匹配证件号
   if (credential != '') {
     query = query + (' and u.credential = ' + credential);
@@ -198,7 +228,6 @@ app.all('/api/query_user', (req: Request, res: Response) => {
     console.log("here")
     query = query + (" and u.bonus <= " + bonus_max);
   }
-  console.debug(arg)
   pool.getConnection()
     .then(conn => {
       conn.query(query)
@@ -308,19 +337,18 @@ app.all('/api/insert_room_type', (req: Request, res: Response) => {
   console.log(req.body)
 
   let query: string = 'insert into RoomType (name, capacity, wifi,breakfast) value (?, ?, ?, ?);';
-  // TODO: 没有处理输入值为空的情况
   let arg: string[] = [];
   try {
-    if (name === undefined) {
+    if (name == '') {
       throw "name is empty !!"
     }
-    if (capacity === undefined) {
+    if (capacity == '') {
       throw "capacity is empty !!"
     }
-    if (wifi === undefined) {
+    if (wifi == '') {
       throw "wifi is empty !!"
     }
-    if (breakfast === undefined) {
+    if (breakfast == '') {
       throw "breakfast is empty !!"
     }
     arg.push(name);
@@ -342,8 +370,7 @@ app.all('/api/insert_room_type', (req: Request, res: Response) => {
             console.log(error)
             res.json({
               'error_code': 1,
-              // TODO: 错误信息不是字符串，可能需要改一下，如果输入重复的房型，如何让前端知道？
-              'error_msg': error,
+              'error_msg': JSON.stringify(error),
             })
           });
         conn.end();
@@ -352,21 +379,18 @@ app.all('/api/insert_room_type', (req: Request, res: Response) => {
         console.log(error)
         res.json({
           'error_code': 1,
-          // TODO: 错误信息不是字符串，可能需要改一下
-          'error_msg': error,
+          'error_msg': JSON.stringify(error),
         })
       });
   } catch (error) {
     res.json({
       'error_code': 1,
-      'error_msg': error
+      'error_msg': JSON.stringify(error)
     })
   }
 })
 
 app.all('/api/insert_room', (req: Request, res: Response) => {
-  // TODO:未测试，先做房型
-  // console.log(req)
   let floor: string = req.body.floor;
   let room_num: string = req.body.room_num;
   let price: string = req.body.price;
@@ -375,16 +399,15 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
 
 
   let query: string = 'insert into Room (floor, room_num, price) value (?, ?, ?);';
-  // TODO: 没有处理输入值为空的情况
   let arg: string[] = [];
   try {
-    if (floor === undefined) {
+    if (floor == '') {
       throw "floor is empty !!"
     }
-    if (room_num === undefined) {
+    if (room_num == '') {
       throw "room_num is empty !!"
     }
-    if (price === undefined) {
+    if (price == '') {
       throw "price is empty !!"
     }
     arg.push(floor);
@@ -405,7 +428,7 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
             console.log(error)
             res.json({
               'error_code': 1,
-              'error_msg': error,
+              'error_msg': JSON.stringify(error),
             })
           });
         conn.end();
@@ -414,14 +437,14 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
         console.log(error)
         res.json({
           'error_code': 1,
-          'error_msg': error,
+          'error_msg': JSON.stringify(error),
         })
       });
 
   } catch (error) {
     res.json({
       'error_code': 1,
-      'error_msg': error
+      'error_msg': JSON.stringify(error)
     })
   }
 })
