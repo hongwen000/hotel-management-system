@@ -76,19 +76,15 @@ app.get('/api/login', (req: Request, res: Response) => {
         msg: JSON.stringify(err)
       })
     });
-  // if (req.query.username === 'root' && req.query.password === 'rootpassword') {
-  //   req.session.user = req.query.username;
-  //   res.json({
-  //     'msg': 'success',
-  //     'errno': 0
-  //   })
-  // } else {
-  //   res.json({
-  //     'msg': 'error password or usernmame',
-  //     'errno': -1
-  //   });
-  // }
 })
+
+app.get('/api/logout', (req: Request, res: Response) => {
+  req.session.user = undefined;
+  res.json({
+    msg: 'ok',
+    error: 0
+  });
+});
 
 app.post('/api/signup', (req: Request, res: Response) => {
   let username = req.body.username;

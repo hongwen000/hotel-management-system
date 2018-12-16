@@ -17,13 +17,20 @@
 <body>
     <section>
         <div class="container">
-            <div class="tabs" id="tab">
-                <ul>
-                    <li class="is-active" name="user"><a>Users</a></li>
-                    <li name="room"><a>Rooms</a></li>
-                    <li name="order"><a>Orders</a></li>
-                    <li name="root"><a>Root</a></li>
-                </ul>
+            <div class="level">
+                <div class="level-left">
+                    <div class="tabs" id="tab">
+                        <ul>
+                            <li class="is-active" name="user"><a>Users</a></li>
+                            <li name="room"><a>Rooms</a></li>
+                            <li name="order"><a>Orders</a></li>
+                            <li name="root"><a>Root</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="level-right" id="logout-app">
+                    <button class="button is-danger" @click.prevent="logout"> logout </button>
+                </div>
             </div>
         </div>
     </section>
@@ -113,7 +120,7 @@
 
         <result-table v-bind:result="users">
         </result-table>
-    </section> 
+    </section>
 
 
     <section id="room" class="content">
@@ -192,6 +199,10 @@
             <button id="q-button"> submit</button>
             <br>
             <textarea id="output">
+
+
+
+
 
 
 
