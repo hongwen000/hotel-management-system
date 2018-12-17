@@ -273,7 +273,7 @@
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <button @click="submit" class="button is-link">Submit</button>
+                    <button @click="submit" class="button is-link">Query</button>
                 </div>
                 <div class="control">
                     <button v-if="role <= 1" @click="insert" class="button is-link"> Add </button>
@@ -293,6 +293,87 @@
     </section>
     <section id="order" class="content">
         <div class="container">
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label class="label">
+                            order id
+                        </label>
+                        <div class="control">
+                            <input type="text" class="input" v-model="orderid" placeholder="">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <label class="label">
+                            begin date
+                        </label>
+                        <vue-datepicker-local v-model="bdate">
+                        </vue-datepicker-local>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <label class="label">
+                            end date
+                        </label>
+                        <vue-datepicker-local v-model="edate">
+                        </vue-datepicker-local>
+                    </div>
+                </div>
+            </div>
+
+            <div class="columns">
+                <div class="column">
+                    <label class="label">
+                        floor
+                    </label>
+                    <div class="control">
+                        <input class="input" type="text" v-model="floor" placeholder="let it empty to ignore">
+                    </div>
+                </div>
+
+                <div class="column">
+                    <label class="label">
+                        room num
+                    </label>
+                    <div class="control">
+                        <input class="input" type="text" v-model="room_num" placeholder="let it empty to ignore">
+                    </div>
+                </div>
+
+                <div class="column">
+                    <label class="label">
+                        user id
+                    </label>
+                    <div class="control">
+                        <input class="input" type="text" v-model="user_id" placeholder="let it empty to ignore">
+                    </div>
+                </div>
+            </div>
+
+            <div class="field is-grouped">
+                <div class="control">
+                    <button @click="submit" class="button is-link">Query</button>
+                </div>
+                <div class="control">
+                    <button @click="clear" class="button is-text">clear</button>
+                </div>
+            </div>
+
+            <general-message
+                v-bind:iserror="iserror"
+                v-bind:msg="msg">
+            </general-message>
+
+            <result-table
+                v-bind:result="result">
+            </result-table>
+
 
         </div>
     </section>
