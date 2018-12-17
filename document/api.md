@@ -616,7 +616,7 @@ TODO:
 | order_id | string | 订单号（订单在数据中的唯一id）|
 | time_min | string  | 被查询订单的时间下限 |
 |  time_max | string |  被查询订单的时间上限|
-| floot | string | 房间的层数      |
+| floor | string | 房间的层数      |
 | room_num | string    | 房间号    |
 | user_id | string | 用户id|
 
