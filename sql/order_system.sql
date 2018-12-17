@@ -1,21 +1,20 @@
--- 建立空房间视图
-create view
 
 
-create view empty_room_table(room_id , floor, room_num, price) as
-(
-    select Room.id, Room.floor, Room.room_num, Room.price
-    from Room
-    where Room.id not exist (
-        select Order.id
-        from Order
-        where Order.status == 'TODO:' -- TODO: 寻找已预订以及已入住的房间
-    )
-);
-
-
-
--- 查询可用房间
--- check_in 入住时间
--- check_out 退房时间
-select 
+-- 入住日期，入住天数, 寻找在某时间段内可以被预定的房间
+with order_dates(order_date) as (
+    select date_add(date('2019-01-11'), interval n day) as order_date -- 入住日期参数
+    from numbers
+    where n <= 5 -- 入住时间参数
+)
+select id, room_num
+from Room as R
+where exists ( -- 该房间入住的日期列表减去该房间已预订的列表，不为空集
+      -- 存在某几天，该房间没有被预定
+      select order_date
+      from order_dates
+      where not exists(
+           select time
+           from `Order` as O
+           where O.time = order_date and O.room_id = R.id and O.status = 1
+          )
+    ) ;
