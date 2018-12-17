@@ -27,6 +27,9 @@ app.get('/login', (req: Request, res: Response) => {
 app.get('/signup', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, 'html/signup.html'));
 });
+app.get('/profile', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, 'html/profile.html'));
+});
 
 app.get('/api/login', (req: Request, res: Response) => {
   let username = req.query.username;
@@ -740,6 +743,273 @@ app.all('/api/cancel_room', (req: Request, res: Response) => {
     })
   }
 })
+
+
+
+app.all('/api/query_order', (req: Request, res: Response) => {
+  let order_id: string = req.body.order_id;
+  let time_min: string = req.body.time_min;
+  let time_max: string = req.body.time_max;
+  let floor: string = req.body.floor;
+  let room_num: string = req.body.room_num;
+  let user_id: string = req.body.user_id;
+  let name : string = req.body.name
+
+  console.log(req.body)
+  let query: string = 'select O.id, check_in, check_out, user_id, U.name, room_id, room_num, status from `Order` as O, User as U, Room as R where O.room_id = R.id and O.user_id = U.id and O.id like ? and check_in >= ? and check_out <= ? and floor like ?  and room_num like ? and user_id like ? and U.name like ?  ;';
+  let arg : string[] = ['%', '-1', 'null', '%', '%', '%', '%'];
+  console.log(arg)
+  if (order_id != '') {
+    arg[0] = order_id;
+  }
+  if (time_min != ''){
+    arg[1] = time_min;
+  }
+  if (time_max != ''){
+    arg[2] = time_max;
+  }
+  if (floor != ''){
+    arg[3] = floor;
+  }
+  if (room_num != ''){
+    arg[4] = room_num;
+  }
+  if (user_id != ''){
+    arg[5] = user_id;
+  }
+  if (name != ''){
+    arg[6] = name;
+  }
+ console.log(arg)
+  pool.getConnection()
+    .then(conn => {
+      conn.query(query, arg)
+        .then((table) => {
+          // for (let i = 0; i < table.length; ++i) {
+          //   if (table[i].gender == 0) {
+          //     table[i].gender = 'man';
+          //   } else if (table[i].gender == 0) {
+          //     table[i].gender = 'woman';
+          //   }
+          //   let birthdate: string = table[i].birthdate.toISOString();
+          //   table[i].birthdate = birthdate.substr(0, 10);
+          // }
+          res.json({
+            "orders": JSON.stringify(table),
+            'error_code': 0,
+            'error_msg': 'ok'
+          })
+        })
+        .catch(err => {
+          res.json({
+            'error_code': 1,
+            'error_msg': JSON.stringify(err)
+          })
+        })
+        .finally(() => {
+          conn.end();
+        })
+    })
+    .catch(err => {
+      console.log('ERROR' + err);
+    })
+});
+
+
+app.all('/api/query_order_operations', (req: Request, res: Response) => {
+  let order_id: string = req.body.order_id;
+
+  console.log(req.body)
+  let query: string = 'select id, time, detail from Operation where order_id like ?';
+  let arg : string[] = [];
+  try {
+    if (order_id == '') {
+      throw "order_id is empty or underfined!!"
+    }
+    arg.push(order_id)
+    pool.getConnection()
+      .then(conn => {
+        conn.query(query, arg)
+        .then((table) => {
+          // for (let i = 0; i < table.length; ++i) {
+          //   if (table[i].gender == 0) {
+          //     table[i].gender = 'man';
+          //   } else if (table[i].gender == 0) {
+          //     table[i].gender = 'woman';
+          //   }
+          //   let birthdate: string = table[i].birthdate.toISOString();
+          //   table[i].birthdate = birthdate.substr(0, 10);
+          // }
+          res.json({
+            "orders": JSON.stringify(table),
+            'error_code': 0,
+            'error_msg': 'ok'
+          })
+        })
+        .finally(()=>{
+          conn.end();
+        });
+      })
+      .catch((error) =>{
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      })
+  } catch (error) {
+    res.json({
+      'error_code': 1,
+      'error_msg': JSON.stringify(error)
+    })
+  }
+})
+
+
+
+app.all('/api/cancel_order', (req: Request, res: Response) => {
+  let order_id: string = req.body.order_id;
+
+  console.log(req.body)
+  let query: string = 'update `Order` as O set status = 0 where O.id = ? ';
+  let query2 : string = 'insert into Operation(time, detail, order_id) value (now(), 2, ? );'
+  let arg : string[] = []
+  try {
+    if (order_id == '') {
+      throw "order_id is empty or underfined!!"
+    }
+    arg.push(order_id)
+    pool.getConnection()
+      .then(conn => {
+        conn.query(query, arg)
+        .catch((error) =>{
+          console.log(error)
+          res.json({
+            'error_code': 1,
+            'error_msg': JSON.stringify(error),
+          })
+        })
+        .finally(()=>{
+          conn.end();
+        });
+      })
+      .catch((error) =>{
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      })
+    pool.getConnection()
+      .then(conn => {
+        conn.query(query2, arg)
+        .then((ret) => {
+          res.json({
+            'error_code': 0,
+            'error_msg': 'ok'
+          })
+        })
+        .catch((error) =>{
+          console.log(error)
+          res.json({
+            'error_code': 1,
+            'error_msg': JSON.stringify(error),
+          })
+        })
+        .finally(()=>{
+          conn.end();
+        });
+      })
+      .catch((error) =>{
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      })
+  } catch (error) {
+    res.json({
+      'error_code': 1,
+      'error_msg': JSON.stringify(error)
+    })
+  }
+})
+
+
+
+app.all('/api/query_avail_room', (req: Request, res: Response) => {
+  let check_in: string = req.body.check_in;
+  let check_out: string = req.body.check_out;
+  let capacity: string = req.body.capacity;
+  let wifi: string = req.body.wifi;
+  let breakfast: string = req.body.breakfast;
+
+  console.log(req.body)
+  let query: string = ' select R.id,R.floor, R.room_num,R.price, T.breakfast, T.wifi ,T.name, T.capacity from Room as R, RoomType as T where R.type_id = T.id and T.capacity >= ? and T.wifi like ? and T.breakfast like ? and not exists ( select room_id, O.id from `Order` as O where status = 1 and ((O.check_in <= ? and O.check_out >= ?) or (O.check_in <= ? and O.check_out >= ?)) and O.room_id = R.id );';
+  // [capacity, wifi, breakfast, check_in check_in check_out check_out]
+  let arg : string[] = [ '-1', '%', '%', '-1', 'null', '-1', 'null']
+  try {
+    if (capacity != ''){
+      arg[0] = capacity;
+    }
+    if (wifi != ''){
+      arg[1] = wifi;
+    }
+    if (breakfast != ''){
+      arg[2] = breakfast;
+    }
+    if (check_in != '') {
+      arg[3] = check_in;
+      arg[4] = check_in;
+    }
+    if (check_out != ''){
+      arg[5] = check_out;
+      arg[6] = check_out;
+    }
+    pool.getConnection()
+      .then(conn => {
+        conn.query(query, arg)
+        .then((table) => {
+          for (let i = 0; i < table.length; ++i) {
+            if (table[i].wifi == 0) {
+              table[i].wifi = 'No';
+            } else if (table[i].wifi == 1) {
+              table[i].wifi = 'Yes';
+            }
+            if (table[i].breakfast == 0) {
+              table[i].breakfast = 'No';
+            } else if (table[i].breakfast == 1) {
+              table[i].breakfast = 'Yes';
+            } 
+          }
+          res.json({
+            "orders": JSON.stringify(table),
+            'error_code': 0,
+            'error_msg': 'ok'
+          })
+        })
+        .finally(()=>{
+          conn.end();
+        });
+      })
+      .catch((error) =>{
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      })
+  } catch (error) {
+    res.json({
+      'error_code': 1,
+      'error_msg': JSON.stringify(error)
+    })
+  }
+})
+
+
+
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 

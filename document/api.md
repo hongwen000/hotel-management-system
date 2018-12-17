@@ -51,7 +51,7 @@ get方法
 
 #### URL
 
-`/api/query_room`
+`/api/query_avail_room`
 
 #### 请求示例及参数
 
@@ -664,7 +664,11 @@ TODO:
 
 空表示不指定
 
-#### URL
+尽量使用like搜索
+
+#### URL及方法
+
+post方法
 
 `/api/query_order`
 
@@ -679,6 +683,7 @@ TODO:
 | floor | string | 房间的层数      |
 | room_num | string    | 房间号    |
 | user_id | string | 用户id|
+| name | string | 用户名字|
 
 
 
@@ -690,11 +695,67 @@ TODO:
     "orders":[
         {
         	"order_id":XXXXX,
-        	"time":"2018-01-01",
+        	"check_in":"2018-01-01",
+        	"check_out":"2018-01-02",
             "user_id":XXXXX,
+            "name":"username",
             "room_id":XXXXX,
-            "room_num":"527"
+            "room_num":"527",
             "status":0
+        },
+        {
+            //....
+        }
+ 
+    ],
+    'error_code':0,
+    'error_msg':'ok',
+}
+```
+
+| 属性名   | 类型 | 值                               |
+| -------- | ---- | -------------------------------- |
+| order_id | int  | 订单号（订单在数据库中的唯一id） |
+| check_in     | date | 入住时间                     |
+| check_out     | date | 退房时间                     |
+| user_id  | int  | 用户id（用户在数据库中的唯一id） |
+| name | string | 用户姓名 |
+| room_id | int | 房间id（房间在数据库中的唯一id）|
+| room_num | string | 房间号 |
+| status   | int  | 0表示已取消，1表示已预订         |
+| error_code | int    | 0为正常，1为异常 |
+| error_msg  | string | 错误信息   （默认为'ok'）      |
+
+
+### API：查询某订单的Operation
+
+查询指定订单的Operation，如
+1 表示 生成订单
+2 表示 取消订单
+
+#### URL及方法
+
+post方法
+
+`/api/query_order_operations`
+
+
+#### 请求实例与参数
+
+| 属性名    | 类型   | 值                         |
+| --------- | ------ | -------------------------- |
+| order_id | string | 订单号（订单在数据中的唯一id）|
+
+#### 响应示例与参数
+
+
+```json
+{
+    "operations":[
+        {
+        	"op_id":XXXXX,
+        	"time":"2018-01-01",
+        	"detail":"2018-01-02"
         },
         {
             //....
@@ -706,21 +767,22 @@ TODO:
 
 | 属性名   | 类型 | 值                               |
 | -------- | ---- | -------------------------------- |
-| order_id | int  | 订单号（订单在数据库中的唯一id） |
-| time     | date | 订单生成时间                     |
-| user_id  | int  | 用户id（用户在数据库中的唯一id） |
-| room_id | int | 房间id（房间在数据库中的唯一id）|
-| room_num | string | 房间号 |
-| status   | int  | 0表示已取消，1表示已预订         |
+| op_id | int  | 每个Operation在数据库中的唯一id |
+| time     | date | Operation发生时间                     |
+| detail     | int | 操作细节       1 表示 生成订单,2 表示 取消订单  |
+| error_code | int    | 0为正常，1为异常 |
+| error_msg  | string | 错误信息   （默认为'ok'）      |
 
+### API：取消订单
 
+取消订单：将指定的预定订单取消，并且在Operation表中增加一行
 
-### API：设置指定订单状态
+time, detail=2, order_id,
 
 
 #### URL
 
-`/api/set_order`
+`/api/cancel_order`
 
 
 #### 请求实例与参数
@@ -728,8 +790,6 @@ TODO:
 | 属性名    | 类型   | 值                         |
 | --------- | ------ | -------------------------- |
 | order_id | string | 订单号（订单在数据中的唯一id）|
-| status | int | 状态,0表示取消，1表示预定|
-
 
 
 #### 响应示例与参数
@@ -737,7 +797,7 @@ TODO:
 | 属性名     | 类型   | 值               |
 | ---------- | ------ | ---------------- |
 | error_code | int    | 0为正常，1为异常 |
-| error_msg  | string | 错误信息         |
+| error_msg  | string | 错误信息   （默认为'ok'）       |
 
 
 
