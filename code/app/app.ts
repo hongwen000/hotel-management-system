@@ -723,6 +723,54 @@ app.all('/api/query_order', (req: Request, res: Response) => {
 });
 
 
+app.all('/api/query_order_operations', (req: Request, res: Response) => {
+  let order_id: string = req.body.order_id;
+
+  console.log(req.body)
+  let query: string = 'select id, time, detail from Operation where order_id like ?';
+  let arg : string[] = [];
+  try {
+    if (order_id == '') {
+      throw "order_id is empty or underfined!!"
+    }
+    arg.push(order_id)
+    pool.getConnection()
+      .then(conn => {
+        conn.query(query, arg)
+        .then((table) => {
+          // for (let i = 0; i < table.length; ++i) {
+          //   if (table[i].gender == 0) {
+          //     table[i].gender = 'man';
+          //   } else if (table[i].gender == 0) {
+          //     table[i].gender = 'woman';
+          //   }
+          //   let birthdate: string = table[i].birthdate.toISOString();
+          //   table[i].birthdate = birthdate.substr(0, 10);
+          // }
+          res.json({
+            "orders": JSON.stringify(table),
+            'error_code': 0,
+            'error_msg': 'ok'
+          })
+        })
+        .finally(()=>{
+          conn.end();
+        });
+      })
+      .catch((error) =>{
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      })
+  } catch (error) {
+    res.json({
+      'error_code': 1,
+      'error_msg': JSON.stringify(error)
+    })
+  }
+})
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
