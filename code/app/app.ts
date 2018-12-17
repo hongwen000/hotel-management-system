@@ -650,6 +650,81 @@ app.all('/api/query_order_by_user', (req: Request, res: Response) => {
     })
   }
 })
+
+
+
+app.all('/api/query_order', (req: Request, res: Response) => {
+  let order_id: string = req.body.order_id;
+  let time_min: string = req.body.time_min;
+  let time_max: string = req.body.time_max;
+  let floor: string = req.body.floor;
+  let room_num: string = req.body.room_num;
+  let user_id: string = req.body.user_id;
+  let name : string = req.body.name
+
+  console.log(req.body)
+  let query: string = 'select O.id, check_in, check_out, user_id, U.name, room_id, room_num, status from `Order` as O, User as U, Room as R where O.room_id = R.id and O.user_id = U.id and O.id like ? and check_in >= ? and check_out <= ? and floor like ?  and room_num like ? and user_id like ? and U.name like ?  ;';
+  let arg : string[] = ['%', '-1', 'null', '%', '%', '%', '%'];
+  console.log(arg)
+  if (order_id != '') {
+    arg[0] = order_id;
+  }
+  if (time_min != ''){
+    arg[1] = time_min;
+  }
+  if (time_max != ''){
+    arg[2] = time_max;
+  }
+  if (floor != ''){
+    arg[3] = floor;
+  }
+  if (room_num != ''){
+    arg[4] = room_num;
+  }
+  if (user_id != ''){
+    arg[5] = user_id;
+  }
+  if (name != ''){
+    arg[6] = name;
+  }
+ console.log(arg)
+  pool.getConnection()
+    .then(conn => {
+      conn.query(query, arg)
+        .then((table) => {
+          // for (let i = 0; i < table.length; ++i) {
+          //   if (table[i].gender == 0) {
+          //     table[i].gender = 'man';
+          //   } else if (table[i].gender == 0) {
+          //     table[i].gender = 'woman';
+          //   }
+          //   let birthdate: string = table[i].birthdate.toISOString();
+          //   table[i].birthdate = birthdate.substr(0, 10);
+          // }
+          res.json({
+            "orders": JSON.stringify(table),
+            'error_code': 0,
+            'error_msg': 'ok'
+          })
+        })
+        .catch(err => {
+          res.json({
+            'error_code': 1,
+            'error_msg': JSON.stringify(err)
+          })
+        })
+        .finally(() => {
+          conn.end();
+        })
+    })
+    .catch(err => {
+      console.log('ERROR' + err);
+    })
+});
+
+
+
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 

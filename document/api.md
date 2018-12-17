@@ -656,6 +656,7 @@ post方法
 | floor | string | 房间的层数      |
 | room_num | string    | 房间号    |
 | user_id | string | 用户id|
+| name | string | 用户名字|
 
 
 
@@ -679,7 +680,9 @@ post方法
             //....
         }
  
-    ]
+    ],
+    'error_code':0,
+    'error_msg':'ok',
 }
 ```
 
