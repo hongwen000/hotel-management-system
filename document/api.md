@@ -135,6 +135,34 @@ get方法
 
 ## 用户个人子系统
 
+### API：修改某个用户的个人信息
+
+#### URL
+
+`/api/alter_user_info`
+
+#### 请求示例及参数
+
+```json
+{
+    "credential":"XXXXXXX",
+    "name":"XXX",
+    // ...
+}
+```
+
+| 属性       | 类型   | 值                                       |
+| ---------- | ------ | ---------------------------------------- |
+| credential | string | 身份证号                                 |
+| name       | string | 用户名称                                 |
+| gender     | string | 空表示不指定，'man'是雄性，'woman'是雌性 |
+| birthdate  | string | 用户出生日期（如“2018-01-01”）           |
+| phone      | string | 手机号码                                 |
+| balance    | string | 余额（单位为元）                         |
+| bonus      | string | 积分下限                                 |
+
+(user_id, credential, name, gender, birthdate, phone, balance, bonus)
+
 ### API：查询自己的历史订单
 
 #### URL

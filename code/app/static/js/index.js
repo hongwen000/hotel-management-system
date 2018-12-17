@@ -81,6 +81,7 @@ let user_app = new Vue({
             for (key in this.$data) {
                 this.$data[key] = '';
             }
+            birthdate = new Date();
         },
         date2format: function(date) {
             let _date = date.getDate();
@@ -157,15 +158,6 @@ let room_app = new Vue({
         iserror: false,
         msg: '',
         room_id: '',
-        // rooms: [{
-        //     'id': 123,
-        //     'name': 'yanbin',
-        //     'age': 20
-        // },{
-        //     'id': 124,
-        //     'name': 'ybyb',
-        //     'age': 40
-        // }] //result
         rooms: [],
         room_types: [],
         room_types2id: {},
@@ -334,5 +326,75 @@ let root_app = new Vue({
                 }
             })
         }
+    }
+})
+
+let order_app = new Vue({
+    el: '#order',
+    data: {
+        bdate: new Date(),
+        edate: new Date(),
+        orderid: '',
+        floor: '',
+        room_num: '',
+        user_id: '',
+        result: [],
+        msg: '',
+        iserror: false,
+        role: role
+    },
+    methods: {
+        submit: function() {
+            let data = {
+                order_id: this.orderid,
+                time_min: this.date2format(this.bdate),
+                time_max: this.date2format(this.edate),
+                floor: this.floor,
+                room_num: this.room_num,
+                user_id: this.user_id
+            }
+            console.log(data);
+
+            $.ajax({
+                url: '/api/query_order',
+                method: 'POST',
+                data: data,
+                success: function(data) {
+                    if (error_code === 0) {
+                        order_app.result = JSON.parse(data.orders);
+                    } else {
+                        order_app.iserror = true;
+                        order_app.msg = data.error_msg;
+                    }
+                }
+            });
+        },
+        clear: function() {
+            for (key in this.$data) {
+                this.$data[key] = '';
+            }
+            this.$data.bdata = new Date();
+            this.$data.edata = new Date();
+        },
+        date2format: function(date) {
+            let _date = date.getDate();
+            let Month = date.getMonth();
+            let Year = date.getFullYear();
+            if (_date.length < 2) {
+                _date = '0' + _date;
+            }
+            if (Month.length < 2) {
+                Month = '0' + Month;
+            }
+            return `${Year}-${Month}-${_date}`;
+
+        },
+        // success: function(data) {
+        //     if (error_code === 0) {
+        //         this.result = JSON.parse(data.orders);
+        //         this.msg = data.error_msg;
+        //         this.i
+        //     }
+        // }
     }
 })
