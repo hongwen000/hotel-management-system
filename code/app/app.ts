@@ -877,15 +877,18 @@ app.all('/api/query_avail_room', (req: Request, res: Response) => {
       .then(conn => {
         conn.query(query, arg)
         .then((table) => {
-          // for (let i = 0; i < table.length; ++i) {
-          //   if (table[i].gender == 0) {
-          //     table[i].gender = 'man';
-          //   } else if (table[i].gender == 0) {
-          //     table[i].gender = 'woman';
-          //   }
-          //   let birthdate: string = table[i].birthdate.toISOString();
-          //   table[i].birthdate = birthdate.substr(0, 10);
-          // }
+          for (let i = 0; i < table.length; ++i) {
+            if (table[i].wifi == 0) {
+              table[i].wifi = 'No';
+            } else if (table[i].wifi == 1) {
+              table[i].wifi = 'Yes';
+            }
+            if (table[i].breakfast == 0) {
+              table[i].breakfast = 'No';
+            } else if (table[i].breakfast == 1) {
+              table[i].breakfast = 'Yes';
+            } 
+          }
           res.json({
             "orders": JSON.stringify(table),
             'error_code': 0,
