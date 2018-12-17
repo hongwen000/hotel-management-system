@@ -11,6 +11,7 @@
     <script src="/static/js/datepicker.js"></script>
     <script src="/static/js/table.js"></script>
     <script src="/static/js/message.js"></script>
+    <script src="/static/js/inputs.js"></script>
     <link rel="stylesheet" href="/static/css/datepicker.css">
     <link rel="stylesheet" href="/static/css/index.css">
 </head>
@@ -346,7 +347,7 @@
                     </div>
                 </div>
 
-                <div class="column">
+                <div class="column" v-if="role <= 1">
                     <label class="label">
                         user id
                     </label>
