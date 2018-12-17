@@ -18,7 +18,7 @@ order_df = pd.DataFrame(columns=column_names)
 op_df = pd.DataFrame(columns=op_column_names)
 
 # 1. 生成数据
-for i in range(5000):
+for i in range(6000):
     # 生成一条订单
     this_data = {}
     this_data['id'] = id_counter
@@ -47,7 +47,7 @@ for i in range(5000):
 
 # 2. 如果符合条件那就插入
     isOK = True
-    test_df = order_df[order_df['room_id'] == this_data['room_id']]
+    test_df = order_df[(order_df['room_id'] == this_data['room_id'] )&(order_df['status'] == 1)]
     # 如果test_df中含有与该订单相冲突的订单，那就不ok
     for idx, row in test_df.iterrows():
         ci_day = int(row['check_in'][-2:])
