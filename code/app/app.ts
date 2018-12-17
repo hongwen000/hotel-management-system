@@ -608,6 +608,48 @@ app.get('/api/get_room_type', (req: Request, res: Response) => {
     })
 });
 
+app.all('/api/query_order_by_user', (req: Request, res: Response) => {
+  let user_id: number = parseInt(req.body.user_id);
+  console.log(req.body)
+  let query: string = 'select * from Order as o where o.user_id = ?';
+  try {
+    if (user_id == undefined) {
+      throw "user_id is empty or underfined!!"
+    }
+    pool.getConnection()
+      .then(conn => {
+        conn.query(query, user_id)
+          .then((ret) => {
+            console.log(ret);
+            ret.json({
+
+            })
+      })
+      .catch((error) =>{
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      })
+      .finally(()=>{
+        conn.end();
+      });
+    })
+    .catch((error) => {
+      console.log(error)
+      res.json({
+        'error_code': 1,
+        'error_msg': JSON.stringify(error),
+      })
+    });
+  } catch (error) {
+    res.json({
+      'error_code': 1,
+      'error_msg': JSON.stringify(error)
+    })
+  }
+})
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 

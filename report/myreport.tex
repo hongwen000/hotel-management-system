@@ -189,8 +189,9 @@
         \emph{属性} & \emph{备注} \\
     \midrule
         id & 唯一 \\
-        time & 房间的预订日期 \\
-        status & 订单状态（正常、取消）\\
+        status & 订单状态（取消、正常）\\
+        check\_in & 预订的入住时间 \\
+        check\_out & 预订的最后一天
         
     \bottomrule
     \hiderowcolors
@@ -261,7 +262,7 @@ Room(\textbf{id}, floor, room\_num, price, \textit{type\_id})
 
 Operation(\textbf{id}, time, operation. \textit{order\_id})
 
-Order(\textbf{id}, time, status, \textit{room\_id}, \textit{user\_id})
+Order(\textbf{id}, time, status, check\_in, check\_out, \textit{room\_id}, \textit{user\_id})
 
 Region(\textbf{id}, name)
 

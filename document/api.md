@@ -145,6 +145,7 @@ get方法
 
 ```json
 {
+    "user_id": 1234,
     "credential":"XXXXXXX",
     "name":"XXX",
     // ...
@@ -153,6 +154,7 @@ get方法
 
 | 属性       | 类型   | 值                                       |
 | ---------- | ------ | ---------------------------------------- |
+| user_id    | string | 要修改信息的用户在数据库中的唯一ID       |
 | credential | string | 身份证号                                 |
 | name       | string | 用户名称                                 |
 | gender     | string | 空表示不指定，'man'是雄性，'woman'是雌性 |
@@ -161,7 +163,9 @@ get方法
 | balance    | string | 余额（单位为元）                         |
 | bonus      | string | 积分下限                                 |
 
-(user_id, credential, name, gender, birthdate, phone, balance, bonus)
+#### 响应示例与参数
+
+
 
 ### API：查询自己的历史订单
 
@@ -180,7 +184,6 @@ get方法
 | ----------- | ------ | ---------------------------------------- |
 | user_id  | int | user在数据库中的唯一id                                 |
 
-
 #### 响应示例与参数
 
 ```json
@@ -188,8 +191,9 @@ get方法
     "orders": [
         {
             "id": 1234,
-            "time": "2018-08-08T15:53:00",
             "status":  0,
+            "check_in": "2018-08-08",
+            "check_out": "2018-08-09",
             "room_id": 1,
             "user_id": 1,
             "op": [
@@ -210,20 +214,21 @@ get方法
 }
 ```
 
-| 属性    | 类型        | 值                             |
-| ------- | ----------- | ------------------------------ |
-| id      | int         | 订单在数据库中的唯一ID         |
-| time    | string date | 订单生成事件                   |
-| status  | int         | 订单状态：0：已完成，1：已取消 |
-| room_id | int         | 预定的房间在数据库中的唯一ID   |
-| user_id | int         | 下单的用户在数据库中的唯一ID   |
-| op      | Array       | 见下表                         |
+| 属性      | 类型        | 值                             |
+| --------- | ----------- | ------------------------------ |
+| id        | int         | 订单在数据库中的唯一ID         |
+| status    | int         | 订单状态：1：已完成，0：已取消 |
+| check_in  | string date | 预订的入住时间                 |
+| check_out | string date | 预订的最后一天                 |
+| room_id   | int         | 预定的房间在数据库中的唯一ID   |
+| user_id   | int         | 下单的用户在数据库中的唯一ID   |
+| op        | Array       | 见下表                         |
 
-| 属性   | 类型        | 值                                  |
-| ------ | ----------- | ----------------------------------- |
-| id     | int         | 每个订单操作在数据库中的唯一ID      |
-| time   | string date | 执行操作的时间                      |
-| detail | int         | 操作内容：0:：完成订单，1：取消订单 |
+| 属性   | 类型            | 值                                 |
+| ------ | --------------- | ---------------------------------- |
+| id     | int             | 每个订单操作在数据库中的唯一ID     |
+| time   | string datetime | 执行操作的时间                     |
+| detail | int             | 操作内容：1：完成订单，0：取消订单 |
 
 
 
@@ -643,7 +648,7 @@ TODO:
 | --------- | ------ | -------------------------- |
 | order_id | string | 订单号（订单在数据中的唯一id）|
 | time_min | string  | 被查询订单的时间下限 |
-|  time_max | string |  被查询订单的时间上限|
+| time_max | string |  被查询订单的时间上限|
 | floor | string | 房间的层数      |
 | room_num | string    | 房间号    |
 | user_id | string | 用户id|
@@ -660,6 +665,8 @@ TODO:
         	"order_id":XXXXX,
         	"time":"2018-01-01",
             "user_id":XXXXX,
+            "room_id":XXXXX,
+            "room_num":"527"
             "status":0
         },
         {
@@ -675,6 +682,8 @@ TODO:
 | order_id | int  | 订单号（订单在数据库中的唯一id） |
 | time     | date | 订单生成时间                     |
 | user_id  | int  | 用户id（用户在数据库中的唯一id） |
+| room_id | int | 房间id（房间在数据库中的唯一id）|
+| room_num | string | 房间号 |
 | status   | int  | 0表示已取消，1表示已预订         |
 
 
