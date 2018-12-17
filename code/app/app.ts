@@ -844,6 +844,75 @@ app.all('/api/cancel_order', (req: Request, res: Response) => {
 
 
 
+app.all('/api/query_avail_room', (req: Request, res: Response) => {
+  let check_in: string = req.body.check_in;
+  let check_out: string = req.body.check_out;
+  let capacity: string = req.body.capacity;
+  let wifi: string = req.body.wifi;
+  let breakfast: string = req.body.breakfast;
+
+  console.log(req.body)
+  let query: string = ' select R.id,R.floor, R.room_num,R.price, T.breakfast, T.wifi ,T.name, T.capacity from Room as R, RoomType as T where R.type_id = T.id and T.capacity >= ? and T.wifi like ? and T.breakfast like ? and not exists ( select room_id, O.id from `Order` as O where status = 1 and ((O.check_in <= ? and O.check_out >= ?) or (O.check_in <= ? and O.check_out >= ?)) and O.room_id = R.id );';
+  // [capacity, wifi, breakfast, check_in check_in check_out check_out]
+  let arg : string[] = [ '-1', '%', '%', '-1', 'null', '-1', 'null']
+  try {
+    if (capacity != ''){
+      arg[0] = capacity;
+    }
+    if (wifi != ''){
+      arg[1] = wifi;
+    }
+    if (breakfast != ''){
+      arg[2] = breakfast;
+    }
+    if (check_in != '') {
+      arg[3] = check_in;
+      arg[4] = check_in;
+    }
+    if (check_out != ''){
+      arg[5] = check_out;
+      arg[6] = check_out;
+    }
+    pool.getConnection()
+      .then(conn => {
+        conn.query(query, arg)
+        .then((table) => {
+          // for (let i = 0; i < table.length; ++i) {
+          //   if (table[i].gender == 0) {
+          //     table[i].gender = 'man';
+          //   } else if (table[i].gender == 0) {
+          //     table[i].gender = 'woman';
+          //   }
+          //   let birthdate: string = table[i].birthdate.toISOString();
+          //   table[i].birthdate = birthdate.substr(0, 10);
+          // }
+          res.json({
+            "orders": JSON.stringify(table),
+            'error_code': 0,
+            'error_msg': 'ok'
+          })
+        })
+        .finally(()=>{
+          conn.end();
+        });
+      })
+      .catch((error) =>{
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      })
+  } catch (error) {
+    res.json({
+      'error_code': 1,
+      'error_msg': JSON.stringify(error)
+    })
+  }
+})
+
+
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 

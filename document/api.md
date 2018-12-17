@@ -51,7 +51,7 @@ get方法
 
 #### URL
 
-`/api/query_room`
+`/api/query_avail_room`
 
 #### 请求示例及参数
 
