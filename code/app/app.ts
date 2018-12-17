@@ -216,11 +216,9 @@ app.all('/api/query_user', (req: Request, res: Response) => {
   let bonus_max: string = req.body.bonus_max;
   console.log(req.body)
   let query: string = 'select * from User as u where 1=1';
-  // 精确匹配证件号
   if (credential != '') {
-    query = query + (' and u.credential = ' + credential);
+    query = query + (" and u.credential LIKE'%" + credential + "%'")
   }
-  // 模糊匹配姓名
   if (name != '') {
     query = query + (" and u.name LIKE'%" + name + "%'")
   }
@@ -228,7 +226,7 @@ app.all('/api/query_user', (req: Request, res: Response) => {
     query = query + (" and u.gender = " + gender);
   }
   if (phone != '') {
-    query = query + (' and u.phone = ' + phone);
+    query = query + (" and u.phone LIKE'%" + phone + "%'")
   }
   if (balance_min != '') {
     query = query + (" and u.balance >= " + balance_min);
