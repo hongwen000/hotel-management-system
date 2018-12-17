@@ -702,48 +702,6 @@ app.all('/api/query_order_details', (req: Request, res: Response) => {
   }
 })
 
-app.all('/api/cancel_room', (req: Request, res: Response) => {
-  let user_id: number = parseInt(req.body.user_id);
-  console.log(req.body)
-  let query: string = 'select * from `Order` as o where o.user_id = ?';
-  try {
-    if (user_id == undefined) {
-      throw "user_id is empty or underfined!!"
-    }
-    pool.getConnection()
-      .then(conn => {
-        conn.query(query, user_id)
-          .then((ret) => {
-            console.log(ret);
-            ret.json({
-            })
-      })
-      .catch((error) =>{
-        console.log(error)
-        res.json({
-          'error_code': 1,
-          'error_msg': JSON.stringify(error),
-        })
-      })
-      .finally(()=>{
-        conn.end();
-      });
-    })
-    .catch((error) => {
-      console.log(error)
-      res.json({
-        'error_code': 1,
-        'error_msg': JSON.stringify(error),
-      })
-    });
-  } catch (error) {
-    res.json({
-      'error_code': 1,
-      'error_msg': JSON.stringify(error)
-    })
-  }
-})
-
 
 
 app.all('/api/query_order', (req: Request, res: Response) => {
@@ -1075,6 +1033,47 @@ app.all('/api/order_room', (req: Request, res: Response) => {
   }
 })
 
+app.all('/api/alter_user_info', (req: Request, res: Response) => {
+  let user_id: number = parseInt(req.body.user_id);
+  let credential: string = req.body.credential;
+  let name: string = req.body.name;
+  let gender: number = parseInt(req.body.gender);
+  let birthdate: string = req.body.birthdate;
+  let phone: string = req.body.phone;
+  let balance: number = parseInt(req.body.balance);
+  let bonus: number = parseInt(req.body.bonus);
+  console.log(req.body)
+  let query: string = 'update User set credential = ?, name = ?, gender = ?, birthdate = ?, phone = ?, balance = ?, bonus = ? where id = ?' ;
+  let arg = [credential, name, gender, birthdate, phone, balance, bonus, user_id];
+  pool.getConnection()
+    .then(conn => {
+      conn.query(query, arg)
+        .then((ret) => {
+          console.log(ret);
+          res.json({
+            "error_code": 0,
+            "error_msg": JSON.stringify(ret)
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+          res.json({
+            'error_code': 1,
+            'error_msg': error,
+          })
+        })
+        .finally(() => {
+          conn.end();
+        })
+    })
+    .catch(err => {
+      console.log('ERROR' + err);
+      res.json({
+        "error_code": 1,
+        "error_msg": JSON.stringify(err)
+      })
+    });
+})
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 
