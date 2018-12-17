@@ -637,7 +637,11 @@ TODO:
 
 空表示不指定
 
-#### URL
+尽量使用like搜索
+
+#### URL及方法
+
+post方法
 
 `/api/query_order`
 
@@ -663,10 +667,12 @@ TODO:
     "orders":[
         {
         	"order_id":XXXXX,
-        	"time":"2018-01-01",
+        	"check_in":"2018-01-01",
+        	"check_out":"2018-01-02",
             "user_id":XXXXX,
+            "username":"username",
             "room_id":XXXXX,
-            "room_num":"527"
+            "room_num":"527",
             "status":0
         },
         {
@@ -680,12 +686,61 @@ TODO:
 | 属性名   | 类型 | 值                               |
 | -------- | ---- | -------------------------------- |
 | order_id | int  | 订单号（订单在数据库中的唯一id） |
-| time     | date | 订单生成时间                     |
+| check_in     | date | 入住时间                     |
+| check_out     | date | 退房时间                     |
 | user_id  | int  | 用户id（用户在数据库中的唯一id） |
 | room_id | int | 房间id（房间在数据库中的唯一id）|
 | room_num | string | 房间号 |
 | status   | int  | 0表示已取消，1表示已预订         |
+| error_code | int    | 0为正常，1为异常 |
+| error_msg  | string | 错误信息   （默认为'ok'）      |
 
+
+### API：查询某订单的Operation
+
+查询指定订单的Operation，如
+1 表示 生成订单
+2 表示 取消订单
+
+#### URL及方法
+
+post方法
+
+`/api/query_order_operations`
+
+
+#### 请求实例与参数
+
+| 属性名    | 类型   | 值                         |
+| --------- | ------ | -------------------------- |
+| order_id | string | 订单号（订单在数据中的唯一id）|
+
+#### 响应示例与参数
+
+
+```json
+{
+    "operations":[
+        {
+        	"op_id":XXXXX,
+        	"time":"2018-01-01",
+        	"detail":"2018-01-02"
+        },
+        {
+            //....
+        }
+ 
+    ]
+}
+```
+
+| 属性名   | 类型 | 值                               |
+| -------- | ---- | -------------------------------- |
+| op_id | int  | 每个Operation在数据库中的唯一id |
+| time     | date | Operation发生时间                     |
+| detail     | int | 操作细节       1 表示 生成订单,2 表示 取消订单  |
+| error_code | int    | 0为正常，1为异常 |
+| error_msg  | string | 错误信息   （默认为'ok'）      |
 
 
 ### API：设置指定订单状态
@@ -710,7 +765,7 @@ TODO:
 | 属性名     | 类型   | 值               |
 | ---------- | ------ | ---------------- |
 | error_code | int    | 0为正常，1为异常 |
-| error_msg  | string | 错误信息         |
+| error_msg  | string | 错误信息   （默认为'ok'）       |
 
 
 
