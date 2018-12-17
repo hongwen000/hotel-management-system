@@ -746,13 +746,16 @@ post方法
 | error_code | int    | 0为正常，1为异常 |
 | error_msg  | string | 错误信息   （默认为'ok'）      |
 
+### API：取消订单
 
-### API：设置指定订单状态
+取消订单：将指定的预定订单取消，并且在Operation表中增加一行
+
+time, detail=2, order_id,
 
 
 #### URL
 
-`/api/set_order`
+`/api/cancel_order`
 
 
 #### 请求实例与参数
@@ -760,8 +763,6 @@ post方法
 | 属性名    | 类型   | 值                         |
 | --------- | ------ | -------------------------- |
 | order_id | string | 订单号（订单在数据中的唯一id）|
-| status | int | 状态,0表示取消，1表示预定|
-
 
 
 #### 响应示例与参数
