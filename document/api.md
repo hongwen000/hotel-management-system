@@ -599,6 +599,11 @@ TODO:
 查询符合条件的订单的状态及信息
 在查询中，所有请求都是字符串，然后若用户未指定某参数的值，则为空串。
 
+可以通过房间信息（如房间号，房间层数筛选订单）
+可以通过时间信息搜索订单
+
+空表示不指定
+
 #### URL
 
 `/api/query_order`
@@ -608,18 +613,44 @@ TODO:
 
 | 属性名    | 类型   | 值                         |
 | --------- | ------ | -------------------------- |
-| time | string  | 被查询订单的时间 |
-| status      | string | 房间的状态      |
-| room_id  | string    | room在数据库中对应的唯一id           |
-| user_id     | string    | user对应在数据库中的唯一id |
+| order_id | string | 订单号（订单在数据中的唯一id）|
+| time_min | string  | 被查询订单的时间下限 |
+|  time_max | string |  被查询订单的时间上限|
+| floot | string | 房间的层数      |
+| room_num | string    | 房间号    |
+| user_id | string | 用户id|
 
 
 
 #### 响应示例与参数
 
 
-TODO:还在想
+```json
+{
+    "orders":[
+        {
+        	"order_id":XXXXX,
+        	"time":"2018-01-01",
+            "user_id":XXXXX,
+            "status":0
+        },
+        {
+            //....
+        }
+ 
+    ]
+}
+```
+
+| 属性名   | 类型 | 值                               |
+| -------- | ---- | -------------------------------- |
+| order_id | int  | 订单号（订单在数据库中的唯一id） |
+| time     | date | 订单生成时间                     |
+| user_id  | int  | 用户id（用户在数据库中的唯一id） |
+| status   | int  | 0表示已取消，1表示已预订         |
+
 
 
 ### API：设置指定订单状态
+
 TODO:
