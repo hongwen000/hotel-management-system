@@ -340,7 +340,8 @@ let order_app = new Vue({
         user_id: '',
         result: [],
         msg: '',
-        iserror: false
+        iserror: false,
+        role: role
     },
     methods: {
         submit: function() {

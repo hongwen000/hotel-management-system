@@ -648,7 +648,7 @@ TODO:
 | --------- | ------ | -------------------------- |
 | order_id | string | 订单号（订单在数据中的唯一id）|
 | time_min | string  | 被查询订单的时间下限 |
-|  time_max | string |  被查询订单的时间上限|
+| time_max | string |  被查询订单的时间上限|
 | floor | string | 房间的层数      |
 | room_num | string    | 房间号    |
 | user_id | string | 用户id|
@@ -665,6 +665,8 @@ TODO:
         	"order_id":XXXXX,
         	"time":"2018-01-01",
             "user_id":XXXXX,
+            "room_id":XXXXX,
+            "room_num":"527"
             "status":0
         },
         {
@@ -680,6 +682,8 @@ TODO:
 | order_id | int  | 订单号（订单在数据库中的唯一id） |
 | time     | date | 订单生成时间                     |
 | user_id  | int  | 用户id（用户在数据库中的唯一id） |
+| room_id | int | 房间id（房间在数据库中的唯一id）|
+| room_num | string | 房间号 |
 | status   | int  | 0表示已取消，1表示已预订         |
 
 
