@@ -76,9 +76,9 @@ app.get('/api/login', (req: Request, res: Response) => {
       res.json({
         error: 2,
         msg: JSON.stringify(err)
-      })
+      });
     });
-})
+});
 
 app.get('/api/logout', (req: Request, res: Response) => {
   req.session.user = undefined;
@@ -605,10 +605,104 @@ app.get('/api/get_room_type', (req: Request, res: Response) => {
     })
 });
 
+app.all('/api/query_order_detail', (req:Request, res: Response) => {
+  
+});
+
 app.all('/api/query_order_by_user', (req: Request, res: Response) => {
   let user_id: number = parseInt(req.body.user_id);
   console.log(req.body)
-  let query: string = 'select * from Order as o where o.user_id = ?';
+  let query: string = 'select * from `Order` as o where o.user_id = ?';
+  let ret_obj:JSON;
+  try {
+    if (user_id == undefined) {
+      throw "user_id is empty or underfined!!"
+    }
+    pool.getConnection()
+      .then(conn => {
+        conn.query(query, user_id)
+          .then((ret) => {
+            ret_obj = ret;
+            console.log(JSON.stringify(ret))
+            res.json({
+              "orders": JSON.stringify(ret)
+            })
+      })
+      .catch((error) =>{
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      })
+      .finally(()=>{
+        console.log("finally: ");
+        console.log(ret_obj)
+        conn.end();
+      });
+    })
+    .catch((error) => {
+      console.log(error)
+      res.json({
+        'error_code': 1,
+        'error_msg': JSON.stringify(error),
+      })
+    })
+  } catch (error) {
+    res.json({
+      'error_code': 1,
+      'error_msg': JSON.stringify(error)
+    })
+  }
+})
+app.all('/api/query_order_details', (req: Request, res: Response) => {
+  let order_id: number = parseInt(req.body.order_id);
+  console.log(req.body)
+  let query: string = 'select * from Operation as op where op.order_id = ?';
+  try {
+    if (order_id == undefined) {
+      throw "order_id is empty or underfined!!"
+    }
+    pool.getConnection()
+      .then(conn => {
+        conn.query(query, order_id)
+          .then((ret) => {
+            console.log(JSON.stringify(ret))
+            res.json({
+              "op": JSON.stringify(ret)
+            })
+      })
+      .catch((error) =>{
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      })
+      .finally(()=>{
+        console.log("finally: ");
+        conn.end();
+      });
+    })
+    .catch((error) => {
+      console.log(error)
+      res.json({
+        'error_code': 1,
+        'error_msg': JSON.stringify(error),
+      })
+    })
+  } catch (error) {
+    res.json({
+      'error_code': 1,
+      'error_msg': JSON.stringify(error)
+    })
+  }
+})
+
+app.all('/api/cancel_room', (req: Request, res: Response) => {
+  let user_id: number = parseInt(req.body.user_id);
+  console.log(req.body)
+  let query: string = 'select * from `Order` as o where o.user_id = ?';
   try {
     if (user_id == undefined) {
       throw "user_id is empty or underfined!!"
@@ -619,7 +713,6 @@ app.all('/api/query_order_by_user', (req: Request, res: Response) => {
           .then((ret) => {
             console.log(ret);
             ret.json({
-
             })
       })
       .catch((error) =>{
