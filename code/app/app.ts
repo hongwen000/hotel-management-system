@@ -916,6 +916,71 @@ app.all('/api/query_avail_room', (req: Request, res: Response) => {
 
 
 
+app.all('/api/order_room', (req: Request, res: Response) => {
+  let room_id: string = req.body.room_id;
+  let user_id: string = req.body.user_id;
+  let check_in: string = req.body.check_in;
+  let check_out: string = req.body.check_out;
+
+  console.log(req.body)
+
+
+  let query: string = 'insert into `Order` (room_id, user_id, check_in, check_out, status) value (?, ?, ?, ?, 1);';
+  let arg: string[] = [];
+  try {
+    if (room_id == '') {
+      throw "room_id is empty !!"
+    }
+    if (user_id == '') {
+      throw "user_id is empty !!"
+    }
+    if (check_in == '') {
+      throw "check_in is empty !!"
+    }
+    if (check_out == '') {
+      throw "check_out is empty !!"
+    }
+    arg.push(room_id);
+    arg.push(user_id);
+    arg.push(check_in);
+    arg.push(check_out);
+    console.debug(arg)
+    pool.getConnection()
+      .then(conn => {
+        conn.query(query, arg)
+          .then((msg) => {
+            console.log(msg);
+            res.json({
+              'error_code': 0,
+              'error_msg': 'ok',
+            })
+          })
+          .catch((error) => {
+            console.log(error)
+            res.json({
+              'error_code': 1,
+              'error_msg': JSON.stringify(error),
+            })
+          })
+          .finally(() => {
+            conn.end();
+          })
+      })
+      .catch((error) => {
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      });
+
+  } catch (error) {
+    res.json({
+      'error_code': 1,
+      'error_msg': JSON.stringify(error)
+    })
+  }
+})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
