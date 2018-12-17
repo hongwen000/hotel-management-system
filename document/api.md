@@ -670,7 +670,7 @@ post方法
         	"check_in":"2018-01-01",
         	"check_out":"2018-01-02",
             "user_id":XXXXX,
-            "username":"username",
+            "name":"username",
             "room_id":XXXXX,
             "room_num":"527",
             "status":0
@@ -689,6 +689,7 @@ post方法
 | check_in     | date | 入住时间                     |
 | check_out     | date | 退房时间                     |
 | user_id  | int  | 用户id（用户在数据库中的唯一id） |
+| name | string | 用户姓名 |
 | room_id | int | 房间id（房间在数据库中的唯一id）|
 | room_num | string | 房间号 |
 | status   | int  | 0表示已取消，1表示已预订         |
