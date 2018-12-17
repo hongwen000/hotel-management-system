@@ -1074,6 +1074,190 @@ app.all('/api/alter_user_info', (req: Request, res: Response) => {
       })
     });
 })
+
+app.all('/api/alter_room_type', (req: Request, res: Response) => {
+  let type_id: number = parseInt(req.body.type_id);
+  let name: string = req.body.name;
+  let capacity: number = parseInt(req.body.capacity);
+  let wifi: number = parseInt(req.body.wifi);
+  let breakfast: number = parseInt(req.body.breakfast);
+  console.log(req.body)
+  let query: string = 'update RoomType set name = ?, capacity = ?, wifi = ?, breakfast = ? where id = ?';
+  let arg = [name, capacity, wifi, breakfast, type_id];
+  pool.getConnection()
+    .then(conn => {
+      conn.query(query, arg)
+        .then((ret) => {
+          console.log(ret);
+          res.json({
+            "error_code": 0,
+            "error_msg": JSON.stringify(ret)
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+          res.json({
+            'error_code': 1,
+            'error_msg': error,
+          })
+        })
+        .finally(() => {
+          conn.end();
+        })
+    })
+    .catch(err => {
+      console.log('ERROR' + err);
+      res.json({
+        "error_code": 1,
+        "error_msg": JSON.stringify(err)
+      })
+    });
+})
+
+app.all('/api/alter_room', (req: Request, res: Response) => {
+  let room_id: number = parseInt(req.body.room_id);
+  let floor: string = req.body.floor;
+  let room_num: string = req.body.room_num;
+  let price: number = parseInt(req.body.price);
+  let type_id: number = parseInt(req.body.type_id);
+  console.log(req.body)
+  let query: string = 'update Room set floor = ?, room_num = ?, price = ?, type_id = ? where id = ?';
+  let arg = [floor, room_num, price, type_id, room_id];
+  pool.getConnection()
+    .then(conn => {
+      conn.query(query, arg)
+        .then((ret) => {
+          console.log(ret);
+          res.json({
+            "error_code": 0,
+            "error_msg": JSON.stringify(ret)
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+          res.json({
+            'error_code': 1,
+            'error_msg': error,
+          })
+        })
+        .finally(() => {
+          conn.end();
+        })
+    })
+    .catch(err => {
+      console.log('ERROR' + err);
+      res.json({
+        "error_code": 1,
+        "error_msg": JSON.stringify(err)
+      })
+    });
+})
+
+
+app.all('/api/drop_room', (req: Request, res: Response) => {
+  let room_id: number = parseInt(req.body.room_id);
+  console.log(req.body)
+  let query: string = 'delete from Room where id = ?';
+  let arg = [room_id];
+  pool.getConnection()
+    .then(conn => {
+      conn.query(query, arg)
+        .then((ret) => {
+          console.log(ret);
+          res.json({
+            "error_code": 0,
+            "error_msg": JSON.stringify(ret)
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+          res.json({
+            'error_code': 1,
+            'error_msg': error,
+          })
+        })
+        .finally(() => {
+          conn.end();
+        })
+    })
+    .catch(err => {
+      console.log('ERROR' + err);
+      res.json({
+        "error_code": 1,
+        "error_msg": JSON.stringify(err)
+      })
+    });
+})
+
+app.all('/api/drop_user', (req: Request, res: Response) => {
+  let user_id: number = parseInt(req.body.user_id);
+  console.log(req.body)
+  let query: string = 'delete from Room where id = ?';
+  let arg = [user_id];
+  pool.getConnection()
+    .then(conn => {
+      conn.query(query, arg)
+        .then((ret) => {
+          console.log(ret);
+          res.json({
+            "error_code": 0,
+            "error_msg": JSON.stringify(ret)
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+          res.json({
+            'error_code': 1,
+            'error_msg': error,
+          })
+        })
+        .finally(() => {
+          conn.end();
+        })
+    })
+    .catch(err => {
+      console.log('ERROR' + err);
+      res.json({
+        "error_code": 1,
+        "error_msg": JSON.stringify(err)
+      })
+    });
+})
+
+app.all('/api/drop_room_type', (req: Request, res: Response) => {
+  let type_id: number = parseInt(req.body.type_id);
+  console.log(req.body)
+  let query: string = 'delete from Room where id = ?';
+  let arg = [type_id];
+  pool.getConnection()
+    .then(conn => {
+      conn.query(query, arg)
+        .then((ret) => {
+          console.log(ret);
+          res.json({
+            "error_code": 0,
+            "error_msg": JSON.stringify(ret)
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+          res.json({
+            'error_code': 1,
+            'error_msg': error,
+          })
+        })
+        .finally(() => {
+          conn.end();
+        })
+    })
+    .catch(err => {
+      console.log('ERROR' + err);
+      res.json({
+        "error_code": 1,
+        "error_msg": JSON.stringify(err)
+      })
+    });
+})
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 
