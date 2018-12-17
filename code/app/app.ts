@@ -27,6 +27,9 @@ app.get('/login', (req: Request, res: Response) => {
 app.get('/signup', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, 'html/signup.html'));
 });
+app.get('/profile', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, 'html/profile.html'));
+});
 
 app.get('/api/login', (req: Request, res: Response) => {
   let username = req.query.username;

@@ -8,8 +8,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
     <script src="/static/js/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
 </head>
 
 <body>
-    
+    <div id="profile">
+        <section>
+            <div class="container">
+                <button v-bind:class="{'is-link': editing}" class="button" @click="toggleEdit"> {{ promt }} </button>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
+                                Username
+                            </label>
+                            <input class="input" type="text" readonly="readonly" v-model="username">
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
+                                User ID
+                            </label>
+                            <input class="input" type="text" readonly="readonly" v-model="id">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+    <script src="/static/js/profile.js"></script>
 </body>
