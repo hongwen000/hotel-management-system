@@ -268,7 +268,7 @@ app.all('/api/query_user', (req: Request, res: Response) => {
           for (let i = 0; i < table.length; ++i) {
             if (table[i].gender == 0) {
               table[i].gender = 'man';
-            } else if (table[i].gender == 0) {
+            } else if (table[i].gender == 1) {
               table[i].gender = 'woman';
             }
             let birthdate: string = table[i].birthdate.toISOString();
