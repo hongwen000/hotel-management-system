@@ -1,11 +1,13 @@
 let username;
 let role;
+let user_id;
 $.ajax({
     url: '/api/i',
     method: 'GET',
     success: function(data) {
         username = data.username;
         role = data.role;
+        user_id = data.user_id
         if (role === 3) {
             $('#tab-user').hide();
         }
@@ -187,17 +189,49 @@ let room_app = new Vue({
                 'checkin': this.checkin_format,
                 'checkout': this.checkout_format,
                 'capacity': this.capacity,
-                'breakfast': this.reqs.indexOf('breakfast') === -1 ? false : true,
-                'wifi': this.reqs.indexOf('wifi') === -1 ? false : true
+                'breakfast': this.reqs.indexOf('breakfast') === -1 ? '' : '1',
+                'wifi': this.reqs.indexOf('wifi') === -1 ? '' : '1'
             };
             console.log(data);
             $.ajax({
                 'method': 'POST',
-                'url': '/api/query_room', 
+                'url': '/api/query_avail_room', 
                 'data': data,
                 'success': function(data) {
+                    room_app.rooms = data.rooms;
+                    if (data.error_code !== 0) {
+                        room_app.msg = data.error_msg;
+                        room_app.iserror = true;
+                    } else {
+                        room_app.iserror = false;
+                    }
                 }
             })
+        },
+        order: function() {
+            let data = {
+                'room_id': this.room_id,
+                'user_id': user_id,
+                'check_in': this.checkin_format,
+                'check_out': this.checkout_format
+            }
+            console.log(data);
+            $.ajax({
+                'method': 'POST',
+                'url': '/api/order_room',
+                'data': data,
+                'success': function(data) {
+                    if (data.error_code == 0) {
+                        room_app.iserror = false;
+                    } else {
+                        room_app.iserror = true;
+                    }
+                    room_app.msg = data.error_msg
+
+                }
+            });
+
+            
         },
         insert: function() {
             let data = {
@@ -362,6 +396,7 @@ let order_app = new Vue({
                 success: function(data) {
                     if (error_code === 0) {
                         order_app.result = JSON.parse(data.orders);
+                        order_app.iserror = false;
                     } else {
                         order_app.iserror = true;
                         order_app.msg = data.error_msg;

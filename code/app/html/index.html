@@ -133,7 +133,10 @@
 
             <div class="field is-grouped">
                 <div class="control">
-                    <button @click="submit" class="button is-link">Query</button>
+                    <button @click="submit" class="button is-link">Query Available</button>
+                </div>
+                <div class="control">
+                    <button @click="order" class="button is-link">Order</button>
                 </div>
                 <div class="control">
                     <button v-if="role <= 1" @click="insert" class="button is-link">Add</button>
