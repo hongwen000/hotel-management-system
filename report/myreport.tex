@@ -1,4 +1,4 @@
-4% \documentclass{WHUBachelor}% 选项 forprint: 交付打印时添加, 避免彩色链接字迹打印偏淡. 即使用下一行:
+% \documentclass{WHUBachelor}% 选项 forprint: 交付打印时添加, 避免彩色链接字迹打印偏淡. 即使用下一行:
 \documentclass{myreport}
 \usepackage[section]{placeins}
 \usepackage[svgnames,table]{xcolor}
@@ -52,7 +52,7 @@
 
 在数据库层面，我们发现一些复杂的业务逻辑在后端编写时难以保证一致性，因此我们在数据库中编写了一些触发器与存储过程，以保证修改数据库信息时信息的一致性，对于在处理数据库数据时产生的错误，也在后端进行了适当的处理并反馈到前端中以让用户知晓。
 
-总之，本系统遵循数据库设计与网站设计与编写的方法，实现了酒店预定系统的基本功能，包括
+总之，我们遵循数据库设计与网站设计与编写的方法，实现了酒店预定系统，该系统包括客房预订、会员注册、用户管理、客房管理、客户与客房的信息增删改、以及订单管理等功能，已经能够满足大多数酒店的需求。
 
 \chapter{系统分析}
 
@@ -63,6 +63,7 @@
     \item 系统所需功能
 \end{itemize}
 
+
 \section{系统面向用户}
 
 本系统的设计主要面向以下三类用户：
@@ -72,6 +73,27 @@
     \item 酒店前台人员
     \item 顾客
 \end{itemize}
+
+
+\section{子系统设计}
+
+本系统可以分为这4个子系统，可见\autoref{fig:sub-system-design}。
+
+%\usepackage{changepage}
+%\usepackage{rotating}
+%\usepackage{float}
+%\usepackage[section]{placeins}
+%\begin{sidewaystable}[!Htp]
+\begin{figure}[htp]
+    %\begin{adjustwidth}{-1.5cm}{-1cm}
+    \centering
+    \includegraphics[width=15cm]{figure/2018-12-15-19-12-55.png}
+    \caption{子系统设计}
+    \label{fig:sub-system-design}
+    %\end{adjustwidth}
+\end{figure}
+
+
 
 \section{需求分析}
 
@@ -103,25 +125,6 @@
 \begin{itemize}
     \item 能够根据实际情况修改房间的价格与房间的类型等信息
 \end{itemize}
-
-\section{子系统设计}
-
-本系统可以分为这4个子系统，可见\autoref{fig:sub-system-design}。
-
-%\usepackage{changepage}
-%\usepackage{rotating}
-%\usepackage{float}
-%\usepackage[section]{placeins}
-%\begin{sidewaystable}[!Htp]
-\begin{figure}[htp]
-    %\begin{adjustwidth}{-1.5cm}{-1cm}
-    \centering
-    \includegraphics[width=15cm]{figure/2018-12-15-19-12-55.png}
-    \caption{子系统设计}
-    \label{fig:sub-system-design}
-    %\end{adjustwidth}
-\end{figure}
-
 
 \chapter{数据库设计}
 在本节中，我们会按照概念设计、逻辑设计到物理设计的顺序讲解本项目的具体设计方式。
