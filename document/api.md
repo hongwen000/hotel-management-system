@@ -21,7 +21,7 @@ typora-copy-images-to: figure
 get方法
 
 #### URL
-
+(yb-ok)
 `/api/i`
 
 #### 响应示例及参数
@@ -50,7 +50,7 @@ get方法
 ###  API：查询可用房间
 
 #### URL
-
+(yb-ok)
 `/api/query_avail_room`
 
 #### 请求示例及参数
@@ -117,7 +117,7 @@ get方法
 测试说明：使用query_avail_room进行测试，先使用query_avail_room找到某时间段内可用的房间，然后使用该接口进行预定，然后再返回查询，发现该房间果然无法再预定
 
 #### URL
-
+(yb-ok)
 `/api/order_room`
 
 #### 请求示例及参数
@@ -346,7 +346,7 @@ get方法
 1. string类型的参数，空串表示不指定
 
 #### URL
-
+(yb-ok)
 `/api/query_user`
 
 #### 请求示例及参数
@@ -398,7 +398,7 @@ get方法
 | credential  | string | 身份证号                   |
 | name        | string | 用户名称                   |
 | gender      | string | 'man'是雄性，'woman'是雌性,空表示未知 |
-|birthdate | string | 出生日期“2018-01-01” |
+| birthdate | string | 出生日期“2018-01-01” |
 | phone       | string | 手机号码                   |
 | balance     | int    | 余额（单位为元）       |
 | bonus   | int    | 积分                   |
@@ -407,7 +407,7 @@ get方法
 
 #### 增加
 ##### URL
-
+(yb-ok)
 `/api/insert_user`
 
 ##### 请求示例及参数说明
@@ -446,6 +446,7 @@ get方法
 
 #### 修改
 ##### URL 
+(yb-ok)
 `/api/alter_user_info`
 ##### 请求示例及参数说明
 ```json
@@ -461,7 +462,7 @@ get方法
 | user_id|int|用户在数据库中的唯一ID|
 | credential | string | 身份证号                                 |
 | name       | string | 用户名称                                 |
-| gender     | string | 空表示不指定，'man'是雄性，'woman'是雌性 |
+| gender     | string | 空表示不指定，1(Male)， 0 |
 | birthdate  | string | 用户出生日期（如“2018-01-01”）           |
 | phone      | string | 手机号码                                 |
 | balance    | string | 余额（单位为元）                         |
@@ -514,7 +515,7 @@ get方法
 ![1544965249259](figure/1544965249259.png)
 
 #### URL
-
+(yb-ok)
 `/api/get_room_type`
 
 #### 响应示例与参数
@@ -545,7 +546,7 @@ get方法
 
 ### API：增加房间
 #### URL
-
+(yb-ok)
 `/api/insert_room`
 
 #### 请求示例与参数
@@ -664,7 +665,7 @@ get方法
 
 ### API：增加房型
 #### URL
-
+(yb-ok)
 `/api/insert_room_type`
 
 #### 请求实例与参数
@@ -745,6 +746,7 @@ get方法
 ### API：查询满足条件的房间
 
 #### URL
+(yb-ok)
 `/api/query_avail_room`
 #### 请求实例与参数
 ```json
