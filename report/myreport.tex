@@ -1,4 +1,4 @@
-% \documentclass{WHUBachelor}% 选项 forprint: 交付打印时添加, 避免彩色链接字迹打印偏淡. 即使用下一行:
+4% \documentclass{WHUBachelor}% 选项 forprint: 交付打印时添加, 避免彩色链接字迹打印偏淡. 即使用下一行:
 \documentclass{myreport}
 \usepackage[section]{placeins}
 \usepackage[svgnames,table]{xcolor}
@@ -272,8 +272,12 @@ User(\textbf{id}, credential, name, gender, birthdate, phone, balance, \textit{r
 \section{物理设计}
 
 \chapter{数据库创建和数据加载}
+\section{存储过程}
+在酒店管理系统中，我们不可能存储未来每一天每间房间是否可用的状态。要查询某个指定时间段空闲的房间有哪些，必须根据当前有效的订单信息，查询并排除该时间段内已经被预定的房间。
+由于查询可用房间是酒店数据库最常用的功能，因此我们设计了存储过程：
 
-TODO:要建一些view方便查询
+\section{建立触发器}
+
 
 \chapter{数据库应用软件设计与开发}
 
