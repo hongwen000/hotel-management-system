@@ -45,6 +45,17 @@
                     <div class="column">
                         <div class="field">
                             <label class="label">
+                                Real Name
+                            </label>
+                            <input :class="{'is-link': editing}" class="input" type="text" :readonly="!editing" v-model="nickname">
+                        </div>
+                    </div>
+
+
+
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
                                 User ID
                             </label>
                             <input class="input" type="text" readonly="readonly" v-model="id">
@@ -68,8 +79,8 @@
                                 Gender
                             </label>
                             <div class="control">
-                                <div class="select">
-                                    <select v-model="gender" :class="{'is-link': editing}">
+                                <div class="select" :class="{'is-info': editing}">
+                                    <select v-model="gender">
                                         <option> Male </option>
                                         <option> Female </option>
                                     </select>

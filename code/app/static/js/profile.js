@@ -1,45 +1,53 @@
 let profile_app = new Vue({
     el: '#profile',
-    created: function() {
+    mounted: function() {
         $.ajax({
-            url: '/api/i',
-            method: 'GET',
-            success: function(res) {
+            'url': '/api/i',
+            'method': 'GET',
+            // 'async': false,
+            'success': function(res) {
                 console.log(res);
                 profile_app.username = res.username;
                 profile_app.id = res.user_id;
                 if (res.error_code !== 0) {
                     profile_app.iserror = true;
+                    console.log('error at i')
                     profile_app.msg = res.error_msg;
                 } else {
                     profile_app.iserror = false;
                 }
+
+                let data = {
+                    'user_id': profile_app.id
+                };
+                console.log(data);
+                $.ajax({
+                    'url': '/api/query_user_info',
+                    'method': 'POST',
+                    'data': data,
+                    'success': function(data) {
+                        profile_app.credential = data.credential;
+                        profile_app.gender = data.gender === 1 ? "Male" : "Female";
+                        // profile_app.birthdate = data.birthdate; //TODO:
+                        profile_app.phone = data.phone;
+                        profile_app.balance = data.balance;
+                        profile_app.bonus = data.bonus;
+                        profile_app.nickname = data.name;
+                        if (data.error_code !== 0) {
+                        console.log('error at query user info')
+                            profile_app.iserror = true;
+                            profile_app.msg = data.error_msg;
+                        } else {
+                            profile_app.iserror = false;
+                        }
+                    }
+                });
             }
-        })
-        let data = {
-            'user_id': this.id
-        };
-        console.log(data);
-        $.ajax({
-            'url': '/api/query_user_info',
-            'method': 'POST',
-            'data': data,
-            'success': function(data) {
-                profile_app.credential = data.credential;
-                profile_app.gender = data.gender;
-                // profile_app.birthdate = data.birthdate;
-                profile_app.phone = data.phone;
-                profile_app.balance = data.balance;
-                profile_app.bonus = data.bonus;
-                if (data.error_code !== 0) {
-                    profile_app.iserror = true;
-                    profile_app.msg = data.error_msg;
-                }
-            }
-        })
+        });
     },
     data: {
         username: '',
+        nickname: '',
         id: '',
         readonly: true,
         promt: 'Edit',
@@ -70,8 +78,8 @@ let profile_app = new Vue({
             let data = {
                 'user_id': this.id,
                 'credential': this.credential,
-                'name': this.name,
-                'gender': this.gender,
+                'name': this.nickname,
+                'gender': this.gender === 'Male' ? 1 : 0,
                 'birthdate': this.birthdate_format,
                 'phone': this.phone,
                 'balance': this.balance,
@@ -85,17 +93,19 @@ let profile_app = new Vue({
                 'success': function(res) {
                     if (res.error_code !== 0) {
                         profile_app.iserror = true;
+                        profile_app.msg = res.error_msg;
+                        profile_app.toggleEdit();
                     } else {
                         profile_app.iserror = false;
+                        profile_app.msg = 'success';
                     }
-                    profile_app.msg = res.error_msg;
 
                 }
             })
         },
         date2format: function(date) {
             let _date = date.getDate();
-            let Month = date.getMonth();
+            let Month = '' + (parseInt(date.getMonth()) + 1);
             let Year = date.getFullYear();
             if (_date.length < 2) {
                 _date = '0' + _date;
@@ -104,6 +114,7 @@ let profile_app = new Vue({
                 Month = '0' + Month;
             }
             return `${Year}-${Month}-${_date}`;
+
         },
         back: function() {
             window.location.href = '/query';

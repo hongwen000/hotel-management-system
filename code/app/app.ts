@@ -11,6 +11,7 @@ import { connect } from "net";
 import { ResolveOptions } from "dns";
 import { createDiffieHellman } from "crypto";
 import { strict } from "assert";
+import { runInNewContext } from "vm";
 const app = express();
 const port = 8080;
 app.use(bodyParser.json());
@@ -26,6 +27,13 @@ app.get('/login', (req: Request, res: Response) => {
 
 app.get('/signup', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, 'html/signup.html'));
+});
+app.use('/profile', (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session.user) {
+    res.redirect('/login');
+    return;
+  }
+  next();
 });
 app.get('/profile', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, 'html/profile.html'));
@@ -570,7 +578,9 @@ app.all('/api/query_user_info', (req: Request, res: Response) => {
               'birthdate': table[0].birthdate,
               'phone': table[0].phone,
               'balance': table[0].balance,
-              'bonus': table[0].bonus
+              'bonus': table[0].bonus,
+              'error_code': 0,
+              'error_msg': 'success'
             })
           })
           .catch((error) => {
@@ -641,12 +651,17 @@ app.all('/api/query_order_by_user', (req: Request, res: Response) => {
     }
     pool.getConnection()
       .then(conn => {
+        console.log('query order by user');
+        console.log(query);
+        console.log(user_id);
         conn.query(query, user_id)
           .then((ret) => {
             ret_obj = ret;
             console.log(JSON.stringify(ret))
             res.json({
-              "orders": JSON.stringify(ret)
+              "orders": JSON.stringify(ret),
+              'error_code': 0,
+              'error_msg': 'ok'
             })
       })
       .catch((error) =>{
@@ -759,6 +774,9 @@ app.all('/api/query_order', (req: Request, res: Response) => {
  console.log(arg)
   pool.getConnection()
     .then(conn => {
+      console.log('query order')
+      console.log(query);
+      console.log(arg);
       conn.query(query, arg)
         .then((table) => {
           // for (let i = 0; i < table.length; ++i) {
@@ -944,6 +962,7 @@ app.all('/api/query_avail_room', (req: Request, res: Response) => {
     }
     pool.getConnection()
       .then(conn => {
+        console.log(query, arg);
         conn.query(query, arg)
         .then((table) => {
           for (let i = 0; i < table.length; ++i) {
@@ -959,7 +978,7 @@ app.all('/api/query_avail_room', (req: Request, res: Response) => {
             } 
           }
           res.json({
-            "orders": JSON.stringify(table),
+            "rooms": JSON.stringify(table),
             'error_code': 0,
             'error_msg': 'ok'
           })
