@@ -2,7 +2,8 @@ new Vue({
     el: '#signup',
     data: {
         username: '',
-        password: ''
+        password: '',
+        realname: ''
     },
     methods: {
         submit: function() {
@@ -11,7 +12,8 @@ new Vue({
                 url: '/api/signup',
                 'data': {
                     'username': this.username,
-                    'password': this.password
+                    'password': this.password,
+                    'realname': this.realname
                 },
                 success: function(res) {
                     if (res.error === 0) {
@@ -22,7 +24,7 @@ new Vue({
                         alert('busy, try again later');
                     }
                 }
-            })
+            });
         }
     }
 });

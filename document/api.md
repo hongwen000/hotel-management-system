@@ -21,7 +21,7 @@ typora-copy-images-to: figure
 get方法
 
 #### URL
-
+(yb-ok)
 `/api/i`
 
 #### 响应示例及参数
@@ -50,8 +50,8 @@ get方法
 ###  API：查询可用房间
 
 #### URL
-
-`/api/query_room`
+(yb-ok)
+`/api/query_avail_room`
 
 #### 请求示例及参数
 
@@ -110,8 +110,14 @@ get方法
 
 ### API：预订房间
 
-#### URL
+说明：已经实现了预定房间
 
+实现说明：直接向Order表中增加一项
+
+测试说明：使用query_avail_room进行测试，先使用query_avail_room找到某时间段内可用的房间，然后使用该接口进行预定，然后再返回查询，发现该房间果然无法再预定
+
+#### URL
+(yb-ok)
 `/api/order_room`
 
 #### 请求示例及参数
@@ -132,6 +138,20 @@ get方法
 |user_id|int|用户在数据库中的唯一id|
 | check_in  | string date | 入住时间（%Y-%M-%D 如 2018-02-12)           |
 | check_out | string date | 退房时间（%Y-%M-%D 如 2018-02-15)           |
+
+#### 响应示例及参数说明
+
+```json
+{
+    "error_code":0,
+    "error_msg":"ok"
+}
+```
+
+| 属性名     | 类型   | 值                                            |
+| ---------- | ------ | --------------------------------------------- |
+| errro_code | int    | 0 为无错误，1为有错误（按需求再细分错误类型） |
+| error_msg  | string | 错误信息                                      |
 
 ## 用户个人子系统
 
@@ -165,6 +185,12 @@ get方法
 
 #### 响应示例与参数
 
+```
+{
+    "error_code":0,
+    "error_msg":"ok"
+}
+```
 
 
 ### API：查询自己的历史订单
@@ -196,16 +222,6 @@ get方法
             "check_out": "2018-08-09",
             "room_id": 1,
             "user_id": 1,
-            "op": [
-                {
-                    "id": 2345,
-                    "time": "2018-08-08T15:53:00",
-                    "detail": 0,
-                },
-                {
-                    //...
-                }
-            ]
         },
         {
             //...
@@ -224,13 +240,51 @@ get方法
 | user_id   | int         | 下单的用户在数据库中的唯一ID   |
 | op        | Array       | 见下表                         |
 
+### API：查询订单关联的详情
+
+#### URL
+
+`/api/query_order_details`
+
+#### 请求示例及参数
+```json
+{
+    "order_id": 2342
+}
+```
+| 属性        | 类型   | 值                                       |
+| ----------- | ------ | ---------------------------------------- |
+| order_id | int | 订单在数据库中的唯一id                          |
+
+#### 响应示例与参数
+
+```json
+{
+    "op": [
+    {
+        "id": 2345,
+        "time": "2018-08-08T15:53:00",
+        "detail": 0,
+    },
+    {
+        //...
+    }
+]
+}
+```
+
 | 属性   | 类型            | 值                                 |
 | ------ | --------------- | ---------------------------------- |
 | id     | int             | 每个订单操作在数据库中的唯一ID     |
 | time   | string datetime | 执行操作的时间                     |
 | detail | int             | 操作内容：1：完成订单，0：取消订单 |
 
+### API ：退房
+使用订单管理子系统的`cancel_order`函数
 
+#### URL
+
+`/api/query_user_info`
 
 ## 用户档案子系统
 
@@ -292,7 +346,7 @@ get方法
 1. string类型的参数，空串表示不指定
 
 #### URL
-
+(yb-ok)
 `/api/query_user`
 
 #### 请求示例及参数
@@ -344,18 +398,19 @@ get方法
 | credential  | string | 身份证号                   |
 | name        | string | 用户名称                   |
 | gender      | string | 'man'是雄性，'woman'是雌性,空表示未知 |
-|birthdate | string | 出生日期“2018-01-01” |
+| birthdate | string | 出生日期“2018-01-01” |
 | phone       | string | 手机号码                   |
 | balance     | int    | 余额（单位为元）       |
 | bonus   | int    | 积分                   |
 
 ### API：增加、修改、删除用户
 
-#### URL
-
+#### 增加
+##### URL
+(yb-ok)
 `/api/insert_user`
 
-#### 请求示例及参数说明
+##### 请求示例及参数说明
 
 ```json
 {
@@ -375,7 +430,7 @@ get方法
 | balance    | string | 余额（单位为元）                         |
 | bonus | string | 积分下限                                 |
 
-#### 响应示例及参数说明
+##### 响应示例及参数说明
 
 ```json
 {
@@ -384,6 +439,68 @@ get方法
 }
 ```
 
+| 属性名     | 类型   | 值                                            |
+| ---------- | ------ | --------------------------------------------- |
+| errro_code | int    | 0 为无错误，1为有错误（按需求再细分错误类型） |
+| error_msg  | string | 错误信息                                      |
+
+#### 修改
+##### URL 
+(yb-ok)
+`/api/alter_user_info`
+##### 请求示例及参数说明
+```json
+{
+    "user_id": 1234,
+    "credential":"XXXXXXX",
+    "name":"XXX",
+    // ...
+}
+```
+| 属性       | 类型   | 值                                       |
+| ---------- | ------ | ---------------------------------------- |
+| user_id|int|用户在数据库中的唯一ID|
+| credential | string | 身份证号                                 |
+| name       | string | 用户名称                                 |
+| gender     | string | 空表示不指定，1(Male)， 0 |
+| birthdate  | string | 用户出生日期（如“2018-01-01”）           |
+| phone      | string | 手机号码                                 |
+| balance    | string | 余额（单位为元）                         |
+| bonus | string | 积分下限                                 |
+##### 响应示例与参数
+
+```json
+{
+    "error_code":0,
+    "error_msg":""
+}
+```
+
+| 属性名     | 类型   | 值                                            |
+| ---------- | ------ | --------------------------------------------- |
+| errro_code | int    | 0 为无错误，1为有错误（按需求再细分错误类型） |
+| error_msg  | string | 错误信息                                      |
+
+#### 删除
+##### URL 
+`/api/drop_user`
+##### 请求示例及参数说明
+```json
+{
+    "user_id": 1234,
+}
+```
+| 属性       | 类型   | 值                                       |
+| ---------- | ------ | ---------------------------------------- |
+| user_id|int|用户在数据库中的唯一ID|
+##### 响应示例与参数
+
+```json
+{
+    "error_code":0,
+    "error_msg":""
+}
+```
 | 属性名     | 类型   | 值                                            |
 | ---------- | ------ | --------------------------------------------- |
 | errro_code | int    | 0 为无错误，1为有错误（按需求再细分错误类型） |
@@ -398,7 +515,7 @@ get方法
 ![1544965249259](figure/1544965249259.png)
 
 #### URL
-
+(yb-ok)
 `/api/get_room_type`
 
 #### 响应示例与参数
@@ -429,7 +546,7 @@ get方法
 
 ### API：增加房间
 #### URL
-
+(yb-ok)
 `/api/insert_room`
 
 #### 请求示例与参数
@@ -548,7 +665,7 @@ get方法
 
 ### API：增加房型
 #### URL
-
+(yb-ok)
 `/api/insert_room_type`
 
 #### 请求实例与参数
@@ -596,8 +713,15 @@ get方法
 
 `/api/alter_room_type`
 
-
 #### 请求实例与参数
+
+```json
+{
+    'type_id': 1,
+    'name': '豪华总统房',
+    //......
+}
+```
 
 | 属性名    | 类型   | 值                         |
 | --------- | ------ | -------------------------- |
@@ -620,9 +744,28 @@ get方法
 
 
 ### API：查询满足条件的房间
-TODO:
 
-
+#### URL
+(yb-ok)
+`/api/query_avail_room`
+#### 请求实例与参数
+```json
+{
+    'check_in': '2019-01-15',
+    'check_out': '2019-1-17',
+    'capacity': '',
+    'wifi': '',
+    'breakfast': '1'
+}
+```
+|属性名|类型|值|
+|-------|-------|--------|
+|check_in| string(date)| 期望的入店时间|
+|check_out|string(date)| 期望的离店时间|
+|capacity| string(int)| 最小容纳人数|
+|wifi|string(bool)|wifi=0表示不限定要不要wifi，为1表示要求wifi|
+|breakfast|string(bool)|与wifi同理|
+#### 响应示例与参数
 
 
 ## 订单管理子系统
@@ -637,7 +780,11 @@ TODO:
 
 空表示不指定
 
-#### URL
+尽量使用like搜索
+
+#### URL及方法
+
+post方法
 
 `/api/query_order`
 
@@ -652,6 +799,7 @@ TODO:
 | floor | string | 房间的层数      |
 | room_num | string    | 房间号    |
 | user_id | string | 用户id|
+| name | string | 用户名字|
 
 
 
@@ -663,11 +811,67 @@ TODO:
     "orders":[
         {
         	"order_id":XXXXX,
-        	"time":"2018-01-01",
+        	"check_in":"2018-01-01",
+        	"check_out":"2018-01-02",
             "user_id":XXXXX,
+            "name":"username",
             "room_id":XXXXX,
-            "room_num":"527"
+            "room_num":"527",
             "status":0
+        },
+        {
+            //....
+        }
+ 
+    ],
+    'error_code':0,
+    'error_msg':'ok',
+}
+```
+
+| 属性名   | 类型 | 值                               |
+| -------- | ---- | -------------------------------- |
+| order_id | int  | 订单号（订单在数据库中的唯一id） |
+| check_in     | date | 入住时间                     |
+| check_out     | date | 退房时间                     |
+| user_id  | int  | 用户id（用户在数据库中的唯一id） |
+| name | string | 用户姓名 |
+| room_id | int | 房间id（房间在数据库中的唯一id）|
+| room_num | string | 房间号 |
+| status   | int  | 0表示已取消，1表示已预订         |
+| error_code | int    | 0为正常，1为异常 |
+| error_msg  | string | 错误信息   （默认为'ok'）      |
+
+
+### API：查询某订单的Operation
+
+查询指定订单的Operation，如
+1 表示 生成订单
+2 表示 取消订单
+
+#### URL及方法
+
+post方法
+
+`/api/query_order_operations`
+
+
+#### 请求实例与参数
+
+| 属性名    | 类型   | 值                         |
+| --------- | ------ | -------------------------- |
+| order_id | string | 订单号（订单在数据中的唯一id）|
+
+#### 响应示例与参数
+
+
+```json
+{
+    "operations":[
+        {
+        	"op_id":XXXXX,
+        	"time":"2018-01-01",
+        	"detail":"2018-01-02"
         },
         {
             //....
@@ -679,21 +883,22 @@ TODO:
 
 | 属性名   | 类型 | 值                               |
 | -------- | ---- | -------------------------------- |
-| order_id | int  | 订单号（订单在数据库中的唯一id） |
-| time     | date | 订单生成时间                     |
-| user_id  | int  | 用户id（用户在数据库中的唯一id） |
-| room_id | int | 房间id（房间在数据库中的唯一id）|
-| room_num | string | 房间号 |
-| status   | int  | 0表示已取消，1表示已预订         |
+| op_id | int  | 每个Operation在数据库中的唯一id |
+| time     | date | Operation发生时间                     |
+| detail     | int | 操作细节       1 表示 生成订单,2 表示 取消订单  |
+| error_code | int    | 0为正常，1为异常 |
+| error_msg  | string | 错误信息   （默认为'ok'）      |
 
+### API：取消订单
 
+取消订单：将指定的预定订单取消，并且在Operation表中增加一行
 
-### API：设置指定订单状态
+time, detail=2, order_id,
 
 
 #### URL
 
-`/api/set_order`
+`/api/cancel_order`
 
 
 #### 请求实例与参数
@@ -701,8 +906,6 @@ TODO:
 | 属性名    | 类型   | 值                         |
 | --------- | ------ | -------------------------- |
 | order_id | string | 订单号（订单在数据中的唯一id）|
-| status | int | 状态,0表示取消，1表示预定|
-
 
 
 #### 响应示例与参数
@@ -710,7 +913,7 @@ TODO:
 | 属性名     | 类型   | 值               |
 | ---------- | ------ | ---------------- |
 | error_code | int    | 0为正常，1为异常 |
-| error_msg  | string | 错误信息         |
+| error_msg  | string | 错误信息   （默认为'ok'）       |
 
 
 

@@ -8,8 +8,140 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
     <script src="/static/js/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+    <script src="/static/js/datepicker.js"></script>
+    <link rel="stylesheet" href="/static/css/datepicker.css">
+    <script src="/static/js/message.js"></script>
 </head>
 
 <body>
-    
+    <div id="profile">
+        <section>
+            <div class="container">
+                <div class="level">
+                    <div class="level-left">
+                        <button v-bind:class="{'is-link': editing}" class="button" @click="toggleEdit"> {{ promt }}
+                        </button>
+                    </div>
+                    <div class="level-right">
+                        <button class="button is-link" @click="back"> Back</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
+                                Username
+                            </label>
+                            <input class="input" type="text" readonly="readonly" v-model="username">
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
+                                Real Name
+                            </label>
+                            <input :class="{'is-link': editing}" class="input" type="text" :readonly="!editing" v-model="nickname">
+                        </div>
+                    </div>
+
+
+
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
+                                User ID
+                            </label>
+                            <input class="input" type="text" readonly="readonly" v-model="id">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
+                                Credential
+                            </label>
+                            <input :class="{'is-link': editing}" class="input" type="text" :readonly="!editing" v-model="credential">
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
+                                Gender
+                            </label>
+                            <div class="control">
+                                <div class="select" :class="{'is-info': editing}">
+                                    <select v-model="gender">
+                                        <option> Male </option>
+                                        <option> Female </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
+                                Phone
+                            </label>
+                            <input :class="{'is-link': editing}" class="input" type="text" :readonly="!editing" v-model="phone">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
+                                balance
+                            </label>
+                            <input class="input" type="text" readonly="readonly" v-model="balance">
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
+                                bonus
+                            </label>
+                            <input class="input" type="text" readonly="readonly" v-model="bonus">
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">
+                                birthdate
+                            </label>
+                            <div class="control">
+
+                            </div>
+                            <vue-datepicker-local v-model="birthdate">
+                            </vue-datepicker-local>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+            <general-message :iserror="iserror" :msg="msg">
+            </general-message>
+
+        </section>
+
+    </div>
+    <script src="/static/js/profile.js"></script>
 </body>

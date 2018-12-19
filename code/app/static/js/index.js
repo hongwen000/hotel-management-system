@@ -1,11 +1,13 @@
 let username;
 let role;
+let user_id;
 $.ajax({
     url: '/api/i',
     method: 'GET',
     success: function(data) {
         username = data.username;
         role = data.role;
+        user_id = data.user_id
         if (role === 3) {
             $('#tab-user').hide();
         }
@@ -85,7 +87,7 @@ let user_app = new Vue({
         },
         date2format: function(date) {
             let _date = date.getDate();
-            let Month = date.getMonth();
+            let Month = '' + (parseInt(date.getMonth()) + 1);
             let Year = date.getFullYear();
             if (_date.length < 2) {
                 _date = '0' + _date;
@@ -94,6 +96,7 @@ let user_app = new Vue({
                 Month = '0' + Month;
             }
             return `${Year}-${Month}-${_date}`;
+
         },
         insert: function() {
             let data = {
@@ -184,20 +187,50 @@ let room_app = new Vue({
     methods: {
         submit: function() {
             let data = {
-                'checkin': this.checkin_format,
-                'checkout': this.checkout_format,
+                'check_in': this.checkin_format,
+                'check_out': this.checkout_format,
                 'capacity': this.capacity,
-                'breakfast': this.reqs.indexOf('breakfast') === -1 ? false : true,
-                'wifi': this.reqs.indexOf('wifi') === -1 ? false : true
+                'breakfast': this.reqs.indexOf('breakfast') === -1 ? '' : '1',
+                'wifi': this.reqs.indexOf('wifi') === -1 ? '' : '1'
             };
             console.log(data);
             $.ajax({
                 'method': 'POST',
-                'url': '/api/query_room', 
+                'url': '/api/query_avail_room', 
                 'data': data,
                 'success': function(data) {
+                    room_app.rooms = JSON.parse(data.rooms);
+                    if (data.error_code !== 0) {
+                        room_app.msg = data.error_msg;
+                        room_app.iserror = true;
+                    } else {
+                        room_app.iserror = false;
+                    }
                 }
             })
+        },
+        order: function() {
+            let data = {
+                'room_id': this.room_id,
+                'user_id': user_id,
+                'check_in': this.checkin_format,
+                'check_out': this.checkout_format
+            }
+            console.log(data);
+            $.ajax({
+                'method': 'POST',
+                'url': '/api/order_room',
+                'data': data,
+                'success': function(data) {
+                    if (data.error_code == 0) {
+                        room_app.iserror = false;
+                    } else {
+                        room_app.iserror = true;
+                    }
+                    room_app.msg = data.error_msg
+
+                }
+            });
         },
         insert: function() {
             let data = {
@@ -250,7 +283,7 @@ let room_app = new Vue({
         },
         date2format: function(date) {
             let _date = date.getDate();
-            let Month = date.getMonth();
+            let Month = '' + (parseInt(date.getMonth()) + 1);
             let Year = date.getFullYear();
             if (_date.length < 2) {
                 _date = '0' + _date;
@@ -332,6 +365,7 @@ let root_app = new Vue({
 let order_app = new Vue({
     el: '#order',
     data: {
+        username: username,
         bdate: new Date(),
         edate: new Date(),
         orderid: '',
@@ -345,29 +379,59 @@ let order_app = new Vue({
     },
     methods: {
         submit: function() {
-            let data = {
-                order_id: this.orderid,
-                time_min: this.date2format(this.bdate),
-                time_max: this.date2format(this.edate),
-                floor: this.floor,
-                room_num: this.room_num,
-                user_id: this.user_id
-            }
-            console.log(data);
-
-            $.ajax({
-                url: '/api/query_order',
-                method: 'POST',
-                data: data,
-                success: function(data) {
-                    if (error_code === 0) {
-                        order_app.result = JSON.parse(data.orders);
-                    } else {
-                        order_app.iserror = true;
-                        order_app.msg = data.error_msg;
-                    }
+            if (role <= 1) {
+                let data = {
+                    order_id: this.orderid,
+                    time_min: this.date2format(this.bdate),
+                    time_max: this.date2format(this.edate),
+                    floor: this.floor,
+                    room_num: this.room_num,
+                    user_id: this.user_id,
+                    name: this.username
                 }
-            });
+                console.log(data);
+
+                $.ajax({
+                    url: '/api/query_order',
+                    method: 'POST',
+                    data: data,
+                    success: function(data) {
+                        if (data.error_code === 0) {
+                            order_app.result = JSON.parse(data.orders);
+                            for (let i = 0; i < order_app.result.length; ++i) {
+                                if (order_app.result[i].status === 1) {
+                                    order_app.result[i].status = 'Valid';
+                                } else {
+                                    order_app.result[i].status = 'Canceled';
+                                }
+                            }
+                            order_app.iserror = false;
+                        } else {
+                            order_app.iserror = true;
+                            order_app.msg = data.error_msg;
+                        }
+                    }
+                });
+            } else {
+                let data = {
+                    'user_id': user_id
+                };
+                console.log(data);
+                $.ajax({
+                    'method': 'POST',
+                    'url': '/api/query_order_by_user',
+                    'data': data,
+                    'success': function(data) {
+                        if (data.error_code === 0) {
+                            order_app.iserror = false;
+                        } else {
+                            order_app.iserror = true;
+                        }
+                        order_app.msg = data.error_msg;
+                        order_app.result = JSON.parse(data.orders);
+                    }
+                })
+            }
         },
         clear: function() {
             for (key in this.$data) {
@@ -378,7 +442,7 @@ let order_app = new Vue({
         },
         date2format: function(date) {
             let _date = date.getDate();
-            let Month = date.getMonth();
+            let Month = '' + (parseInt(date.getMonth()) + 1);
             let Year = date.getFullYear();
             if (_date.length < 2) {
                 _date = '0' + _date;

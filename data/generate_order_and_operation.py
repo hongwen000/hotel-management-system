@@ -18,7 +18,7 @@ order_df = pd.DataFrame(columns=column_names)
 op_df = pd.DataFrame(columns=op_column_names)
 
 # 1. 生成数据
-for i in range(6000):
+for i in range(600):
     # 生成一条订单
     this_data = {}
     this_data['id'] = id_counter

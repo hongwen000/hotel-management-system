@@ -76,32 +76,6 @@
                 </div>
             </div>
 
-            <div class="columns">
-                <div class="column">
-                    <label class="label">
-                        room id
-                    </label>
-                    <div class="control">
-                        <input class="input" type="text" v-model="room_id" placeholder="let it empty to ignore">
-                    </div>
-                </div>
-                <div class="column">
-                    <label class="label">
-                        price
-                    </label>
-                    <div class="control">
-                        <input class="input" type="text" v-model="price" placeholder="let it empty to ignore">
-                    </div>
-                </div>
-                <div class="column">
-                    <label class="label">
-                        floor
-                    </label>
-                    <div class="control">
-                        <input class="input" type="text" v-model="floor" placeholder="let it empty to ignore">
-                    </div>
-                </div>
-            </div>
 
             <div class="columns">
 
@@ -133,13 +107,45 @@
 
             <div class="field is-grouped">
                 <div class="control">
-                    <button @click="submit" class="button is-link">Query</button>
-                </div>
-                <div class="control">
-                    <button v-if="role <= 1" @click="insert" class="button is-link">Add</button>
+                    <button @click="submit" class="button is-link">Query Available</button>
                 </div>
                 <div class="control">
                     <button @click="clear" class="button is-text">clear</button>
+                </div>
+            </div>
+
+            <div class="columns">
+                <div class="column">
+                    <label class="label">
+                        room id
+                    </label>
+                    <div class="control">
+                        <input class="input" type="text" v-model="room_id" placeholder="let it empty to ignore">
+                    </div>
+                </div>
+                <div class="column" v-if="role <= 1">
+                    <label class="label">
+                        price
+                    </label>
+                    <div class="control">
+                        <input class="input" type="text" v-model="price" placeholder="let it empty to ignore">
+                    </div>
+                </div>
+                <div class="column" v-if="role <= 1">
+                    <label class="label">
+                        floor
+                    </label>
+                    <div class="control">
+                        <input class="input" type="text" v-model="floor" placeholder="let it empty to ignore">
+                    </div>
+                </div>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button @click="order" class="button is-link">Order</button>
+                </div>
+                <div class="control">
+                    <button v-if="role <= 1" @click="insert" class="button is-link">Add</button>
                 </div>
             </div>
 
@@ -295,7 +301,20 @@
     <section id="order" class="content">
         <div class="container">
             <div class="columns">
+
                 <div class="column">
+                    <div class="field">
+                        <label class="label">
+                            user name
+                        </label>
+                        <div class="control">
+                            <input type="text" class="input" v-model="username" :readonly="role > 1" placeholder="">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="column" v-if="role <= 1">
                     <div class="field">
                         <label class="label">
                             order id
@@ -304,7 +323,6 @@
                             <input type="text" class="input" v-model="orderid" placeholder="">
                         </div>
                     </div>
-
                 </div>
 
                 <div class="column">
@@ -328,7 +346,7 @@
                 </div>
             </div>
 
-            <div class="columns">
+            <div class="columns" v-if="role <= 1">
                 <div class="column">
                     <label class="label">
                         floor
@@ -338,7 +356,7 @@
                     </div>
                 </div>
 
-                <div class="column">
+                <div class="column" v-if="role <= 1">
                     <label class="label">
                         room num
                     </label>
@@ -366,13 +384,10 @@
                 </div>
             </div>
 
-            <general-message
-                v-bind:iserror="iserror"
-                v-bind:msg="msg">
+            <general-message v-bind:iserror="iserror" v-bind:msg="msg">
             </general-message>
 
-            <result-table
-                v-bind:result="result">
+            <result-table v-bind:result="result">
             </result-table>
 
 
