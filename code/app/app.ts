@@ -74,6 +74,7 @@ app.get('/api/login', (req: Request, res: Response) => {
               msg: 'error password or username'
             })
           } else {
+            req.session.user_id = rows[0].id
             res.json({
               error: 0,
               msg: JSON.stringify(rows)
@@ -102,6 +103,7 @@ app.get('/api/login', (req: Request, res: Response) => {
 
 app.get('/api/logout', (req: Request, res: Response) => {
   req.session.user = undefined;
+  req.session.user_id = undefined;
   res.json({
     msg: 'ok',
     error: 0
@@ -642,19 +644,28 @@ app.all('/api/query_order_detail', (req:Request, res: Response) => {
 
 app.all('/api/query_order_by_user', (req: Request, res: Response) => {
   let user_id: number = parseInt(req.body.user_id);
+  let check_in: string = req.body.check_in;
+  let check_out: string = req.body.check_out;
   console.log(req.body)
-  let query: string = 'select * from `Order` as o where o.user_id = ?';
+  let query: string = 'select * from `Order` as o where o.user_id = ? and check_in >= ? and check_out <= ?';
   let ret_obj:JSON;
   try {
     if (user_id == undefined) {
       throw "user_id is empty or underfined!!"
     }
+    let arg = [user_id, '-1', 'null'];
+    if (check_in != undefined && check_in != '') {
+      arg[1] = check_in;
+    }
+    if (check_out != undefined && check_out != '') {
+      arg[2] = check_out;
+    }
     pool.getConnection()
       .then(conn => {
         console.log('query order by user');
         console.log(query);
-        console.log(user_id);
-        conn.query(query, user_id)
+        console.log(arg);
+        conn.query(query, arg)
           .then((ret) => {
             ret_obj = ret;
             console.log(JSON.stringify(ret))
@@ -1071,7 +1082,11 @@ app.all('/api/order_room', (req: Request, res: Response) => {
 })
 
 app.all('/api/alter_user_info', (req: Request, res: Response) => {
+  try {
   let user_id: number = parseInt(req.body.user_id);
+  if (user_id != req.session.user_id) {
+    throw('you are not user ' + user_id);
+  }
   let credential: string = req.body.credential;
   let name: string = req.body.name;
   let gender: number = parseInt(req.body.gender);
@@ -1110,6 +1125,13 @@ app.all('/api/alter_user_info', (req: Request, res: Response) => {
         "error_msg": JSON.stringify(err)
       })
     });
+  } catch(err) {
+      res.json({
+        "error_code": 1,
+        "error_msg": JSON.stringify(err)
+      })
+  };
+  
 })
 
 app.all('/api/alter_room_type', (req: Request, res: Response) => {
