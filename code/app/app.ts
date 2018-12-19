@@ -759,7 +759,7 @@ app.all('/api/query_order', (req: Request, res: Response) => {
 
   console.log(req.body)
   let query: string = 'select O.id, check_in, check_out, user_id, U.name, room_id, room_num, status from `Order` as O, User as U, Room as R where O.room_id = R.id and O.user_id = U.id and O.id like ? and check_in >= ? and check_out <= ? and floor like ?  and room_num like ? and user_id like ? and U.name like ?  ;';
-  let arg : string[] = ['%', '-1', 'null', '%', '%', '%', '%'];
+  let arg : string[] = ['%', '-1', '9999-12-31', '%', '%', '%', '%'];
   console.log(arg)
   if (order_id != '') {
     arg[0] = order_id;
@@ -952,7 +952,7 @@ app.all('/api/query_avail_room', (req: Request, res: Response) => {
   console.log(req.body)
   let query: string = ' select R.id,R.floor, R.room_num,R.price, T.breakfast, T.wifi ,T.name, T.capacity from Room as R, RoomType as T where R.type_id = T.id and T.capacity >= ? and T.wifi like ? and T.breakfast like ? and not exists ( select room_id, O.id from `Order` as O where status = 1 and ((O.check_in <= ? and O.check_out >= ?) or (O.check_in <= ? and O.check_out >= ?)) and O.room_id = R.id );';
   // [capacity, wifi, breakfast, check_in check_in check_out check_out]
-  let arg : string[] = [ '-1', '%', '%', '-1', 'null', '-1', 'null']
+  let arg : string[] = [ '-1', '%', '%', '-1', '9999-12-31', '-1', '9999-12-31']
   try {
     if (capacity != ''){
       arg[0] = capacity;
