@@ -228,9 +228,14 @@ let room_app = new Vue({
                         room_app.iserror = true;
                     }
                     room_app.msg = data.error_msg
-
+                    room_app.submit();
                 }
             });
+        },
+        order_click(id) {
+            console.log(id);
+            this.room_id = id;
+            this.order();
         },
         insert: function() {
             let data = {
@@ -375,7 +380,9 @@ let order_app = new Vue({
         result: [],
         msg: '',
         iserror: false,
-        role: role
+        role: role,
+        show_modal: false,
+        order_detail_msg: ['hello world']
     },
     methods: {
         submit: function() {
@@ -479,6 +486,36 @@ let order_app = new Vue({
                     }
                 }
             });
+        },
+        click_modal: function() {
+            console.log('hide');
+            this.show_modal = false;
+        },
+        click_row: function(id) {
+            let data = {
+                'order_id': id
+            };
+            console.log(data);
+            $.ajax({
+                'url': '/api/query_order_operations',
+                'method': 'POST',
+                'data': data,
+                'success': function(res) {
+                    order_app.show_modal = true;
+                    order_app.order_detail_msg = ['belows are operations'];
+                    let res_obj = JSON.parse(res.orders);
+                    console.log(res_obj);
+                    for (let item of res_obj) {
+                        console.log(item);
+                        let id = item.id;
+                        let time = item.time;
+                        let detail = item.detail === 1 ? 'Booked' : 'Canceled';
+                        order_app.order_detail_msg.push(`(${id})  at   ${time}   you   ${detail}   the Rooms\n`);
+                    }
+                }
+        
+            })
+            
         }
         // success: function(data) {
         //     if (error_code === 0) {

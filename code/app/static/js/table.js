@@ -1,5 +1,5 @@
 let result_table = {
-    props: ['result', 'deletable', 'button_msg'],
+    props: ['result', 'deletable', 'button_msg', 'always_button'],
     template: `
         <section v-if="result.length > 0">
             <div class="container">
@@ -14,12 +14,13 @@ let result_table = {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="res in result">
+                        <tr v-for="res in result" @click="$emit('click_row', res.id)">
                             <td v-for="val in res"> {{ val }} </td>
                             <td> <button 
-                                class="button is-small is-danger" 
-                                v-if="deletable && res.status === 1"
-                                @click="$emit('cancel', res.id)"> {{button_msg}} 
+                                class="button is-small"
+                                :class="{'is-danger': res.status === 1, 'is-light': res.status !== 1}"
+                                v-if="deletable && (always_button || res.status === 1)"
+                                @click.stop.prevent="$emit('cancel', res.id)"> {{button_msg}} 
                                 </button>  
                             </td>
                         </tr>
