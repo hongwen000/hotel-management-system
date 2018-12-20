@@ -887,39 +887,23 @@ app.all('/api/cancel_order', (req: Request, res: Response) => {
     arg.push(order_id)
     pool.getConnection()
       .then(conn => {
-        conn.query(query, arg)
-        .catch((error) =>{
-          console.log(error)
-          res.json({
-            'error_code': 1,
-            'error_msg': JSON.stringify(error),
-          })
+        conn.beginTransaction()
+        .then(() => {
+          conn.query(query, arg);
+          return conn.query(query2, arg);
         })
-        .finally(()=>{
-          conn.end();
-        });
-      })
-      .catch((error) =>{
-        console.log(error)
-        res.json({
-          'error_code': 1,
-          'error_msg': JSON.stringify(error),
-        })
-      })
-    pool.getConnection()
-      .then(conn => {
-        conn.query(query2, arg)
-        .then((ret) => {
+        .then(() => {
+          conn.commit();
           res.json({
             'error_code': 0,
             'error_msg': 'ok'
           })
         })
-        .catch((error) =>{
-          console.log(error)
+        .catch((err) => {
+          conn.rollback();
           res.json({
             'error_code': 1,
-            'error_msg': JSON.stringify(error),
+            'error_msg': JSON.stringify(err),
           })
         })
         .finally(()=>{
