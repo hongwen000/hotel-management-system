@@ -12,6 +12,7 @@
     <script src="/static/js/table.js"></script>
     <script src="/static/js/message.js"></script>
     <script src="/static/js/inputs.js"></script>
+    <script src="/static/js/modal.js"></script>
     <link rel="stylesheet" href="/static/css/datepicker.css">
     <link rel="stylesheet" href="/static/css/index.css">
 </head>
@@ -48,6 +49,7 @@
 
 
     <section id="room" class="content">
+
         <div class="container">
             <div class="columns">
                 <div class="column">
@@ -302,7 +304,17 @@
             :button_msg="null">
         </result-table>
     </section>
+
     <section id="order" class="content">
+
+        <!-- modal here -->
+        <vue-modal
+            :msg="order_detail_msg"
+            header="Order Detail"
+            :show="show_modal"
+            @bg_click="click_modal">
+        </vue-modal>
+
         <div class="container">
             <div class="columns">
 
@@ -394,7 +406,8 @@
             <result-table v-bind:result="result"
                 :deletable="true"
                 button_msg="Cancel"
-                @cancel="cancel">
+                @cancel="cancel"
+                @click_row="click_row">
             </result-table>
 
 

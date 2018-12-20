@@ -14,7 +14,7 @@ let result_table = {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="res in result">
+                        <tr v-for="res in result" @click="$emit('click_row', res.id)">
                             <td v-for="val in res"> {{ val }} </td>
                             <td> <button 
                                 class="button is-small is-danger" 
