@@ -887,15 +887,15 @@ post方法
 
 | 属性名   | 类型 | 值                               |
 | -------- | ---- | -------------------------------- |
-| op_id | int  | 每个Operation在数据库中的唯一id |
+| id | int  | 每个Operation在数据库中的唯一id |
 | time     | date | Operation发生时间                     |
-| detail     | int | 操作细节       1 表示 生成订单,2 表示 取消订单  |
+| detail     | string | 操作细节       'create' 表示 生成订单,'cancel' 表示 取消订单 |
 | error_code | int    | 0为正常，1为异常 |
 | error_msg  | string | 错误信息   （默认为'ok'）      |
 
 ### API：取消订单
 
-取消订单：将指定的预定订单取消，并且在Operation表中增加一行
+取消订单：将指定的预定订单取消，并且在Operation表中增加一行(在后端实现事务)
 
 time, detail=2, order_id,
 
@@ -998,16 +998,15 @@ call PROC_find_avail_room('2019-01-22', '2019-01-22', 2, '1', '%');
 使用了事务机制，确保Account表和User表的一致性
 
 ```sql                                                                                                                                                             
-drop procedure PROC_register_user;
 create procedure PROC_register_user
   (in Arg_username varchar(32), in Arg_password varchar(32), in Arg_realname varchar(128), in Arg_credential varchar(32))
   begin
     declare L_id integer ;
-    select max(U.id) from User U into L_id;
     start transaction ;
+    select max(U.id) from User U into L_id;
     insert into User(id, credential, name, gender, birthdate, phone, bonus, balance)
       values(L_id + 1, Arg_credential, Arg_realname, null, null, null, 0, 0);
-    insert into Account(id, username, password, role)
+    insert into Account(id, username, role, password)
       values(L_id + 1, Arg_username, Arg_password, 3);
     commit;
   end;

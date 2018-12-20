@@ -842,19 +842,24 @@ app.all('/api/query_order_operations', (req: Request, res: Response) => {
       .then(conn => {
         conn.query(query, arg)
         .then((table) => {
-          // for (let i = 0; i < table.length; ++i) {
-          //   if (table[i].gender == 0) {
-          //     table[i].gender = 'man';
-          //   } else if (table[i].gender == 0) {
-          //     table[i].gender = 'woman';
-          //   }
-          //   let birthdate: string = table[i].birthdate.toISOString();
-          //   table[i].birthdate = birthdate.substr(0, 10);
-          // }
+          for (let i = 0; i < table.length; ++i) {
+            if (table[i].detail == 1) {
+              table[i].detail = 'create';
+            } else if (table[i].detail == 2) {
+              table[i].detail = 'cancel';
+            }
+          }
           res.json({
             "orders": JSON.stringify(table),
             'error_code': 0,
             'error_msg': 'ok'
+          })
+        })
+        .catch((error) =>{
+          console.log(error)
+          res.json({
+            'error_code': 1,
+            'error_msg': JSON.stringify(error),
           })
         })
         .finally(()=>{
