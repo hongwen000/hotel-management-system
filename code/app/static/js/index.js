@@ -414,7 +414,9 @@ let order_app = new Vue({
                 });
             } else {
                 let data = {
-                    'user_id': user_id
+                    'user_id': user_id,
+                    'check_in': this.date2format(this.bdate),
+                    'check_out': this.date2format(this.edate)
                 };
                 console.log(data);
                 $.ajax({
@@ -441,6 +443,7 @@ let order_app = new Vue({
             this.$data.edata = new Date();
         },
         date2format: function(date) {
+            console.log(date);
             let _date = date.getDate();
             let Month = '' + (parseInt(date.getMonth()) + 1);
             let Year = date.getFullYear();
@@ -453,6 +456,30 @@ let order_app = new Vue({
             return `${Year}-${Month}-${_date}`;
 
         },
+        cancel: function(id) {
+            let data = {
+                'order_id': id
+            };
+            console.log(data);
+            $.ajax({
+                'url': '/api/cancel_order',
+                'method': 'POST',
+                'data': data,
+                'success': function(res) {
+                    if (res.error_code === 0) {
+                        order_app.iserror = false;
+                    } else {
+                        order_app.iserror = true;
+                    }
+                    order_app.msg = res.error_msg;
+                    for (let i = 0; i < order_app.result.length; ++i) {
+                        if (order_app.result[i].id === id) {
+                            order_app.result[i].status = 0;
+                        }
+                    }
+                }
+            });
+        }
         // success: function(data) {
         //     if (error_code === 0) {
         //         this.result = JSON.parse(data.orders);

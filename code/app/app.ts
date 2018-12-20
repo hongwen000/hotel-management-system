@@ -452,11 +452,12 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
   let floor: string = req.body.floor;
   let room_num: string = req.body.room_num;
   let price: string = req.body.price;
+  let type_id: string = req.body.type_id;
 
   console.log(req.body)
 
 
-  let query: string = 'insert into Room (floor, room_num, price) value (?, ?, ?);';
+  let query: string = 'insert into Room (floor, room_num, price, type_id) value (?, ?, ?, ?);';
   let arg: string[] = [];
   try {
     if (floor == '') {
@@ -468,9 +469,13 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
     if (price == '') {
       throw "price is empty !!"
     }
+    if (type_id == '') {
+      throw "type_id is empty !!"
+    }
     arg.push(floor);
     arg.push(room_num);
     arg.push(price);
+    arg.push(type_id);
     console.debug(arg)
     pool.getConnection()
       .then(conn => {
@@ -479,7 +484,7 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
             console.log(msg);
             res.json({
               'error_code': 0,
-              'error_msg': undefined,
+              'error_msg': 'ok',
             })
           })
           .catch((error) => {
@@ -654,7 +659,7 @@ app.all('/api/query_order_by_user', (req: Request, res: Response) => {
     if (user_id == undefined) {
       throw "user_id is empty or underfined!!"
     }
-    let arg = [user_id, '-1', 'null'];
+    let arg = [user_id, '-1', '9999-12-31'];
     if (check_in != undefined && check_in != '') {
       arg[1] = check_in;
     }
@@ -837,19 +842,24 @@ app.all('/api/query_order_operations', (req: Request, res: Response) => {
       .then(conn => {
         conn.query(query, arg)
         .then((table) => {
-          // for (let i = 0; i < table.length; ++i) {
-          //   if (table[i].gender == 0) {
-          //     table[i].gender = 'man';
-          //   } else if (table[i].gender == 0) {
-          //     table[i].gender = 'woman';
-          //   }
-          //   let birthdate: string = table[i].birthdate.toISOString();
-          //   table[i].birthdate = birthdate.substr(0, 10);
-          // }
+          for (let i = 0; i < table.length; ++i) {
+            if (table[i].detail == 1) {
+              table[i].detail = 'create';
+            } else if (table[i].detail == 2) {
+              table[i].detail = 'cancel';
+            }
+          }
           res.json({
             "orders": JSON.stringify(table),
             'error_code': 0,
             'error_msg': 'ok'
+          })
+        })
+        .catch((error) =>{
+          console.log(error)
+          res.json({
+            'error_code': 1,
+            'error_msg': JSON.stringify(error),
           })
         })
         .finally(()=>{
@@ -887,39 +897,23 @@ app.all('/api/cancel_order', (req: Request, res: Response) => {
     arg.push(order_id)
     pool.getConnection()
       .then(conn => {
-        conn.query(query, arg)
-        .catch((error) =>{
-          console.log(error)
-          res.json({
-            'error_code': 1,
-            'error_msg': JSON.stringify(error),
-          })
+        conn.beginTransaction()
+        .then(() => {
+          conn.query(query, arg);
+          return conn.query(query2, arg);
         })
-        .finally(()=>{
-          conn.end();
-        });
-      })
-      .catch((error) =>{
-        console.log(error)
-        res.json({
-          'error_code': 1,
-          'error_msg': JSON.stringify(error),
-        })
-      })
-    pool.getConnection()
-      .then(conn => {
-        conn.query(query2, arg)
-        .then((ret) => {
+        .then(() => {
+          conn.commit();
           res.json({
             'error_code': 0,
             'error_msg': 'ok'
           })
         })
-        .catch((error) =>{
-          console.log(error)
+        .catch((err) => {
+          conn.rollback();
           res.json({
             'error_code': 1,
-            'error_msg': JSON.stringify(error),
+            'error_msg': JSON.stringify(err),
           })
         })
         .finally(()=>{
@@ -1026,6 +1020,8 @@ app.all('/api/order_room', (req: Request, res: Response) => {
 
 
   let query: string = 'insert into `Order` (room_id, user_id, check_in, check_out, status) value (?, ?, ?, ?, 1);';
+  let query2: string = 'insert into Operation(time, detail, order_id) value( now(), 1, LAST_INSERT_ID());';
+  
   let arg: string[] = [];
   try {
     if (room_id == '') {
@@ -1047,19 +1043,23 @@ app.all('/api/order_room', (req: Request, res: Response) => {
     console.debug(arg)
     pool.getConnection()
       .then(conn => {
-        conn.query(query, arg)
-          .then((msg) => {
-            console.log(msg);
+        conn.beginTransaction()
+          .then(() => {
+            conn.query(query, arg);
+            return conn.query(query2);
+          })
+          .then(() => {
+            conn.commit();
             res.json({
               'error_code': 0,
               'error_msg': 'ok',
             })
           })
-          .catch((error) => {
-            console.log(error)
+          .catch((err) => {
+            conn.rollback();
             res.json({
               'error_code': 1,
-              'error_msg': JSON.stringify(error),
+              'error_msg': JSON.stringify(err),
             })
           })
           .finally(() => {
