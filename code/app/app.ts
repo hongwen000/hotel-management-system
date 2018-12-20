@@ -845,7 +845,7 @@ app.all('/api/query_order_operations', (req: Request, res: Response) => {
           for (let i = 0; i < table.length; ++i) {
             if (table[i].detail == 1) {
               table[i].detail = 'create';
-            } else if (table[i].gender == 2) {
+            } else if (table[i].detail == 2) {
               table[i].detail = 'cancel';
             }
           }
