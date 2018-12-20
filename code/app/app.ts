@@ -452,11 +452,12 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
   let floor: string = req.body.floor;
   let room_num: string = req.body.room_num;
   let price: string = req.body.price;
+  let type_id: string = req.body.type_id;
 
   console.log(req.body)
 
 
-  let query: string = 'insert into Room (floor, room_num, price) value (?, ?, ?);';
+  let query: string = 'insert into Room (floor, room_num, price, type_id) value (?, ?, ?, ?);';
   let arg: string[] = [];
   try {
     if (floor == '') {
@@ -468,9 +469,13 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
     if (price == '') {
       throw "price is empty !!"
     }
+    if (type_id == '') {
+      throw "type_id is empty !!"
+    }
     arg.push(floor);
     arg.push(room_num);
     arg.push(price);
+    arg.push(type_id);
     console.debug(arg)
     pool.getConnection()
       .then(conn => {
@@ -479,7 +484,7 @@ app.all('/api/insert_room', (req: Request, res: Response) => {
             console.log(msg);
             res.json({
               'error_code': 0,
-              'error_msg': undefined,
+              'error_msg': 'ok',
             })
           })
           .catch((error) => {
