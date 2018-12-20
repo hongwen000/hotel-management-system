@@ -414,7 +414,9 @@ let order_app = new Vue({
                 });
             } else {
                 let data = {
-                    'user_id': user_id
+                    'user_id': user_id,
+                    'check_in': this.date2format(this.bdate),
+                    'check_out': this.date2format(this.edate)
                 };
                 console.log(data);
                 $.ajax({
@@ -441,6 +443,7 @@ let order_app = new Vue({
             this.$data.edata = new Date();
         },
         date2format: function(date) {
+            console.log(date);
             let _date = date.getDate();
             let Month = '' + (parseInt(date.getMonth()) + 1);
             let Year = date.getFullYear();
