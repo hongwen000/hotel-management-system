@@ -1025,6 +1025,8 @@ app.all('/api/order_room', (req: Request, res: Response) => {
 
 
   let query: string = 'insert into `Order` (room_id, user_id, check_in, check_out, status) value (?, ?, ?, ?, 1);';
+  let query2: string = 'insert into Operation(time, detail, order_id) value( now(), 1, LAST_INSERT_ID());';
+  
   let arg: string[] = [];
   try {
     if (room_id == '') {
@@ -1046,19 +1048,23 @@ app.all('/api/order_room', (req: Request, res: Response) => {
     console.debug(arg)
     pool.getConnection()
       .then(conn => {
-        conn.query(query, arg)
-          .then((msg) => {
-            console.log(msg);
+        conn.beginTransaction()
+          .then(() => {
+            conn.query(query, arg);
+            return conn.query(query2);
+          })
+          .then(() => {
+            conn.commit();
             res.json({
               'error_code': 0,
               'error_msg': 'ok',
             })
           })
-          .catch((error) => {
-            console.log(error)
+          .catch((err) => {
+            conn.rollback();
             res.json({
               'error_code': 1,
-              'error_msg': JSON.stringify(error),
+              'error_msg': JSON.stringify(err),
             })
           })
           .finally(() => {
