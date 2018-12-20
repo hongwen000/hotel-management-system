@@ -654,7 +654,7 @@ app.all('/api/query_order_by_user', (req: Request, res: Response) => {
     if (user_id == undefined) {
       throw "user_id is empty or underfined!!"
     }
-    let arg = [user_id, '-1', 'null'];
+    let arg = [user_id, '-1', '9999-12-31'];
     if (check_in != undefined && check_in != '') {
       arg[1] = check_in;
     }
