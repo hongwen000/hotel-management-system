@@ -15,6 +15,7 @@
     <script src="/static/js/modal.js"></script>
     <link rel="stylesheet" href="/static/css/datepicker.css">
     <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/table.css">
 </head>
 
 <body>
@@ -143,9 +144,9 @@
                 </div>
             </div>
             <div class="field is-grouped">
-                <div class="control">
+                <!-- <div class="control">
                     <button @click="order" class="button is-link">Order</button>
-                </div>
+                </div> -->
                 <div class="control">
                     <button v-if="role <= 1" @click="insert" class="button is-link">Add</button>
                 </div>
@@ -196,8 +197,10 @@
         </general-message>
 
         <result-table v-bind:result="rooms"
-            :deletable="false"
-            :button_msg="null"> </result-table>
+            :deletable="true"
+            button_msg="order"
+            @cancel="order_click"
+            :always_button="true"> </result-table>
     </section>
 
 
@@ -301,7 +304,8 @@
 
         <result-table v-bind:result="users"
             :deletable="false"
-            :button_msg="null">
+            :button_msg="null"
+            :always_button="false">
         </result-table>
     </section>
 
@@ -406,6 +410,7 @@
             <result-table v-bind:result="result"
                 :deletable="true"
                 button_msg="Cancel"
+                :always_button="false"
                 @cancel="cancel"
                 @click_row="click_row">
             </result-table>
@@ -434,8 +439,9 @@
             </general-message>
         </div>
         <result-table v-bind:result="table"
-            :deletable="false",
-            :button_msg="null">
+            :deletable="false"
+            :button_msg="null"
+            :always_button="false">
         </result-table>
     </section>
 
