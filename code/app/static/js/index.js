@@ -228,9 +228,14 @@ let room_app = new Vue({
                         room_app.iserror = true;
                     }
                     room_app.msg = data.error_msg
-
+                    room_app.submit();
                 }
             });
+        },
+        order_click(id) {
+            console.log(id);
+            this.room_id = id;
+            this.order();
         },
         insert: function() {
             let data = {
