@@ -14,15 +14,17 @@ let result_table = {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="res in result" @click="$emit('click_row', res.id)">
-                            <td v-for="val in res"> {{ val }} </td>
-                            <td> <button 
-                                class="button is-small"
-                                :class="{'is-danger': res.status === 1, 'is-light': res.status !== 1}"
-                                v-if="deletable && (always_button || res.status === 1)"
-                                @click.stop.prevent="$emit('cancel', res.id)"> {{button_msg}} 
-                                </button>  
-                            </td>
+                        <tr v-for="res in result" 
+                            @click="$emit('click_row', res.id)"
+                            class="table-row">
+                                <td v-for="val in res"> {{ val }} </td>
+                                <td> <button 
+                                    class="button is-small"
+                                    :class="{'is-danger': res.status === 1, 'is-light': res.status !== 1}"
+                                    v-if="deletable && (always_button || res.status === 1)"
+                                    @click.stop.prevent="$emit('cancel', res.id)"> {{button_msg}} 
+                                    </button>  
+                                </td>
                         </tr>
                     </tbody>
                 </table>
