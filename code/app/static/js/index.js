@@ -456,6 +456,30 @@ let order_app = new Vue({
             return `${Year}-${Month}-${_date}`;
 
         },
+        cancel: function(id) {
+            let data = {
+                'order_id': id
+            };
+            console.log(data);
+            $.ajax({
+                'url': '/api/cancel_order',
+                'method': 'POST',
+                'data': data,
+                'success': function(res) {
+                    if (res.error_code === 0) {
+                        order_app.iserror = false;
+                    } else {
+                        order_app.iserror = true;
+                    }
+                    order_app.msg = res.error_msg;
+                    for (let i = 0; i < order_app.result.length; ++i) {
+                        if (order_app.result[i].id === id) {
+                            order_app.result[i].status = 0;
+                        }
+                    }
+                }
+            });
+        }
         // success: function(data) {
         //     if (error_code === 0) {
         //         this.result = JSON.parse(data.orders);

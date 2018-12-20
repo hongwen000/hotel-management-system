@@ -117,7 +117,7 @@
             <div class="columns">
                 <div class="column">
                     <label class="label">
-                        room id
+                        room number
                     </label>
                     <div class="control">
                         <input class="input" type="text" v-model="room_id" placeholder="let it empty to ignore">
@@ -193,7 +193,9 @@
         <general-message v-bind:iserror="iserror" v-bind:msg="msg">
         </general-message>
 
-        <result-table v-bind:result="rooms"> </result-table>
+        <result-table v-bind:result="rooms"
+            :deletable="false"
+            :button_msg="null"> </result-table>
     </section>
 
 
@@ -295,7 +297,9 @@
 
         </general-message>
 
-        <result-table v-bind:result="users">
+        <result-table v-bind:result="users"
+            :deletable="false"
+            :button_msg="null">
         </result-table>
     </section>
     <section id="order" class="content">
@@ -387,7 +391,10 @@
             <general-message v-bind:iserror="iserror" v-bind:msg="msg">
             </general-message>
 
-            <result-table v-bind:result="result">
+            <result-table v-bind:result="result"
+                :deletable="true"
+                button_msg="Cancel"
+                @cancel="cancel">
             </result-table>
 
 
@@ -413,7 +420,9 @@
 
             </general-message>
         </div>
-        <result-table v-bind:result="table">
+        <result-table v-bind:result="table"
+            :deletable="false",
+            :button_msg="null">
         </result-table>
     </section>
 
