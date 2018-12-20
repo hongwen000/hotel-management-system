@@ -4,6 +4,45 @@
 \usepackage[svgnames,table]{xcolor}
 \usepackage{minted}
 \usepackage{tcolorbox}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
 
 \begin{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -127,12 +166,12 @@
 \end{itemize}
 
 \chapter{数据库设计}
+% TODO LXR
 在本节中，我们会按照概念设计、逻辑设计到物理设计的顺序讲解本项目的具体设计方式。
 \section{概念设计}
-概念设计包括数据库的实体集、联系集和ER图。
+根据需求分析的结果，我们进行了数据库的概念设计，分析了数据库中应该存在的实体集、联系集，并绘制了ER图。
 \subsection{实体集}
-描述酒店的房间需要房间实体集(\autoref{tab:E-room})和房型实体集(\autoref{tab:E-type})。
-房型是指房间的
+描述酒店的房间需要房间实体集(\autoref{tab:E-room})和房型实体集(\autoref{tab:E-type})。描述酒店的用户并记录用户个人和登录信息需要用户实体集(\autoref{tab:E-user})、账户实体集(\autoref{tab:E-account})、区域实体集(\autoref{tab:E-region})。最后，酒店还需要记录所有订单(\autoref{tab:E-order})，以及订单的操作明细(\autoref{tab:E-operation})。
 \begin{table}[htp]
     \caption{房间实体集}
     \centering
@@ -143,8 +182,8 @@
     \midrule
         \underline{id}  & 唯一 \\
         floor & 层数\\
-        room\_num  & 不包括floor的房间号 \\
-        price &  \\
+        room\_num  & 房间号 \\
+        price & 价格  \\
     \bottomrule
     \hiderowcolors
     \end{tabular}
@@ -160,6 +199,8 @@
         \emph{属性}  & \emph{备注} \\
     \midrule
         \underline{id} & 唯一 \\
+        name & 房型名称 \\
+        capacity & 最大容纳人数 \\
         breakfast  & 是否包含早餐 \\
         wifi & 是否包含无线网络 \\
     \bottomrule
@@ -185,10 +226,45 @@
         birthdate & 出生日期 \\
         phone & 电话号码 \\
         balance & 余额 \\
+        bonus & 积分 \\
     \bottomrule
     \hiderowcolors
     \end{tabular}
     \label{tab:E-user}
+\end{table}
+
+\begin{table}[htp]
+	\caption{账户实体集}
+	\centering
+	\rowcolors{1}{White}{Lavender}
+	\begin{tabular}{cccp{11cm}<{\centering}}
+		\toprule
+		\emph{属性}  & \emph{备注} \\
+		\midrule
+		\underline{id}  & 唯一 \\
+		username & 账户名 \\
+		password & 账户密码 \\
+		role & 用户角色，0为管理者，3为普通用户 \\
+		\bottomrule
+		\hiderowcolors
+	\end{tabular}
+	\label{tab:E-account}
+\end{table}
+	
+\begin{table}[htp]
+	\caption{区域实体集}
+	\centering
+	\rowcolors{1}{White}{Lavender}
+	\begin{tabular}{cccp{11cm}<{\centering}}
+		\toprule
+		\emph{属性}  & \emph{备注} \\
+		\midrule
+		\underline{id}  & 唯一 \\
+		name & 区域名称 \\
+		\bottomrule
+		\hiderowcolors
+	\end{tabular}
+	\label{tab:E-region}
 \end{table}
 
 \begin{table}[htp]
@@ -231,7 +307,15 @@
 
 
 \subsection{联系集}
+房型与房间实体、房间和订单实体、用户与订单实体、区域与用户实体之间有一对多的联系。对于一个订单只有完成下单和完成下单后又取消订单两种情况，因此订单实体与订单操作实体是一对一或一对二的联系。用户与账户之间是一对一联系。
 \subsection{E-R图}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{../ER/project.ed.eps}
+	\caption{}
+	\label{fig:ER Graph}
+\end{figure}
 
 \section{逻辑设计}
 
@@ -263,33 +347,48 @@
 	\item 考虑多对一的联系集$AB$和相关的实体集$A$, $B$, ，若$A$在联系中的参与是全部的，那么可以将$A$与$AB$模式属性合并得到$A^*$，主码是$A$的主码，外码加入$A^*$中。
 \end{itemize}
 
-依照上述规则，由于Type、Room、Operation、Order、User、Region均为简单强实体集于是可以首先生成包含对应属性的关系模式。再考虑联系集，由于OrderUser、RoomType、OrderRoom、OrderOp、UserRegion均为一对多的联系集，因此均可以按照上述规则消除。
+依照上述规则，由于Type、Room、Operation、Order、User、Region、Account均为简单强实体集于是可以首先生成包含对应属性的关系模式。再考虑联系集，由于OrderUser、RoomType、OrderRoom、OrderOp、UserRegion均为一对多的联系集，因此均可以按照上述规则消除。
 
 最后得到以下关系模式：
 
-RoomType(\textbf{id}, breakfast, wifi)
+RoomType(\textbf{id}, name, capacity, breakfast, wifi)
 
 Room(\textbf{id}, floor, room\_num, price, \textit{type\_id})
 
-Operation(\textbf{id}, time, operation. \textit{order\_id})
+Operation(\textbf{id}, time, detail. \textit{order\_id})
 
-Order(\textbf{id}, time, status, check\_in, check\_out, \textit{room\_id}, \textit{user\_id})
+Order(\textbf{id}, status, check\_in, check\_out, \textit{room\_id}, \textit{user\_id})
 
 Region(\textbf{id}, name)
 
-User(\textbf{id}, credential, name, gender, birthdate, phone, balance, \textit{region\_id})
+User(\textbf{id}, credential, name, gender, birthdate, phone, bonus, balance, \textit{region\_id})
+
+Account(\textit{\textbf{id}}, username, password, role)
 
 
 \section{物理设计}
+% TODO: YB 颜彬
 
 \chapter{数据库创建和数据加载}
+%TODO: LXR
+\section{视图}
+在酒店管理系统中，为了对账需要，所有历史订单都不能删除。但用户通常只关心还未退房的订单，系统在查询空房时，也
+只是对照那些还没退房的订单使用排除法进行查找。因此，保存一个仅包含还未退房的订单的视图能够方便数据库后台的管理和应用的实现。
+
+
 \section{存储过程}
-在酒店管理系统中，我们不可能存储未来每一天每间房间是否可用的状态。要查询某个指定时间段空闲的房间有哪些，必须根据当前有效的订单信息，查询并排除该时间段内已经被预定的房间。
-由于查询可用房间是酒店数据库最常用的功能，因此我们设计了存储过程：
+在酒店管理系统中，我们不可能存储未来每一天每间房间是否可用的状态。要查询某个指定时间段空闲的房间有哪些，必须根据当前有效的订单信息，查询并排除该时间段内已经被预定的房间。由于查询可用房间是酒店数据库最常用的功能，因此我们设计了存储过程：
 
 \section{建立触发器}
-用户每次订房时要从余额中扣取房费
+用户每次订房时要从余额中扣取房费并给予积分奖励，这一操作必须在订单生成前完成，并对用户余额进行检查，避免用户余额不足。
 
+\section{事务机制}
+出于安全性考虑，我们将用户的账户与用户的个人信息分在两个表中分开存储。而酒店一般要求用户实名制登记，因此在注册时不仅要在账户表中添加账户，而且一定要在用户信息表相应地记录真实姓名和证件号码。为了确保用户注册操作的原子性，我们采用了事务机制，将两次插入操作在一次事务中提交。
+
+\section{自主存取控制}
+为了防止用户账户失窃，我们设计了自主存取控制机制，将数据库后台人员分为管理员和审计员，只有管理员有查看和修改Account表的权限。
+
+\chapter{数据库应用软件设计与开发}
 \section{测试数据生成}
 
 % TODO: 交给wyf
