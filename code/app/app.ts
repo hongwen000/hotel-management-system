@@ -113,10 +113,11 @@ app.get('/api/logout', (req: Request, res: Response) => {
 app.post('/api/signup', (req: Request, res: Response) => {
   let username = req.body.username;
   let password = req.body.password;
-  let role = 3;
+  let realname = req.body.realname;
+  let credential = req.body.credential;
   pool.getConnection()
     .then(conn => {
-      conn.query('insert into Account(username, password, role) value(?,?,?)', [username, password, role])
+      conn.query('call PROC_register_user(?, ?, ?, ?)', [username, password, realname, credential])
         .then(rows => {
           console.log(rows);
           res.json({

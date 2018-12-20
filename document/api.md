@@ -923,7 +923,7 @@ time, detail=2, order_id,
 
 # 触发器说明
 
-扣费触发器
+扣费触发器：在插入订单前执行，扣除下单用户余额，若余额不足则会报错
 
 ```sql
 create or replace trigger TRI_order_fee
@@ -950,5 +950,79 @@ else
  where u.id = NEW.user_id;
 END IF;
 end;
+```
+
+# 视图说明
+
+当前有效订单（状态为已完成，且离店时间在今日及以后的订单）
+
+```sql
+create view VIEW_available_orders as
+select *
+  from `Order` o
+  where o.status = 1 and o.check_out > CURDATE();
+```
+
+# 存储过程
+
+## 查询可用房间
+
+```sql
+create procedure PROC_find_avail_room
+  (in Arg_check_in Date, in Arg_check_out Date, in Arg_capacity int, in Arg_wifi char(1), in Arg_breakfast char(1))
+  begin
+  select R.id,R.floor, R.room_num,R.price, T.breakfast, T.wifi ,T.name, T.capacity from Room as R, RoomType as T
+  where R.type_id = T.id and T.capacity >= Arg_capacity and T.wifi like Arg_wifi and T.breakfast like Arg_breakfast and
+  (not exists (select * from VIEW_available_orders o
+      where  R.id = o.room_id and Arg_check_in <= o.check_out and Arg_check_out >= o.check_in
+  ));
+  end;
+```
+
+| 参数          | 类型    | 值                   |
+| ------------- | ------- | -------------------- |
+| Arg_check_in  | Date    | 预约的第一天         |
+| Arg_check_out | Date    | 预约的最后一天       |
+| Arg_capacity  | int     | 预约的房型的最低容量 |
+| Arg_wifi      | char(1) | 是否要求要WiFi       |
+| Arg_breakfast | char(1) | 是否要求送早餐       |
+
+调用举例：
+
+```
+call PROC_find_avail_room('2019-01-22', '2019-01-22', 2, '1', '%');
+```
+
+## 注册用户
+
+使用了事务机制，确保Account表和User表的一致性
+
+```sql                                                                                                                                                             
+drop procedure PROC_register_user;
+create procedure PROC_register_user
+  (in Arg_username varchar(32), in Arg_password varchar(32), in Arg_realname varchar(128), in Arg_credential varchar(32))
+  begin
+    declare L_id integer ;
+    select max(U.id) from User U into L_id;
+    start transaction ;
+    insert into User(id, credential, name, gender, birthdate, phone, bonus, balance)
+      values(L_id + 1, Arg_credential, Arg_realname, null, null, null, 0, 0);
+    insert into Account(id, username, password, role)
+      values(L_id + 1, Arg_username, Arg_password, 3);
+    commit;
+  end;
+```
+
+| 参数           | 类型         | 值              |
+| -------------- | ------------ | --------------- |
+| Arg_username   | varchar(32)  | Account表用户名 |
+| Arg_password   | varchar(32)  | Account表密码   |
+| Arg_realname   | varchar(128) | User表真实姓名  |
+| Arg_credential | varchar(32)  | User表证件号码  |
+
+调用举例
+
+```
+call PROC_register_user('username001', '123', 'realname', '3284784578345');
 ```
 
