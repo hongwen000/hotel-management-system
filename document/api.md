@@ -485,7 +485,8 @@ get方法
 | errro_code | int    | 0 为无错误，1为有错误（按需求再细分错误类型） |
 | error_msg  | string | 错误信息                                      |
 
-#### 删除
+#### 删除
+
 ##### URL 
 `/api/drop_user`
 ##### 请求示例及参数说明
@@ -968,13 +969,18 @@ select *
 ## 查询可用房间
 
 ```sql
-create procedure w
-  (in Arg_check_in Date, in Arg_check_out Date, in Arg_capacity int, in Arg_wifi char(1), in Arg_breakfast char(1))
+create procedure PROC_find_avail_room
+  (in Arg_check_in Date, in Arg_check_out Date, 
+   in Arg_capacity int, in Arg_wifi char(1), in Arg_breakfast char(1))
   begin
-  select R.id,R.floor, R.room_num,R.price, T.breakfast, T.wifi ,T.name, T.capacity from Room as R, RoomType as T
-  where R.type_id = T.id and T.capacity >= Arg_capacity and T.wifi like Arg_wifi and T.breakfast like Arg_breakfast and
+  select R.id,R.floor, R.room_num,R.price, 
+  T.breakfast, T.wifi ,T.name, T.capacity
+  from Room as R, RoomType as T
+  where R.type_id = T.id and T.capacity >= Arg_capacity 
+  and T.wifi like Arg_wifi and T.breakfast like Arg_breakfast and
   (not exists (select * from VIEW_available_orders o
-      where  R.id = o.room_id and Arg_check_in <= o.check_out and Arg_check_out >= o.check_in
+      where  R.id = o.room_id and Arg_check_in <= o.check_out and 
+               Arg_check_out >= o.check_in
   ));
   end;
 ```
@@ -999,12 +1005,14 @@ call PROC_find_avail_room('2019-01-22', '2019-01-22', 2, '1', '%');
 
 ```sql                                                                                                                                                             
 create procedure PROC_register_user
-  (in Arg_username varchar(32), in Arg_password varchar(32), in Arg_realname varchar(128), in Arg_credential varchar(32))
+  (in Arg_username varchar(32), in Arg_password varchar(32),
+   in Arg_realname varchar(128), in Arg_credential varchar(32))
   begin
     declare L_id integer ;
     start transaction ;
     select max(U.id) from User U into L_id;
-    insert into User(id, credential, name, gender, birthdate, phone, bonus, balance)
+    insert into User
+    (id, credential, name, gender, birthdate, phone, bonus, balance)
       values(L_id + 1, Arg_credential, Arg_realname, null, null, null, 0, 0);
     insert into Account(id, username, role, password)
       values(L_id + 1, Arg_username, Arg_password, 3);
