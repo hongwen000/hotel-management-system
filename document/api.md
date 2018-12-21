@@ -932,22 +932,18 @@ create or replace trigger TRI_order_fee
 for each row
 begin
 declare fee integer;
+declare days integer;
 declare old_balance integer ;
 select balance into old_balance
 from User u
 where  u.id = New.user_id;
-
-select price into fee
-from Room r
-where r.id = New.room_id;
-
-IF (old_balance - fee < 0) THEN
+IF (old_balance = null or old_balance - New.fee < 0) THEN
  SIGNAL SQLSTATE '45000' SET
  MYSQL_ERRNO = 30001,
  MESSAGE_TEXT = 'You dont have enough balance';
 else
  update User u
- set balance = old_balance - fee
+ set balance = old_balance - New.fee
  where u.id = NEW.user_id;
 END IF;
 end;
