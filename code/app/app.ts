@@ -1017,6 +1017,8 @@ app.all('/api/query_avail_room', (req: Request, res: Response) => {
         console.log(query, arg);
         conn.query(query, arg)
         .then((table) => {
+          table = table[0]
+          console.debug(table)
           for (let i = 0; i < table.length; ++i) {
             if (table[i].wifi == 0) {
               table[i].wifi = 'No';
