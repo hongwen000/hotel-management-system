@@ -930,8 +930,16 @@ create or replace trigger TRI_order_fee
     %\end{adjustwidth}
 \end{figure}
 
+\section{存储过程的传参和返回值}
+存储过程相当于是存储并编译在数据库中的一段子程序。它在传参和返回值上和一般的查询语句都有所不同：
+
+在查询房间时，用户如果不对是否提供wifi、早餐做出要求，那么就应该既返回提供wifi的房间，又返回不提供wifi的房间。我们发现可以使用like谓词实现这个需求：\textit{where \space wifi \space like \space '\%'} 。但在把这条查询语句写入存储过程时发生了问题，实验发现：存储过程在传参过程中不允许参数发生隐式类型转换，如果把参数Arg\_wifi声明为bool，那么刚刚这条查询语句就会出错，因此必须将参数Arg\_wifi声明为char(1)。
+
+此外存储过程的返回值在后端中是list of list，而一般的查询语句的返回值是list。这一点也要特殊处理。
 
 
+\section{NULL与数字比较}
+实验发现：如果一个属性num的值为\textit{null}，那么它或它的与其他数字运算的结果出现在if语句中和其他数字比较，if语句均会返回false。因此在判断用户余额是否足够订房时最好要检查余额是否为\textit{null}，避免由于数据库数据上的失误出现部分用户可以无限订房的情况。
 
 % TODO: 补充一些问题？？ 有一些开发细节可能会好一些
 
