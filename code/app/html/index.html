@@ -117,9 +117,9 @@
                 </div>
             </div>
 
-            <div class="columns">
-                <div class="column">
-                    <label class="label">
+            <div class="columns"  v-if="role <= 1">
+                <div class="column" v-if="role <= 1">
+                    <label class="label" >
                         room number
                     </label>
                     <div class="control">
