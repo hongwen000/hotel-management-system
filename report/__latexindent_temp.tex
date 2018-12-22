@@ -93,20 +93,28 @@
 
 总之，我们遵循数据库设计与网站设计与编写的方法，实现了酒店预定系统，该系统包括客房预订、会员注册、用户管理、客房管理、客户与客房的信息增删改、以及订单管理等功能，已经能够满足大多数酒店的需求。
 
-\chapter{系统分析与设计}
+\chapter{系统分析}
 
-随着信息化时代的到来，使用数据库来对酒店客房预订信息进行管理能够大大提高信息管理的效率。基于网络对酒店管理系统的了解，我们确定了该系统所需要满足的需求，以及我们系统应具有的功能模块。
+随着信息化时代的到来，使用数据库来对酒店客房预订信息进行管理能够大大提高信息管理的效率。基于网络对酒店管理系统的了解，我们从以下两个方面来对系统所需要满足的需求进行分析：
 
-\section{需求分析}
+\begin{itemize}
+    \item 系统面向用户类型
+    \item 系统所需功能
+\end{itemize}
 
-我们的系统可供酒店经理，酒店前台人员以及顾客使用。其中，不同的用户对该系统有着不同的需求，以及相应的操作权限。
 
-TODO:
+\section{系统面向用户}
+
+本系统的设计主要面向以下三类用户：
+
+\begin{itemize}
+    \item 酒店经理
+    \item 酒店前台人员
+    \item 顾客
+\end{itemize}
 
 
-\section{系统功能结构设计}
-
-TODO:
+\section{子系统设计}
 
 本系统可以分为这4个子系统，可见\autoref{fig:sub-system-design}。
 
@@ -124,10 +132,38 @@ TODO:
     %\end{adjustwidth}
 \end{figure}
 
-\section{系统功能模块}
 
-% TODO: 不同的模块分别说明
 
+\section{需求分析}
+
+在酒店预定管理系统中，需要建立房间预订子系统，在该子系统中，需要实现顾客所需的以下几点需求：
+
+\begin{itemize}
+    \item 根据可用时间段、房型、住客人数、价格区间等指标搜索符合条件的房间。
+    \item 指定入离日期与房间类型后可提交预订订单。
+    \item 顾客可以在未入住的情况下取消预定订单。
+\end{itemize}
+
+对于酒店前台，除去上述顾客所具有的需求外，还应该对数据库具有更高的权限，实现用户信息档案子系统与订单管理子系统。
+
+\begin{itemize}
+    \item 在用户信息档案子系统中，酒店前台有以下需求：
+    \begin{itemize}
+        \item 可以根据姓名或者身份证号查询某一个用户的所有信息
+        \item 能够录入与新用户相关的信息
+    \end{itemize}
+    \item 在订单管理子系统中，酒店前台有以下几点需求：
+    \begin{itemize}
+        \item 查看当前仍未处理的订单，并根据需要设置某些订单的状态
+    \end{itemize}
+\end{itemize}
+
+
+对于酒店经理，则应该在酒店前台的基础上，对数据库拥有更高的权限，该权限提升主要体现在以下几点
+
+\begin{itemize}
+    \item 能够根据实际情况修改房间的价格与房间的类型等信息
+\end{itemize}
 
 \chapter{数据库设计}
 % TODO LXR
@@ -135,27 +171,13 @@ TODO:
 \section{概念设计}
 根据需求分析的结果，我们进行了数据库的概念设计，分析了数据库中应该存在的实体集、联系集，并绘制了ER图。
 \subsection{实体集}
-% 描述酒店的房间需要房间实体集(\autoref{tab:E-room})和房型实体集(\autoref{tab:E-type})。描述酒店的用户并记录用户个人和登录信息需要用户实体集(\autoref{tab:E-user})、
-% 账户实体集(\autoref{tab:E-account})、区域实体集(\autoref{tab:E-region})。
-% 最后，酒店还需要记录所有订单(\autoref{tab:E-order})，以及订单的操作明细(\autoref{tab:E-operation})。\\
+描述酒店的房间需要房间实体集(\autoref{tab:E-room})和房型实体集(\autoref{tab:E-type})。描述酒店的用户并记录用户个人和登录信息需要用户实体集(\autoref{tab:E-user})、账户实体集(\autoref{tab:E-account})、区域实体集(\autoref{tab:E-region})。最后，酒店还需要记录所有订单(\autoref{tab:E-order})，以及订单的操作明细(\autoref{tab:E-operation})。
+\subsubsection{房间和房型实体集}
+房型实体代表房内的基础设施状况，例如房内是否有wifi、是否包含早餐、容纳的人数等。\\
 
-% 下面对这些实体集作简要的描述和区分。
-% \subsubsection{房间和房型实体集}
-% 房型实体代表房内的基础设施状况，例如房内是否有wifi、是否包含早餐、容纳的人数等。\\
+而房间实体则对应着真实的每个房间。其具有所在层数、房号、价格等属性。
 
-% 而房间实体则对应着真实的每个房间。其具有所在层数、房号、价格等属性。
-% \subsubsection{用户和账户实体集}
-% 用户实体代表一个真实的个人。它有自己的身份信息，例如证件号、姓名、性别等。其中用户
-% 实体集中的name属性代表这个人的真实姓名。\\
-
-% 账户实体集代表本应用上的一个账号。其中的账户名(username)是登陆名，password用于
-% 登陆。role为该账户在应用里的角色，它决定了该账户拥有的权限。
-% \subsubsection{订单和操作实体集}
-% 订单实体的信息包含了哪个用户、在何时、花费多少钱、在哪个时间段订购了哪个房间。\\
-
-% 操作实体集包含了用户对订单的两种操作，分别是发起订单和取消订单。
-
-
+\subsubsection{用户和账号实体集}
 \begin{table}[htp]
     \caption{房间实体集}
     \centering
@@ -209,6 +231,8 @@ TODO:
         gender & 性别 \\
         birthdate & 出生日期 \\
         phone & 电话号码 \\
+        balance & 余额 \\
+        bonus & 积分 \\
     \bottomrule
     \hiderowcolors
     \end{tabular}
@@ -227,8 +251,6 @@ TODO:
 		username & 账户名 \\
 		password & 账户密码 \\
 		role & 用户角色，0为管理者，3为普通用户 \\
-        balance & 余额 \\
-        bonus & 积分 \\
 		\bottomrule
 		\hiderowcolors
 	\end{tabular}
@@ -352,126 +374,6 @@ Account(\textit{\textbf{id}}, username, password, role)
 
 \section{物理设计}
 % TODO: YB 颜彬
-\subsection{索引设计}
-\subsubsection{索引简介}
-在MariaDB中，有4种类型的索引（Mariadb不严格地区分key和index的概念，
-并时常根据语境对他们混用）。\\
-
-\autoref{tab:index}列出了这4种索引。 其中unique表示索引建立的数据项
-是否必须唯一，not null表示数据项是否必须不为null。\\
-
-mariaDB会自动为primary key 和 foreign key建立索引（表第一行）。
-其中如果对unique的数据项建立索引，可以建立一个unique索引（表第二行）。
-如果该数据项不是唯一的，则需要建立plain indexes或full-text indexes。
-后两者最大的不同在于，如果使用like `\%word\%'这种形式的查询，必须建立
-full-text索引，否则无效。
-
-\begin{table}[htp]
-    \caption{mariaDB索引介绍}
-    \centering
-    \rowcolors{1}{White}{Lavender}
-    \begin{tabular}{cccp{11cm}<{\centering}}
-    \toprule
-        \emph{名称} & \emph{unique} & \emph{not null} \\
-    \midrule
-        primary(foreigh) key & Y & Y \\
-        unique indexes & Y & N \\
-        plain indexes & N & N \\
-        full-text indexes & N & N \\
-    \bottomrule
-    \hiderowcolors
-    \end{tabular}
-    \label{tab:index}
-\end{table}
-\subsubsection{索引建立}
-搜索订单几乎是最常见的一种操作。从用户的行为来判断，大部分对订单的搜索都是基于订单日期的。
-故在Order表上对check\_in和check\_out添加索引十分有必要。\\
-    
-% %TODO:
-% ``` sql
-% CREATE INDEX Order__index_check_in ON `Order` (check_in DESC);
-% ```
-在上面的索引建立中，显式地指明了索引使用降序排列。
-这是因为根据时间局部性，越``晚(刚刚发生）''的记录越可能被搜索，越``早（年代久远)''
-的记录越不可能被搜索。降序排列索引可以尽可能早地让索引被搜索到。\\
-
-\subsubsection{效果评价}
-% ``` sql
-% explain 
-% select * from `Order`
-% where check_in >= '2019-01-22';
-% ```
-比较有索引和无索引时的相关输出。
-没有建立索引时，仅能根据主键索引进行查询。查询了300多行。
-但建立了对check\_in的索引后，以上的语句仅需要搜索75行，大大加快了搜索时间。\\
-
-进一步测试以下的语句\\
-% ``` sql
-% explain select * from `Order`
-% where check_in >= '2019-01-22'
-% AND check_out <= '2020-01-01';
-% ```
-发现mariaDB的做法是，先根据索引check\_in作range scan，估计会检索到75个左右的行。
-然后对这些行作where筛选，得到最终的结果。\\
-
-在上面的语句执行中，没有用到check\_out索引，但这个索引依旧有它的必要指之处。
-mariaDB会选择check\_in或check\_out中的一个索引作range scan，很
-可能在下一次更合适的情况下会使用check\_out。维护check\_in和check\_out两个索引，
-可以让mariaDB有更多提升性能的可能性。\\
-
-更进一步的分析，如果用户想要筛选订单，必行会出现user\_id = <int>的情况。
-此时user\_id一定是更适合的索引。但不能忽略的是，酒店的前台也需要筛选订单。
-后者往往是根据日期作筛选的，而且这个操作的发生极其频繁。故这个索引十分有必要。\\
-
-\subsubsection{其他索引的需求分析}
-大部分对User表的查询都是使用id进行查询的。user name是用户的真名，
-对用户真名的查询操作其实很少。故现有的主键索引已经足够。\\
-
-对Account的查询中，由于username被标记为unique（IDE自动为我们建立了索引），
-故对Account的大部分查询效率都很高。\\
-
-一个比较微妙的操作是查询空闲房间。因为查询空闲房间涉及到查询房间(Room)、
-查询房间类型(RoomType)和查询订单(Order)三个表的数据。
-实际上这个操作的效率也是很高的。对此详细的介绍见后文。\\
-
-
-我们的应用经常需要返回``空闲的房间数''。可是怎么定义空闲呢？
-如果对于一段查询时间[check\_in, check\_out],不存在与之重叠的订单（order），
-那么我们就说这个房间是空闲的。
-但实际的查询并不是通过使用check\_in和check\_out的索引进行的。\\
-% ``` sql
-% explain 
-% select R.id, R.floor, R.room_num, R.price, T.breakfast, T.wifi ,T.name, T.capacity
-% from Room as R, RoomType as T
-% where R.type_id = T.id
-%   and T.capacity >= 2
-%   and T.wifi like 1
-%   and T.breakfast like 1
-%   and not exists
-%     ( select room_id, O.id
-%       from `Order` as O
-%       where status = 1
-%         and ((O.check_in <= '2018-11-20' and O.check_out >= '2018-12-30')
-%           or (O.check_in <= '2018-10-30' and O.check_out >= '2018-11-10'))
-%         and O.room_id = R.id );
-% ```
-
-使用explain查看查询计划后，我们发现，mariaDB
-\begin{itemize}
-    \item 首先使用where筛选掉不符合要求的RoomType。
-    由于RoomType是很小的一个表，这一步的效率非常高。
-    \item 利用Room对RoomType的外键索引筛选合适的Room。
-    由于利用了索引，这一步速度也非常高。
-    \item 利用Order对Room的外键索引筛选合适的Order。
-    由于利用了索引，这一步的速度也非常高。
-\end{itemize}
-  
-这说明我们没有额外建立索引的必要了，现有的主键和外键索引已经能让数据库的执行速度足够高了。\\
-
-
-只有订单的check\_in和check\_out需要额外的索引。
-其他操作都可以通过主键外键索引、unique索引得到加速。\\
-\subsection{视图设计}
 
 \chapter{数据库创建和数据加载}
 %TODO: LXR
@@ -498,11 +400,12 @@ mariaDB会选择check\_in或check\_out中的一个索引作range scan，很
     \item 管理员对其他表有所有权限
 \end{itemize}
 
+\chapter{数据库应用软件设计与开发}
 \section{测试数据生成}
 
 % TODO: 交给wyf
 
-\chapter{数据库应用软件设计开发与测试}
+\chapter{数据库应用软件设计}
 
 \section{系统整体架构}
 
@@ -513,8 +416,6 @@ mariaDB会选择check\_in或check\_out中的一个索引作range scan，很
 
 % 截图，说一下系统各部件的作用啥的
 % TODO: 交给wyf
-
-\section{系统测试}
 
 
 \chapter{开发所遇到的问题与解决方案}

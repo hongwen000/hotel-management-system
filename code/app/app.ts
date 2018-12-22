@@ -883,12 +883,63 @@ app.all('/api/query_order_operations', (req: Request, res: Response) => {
 
 
 
+// app.all('/api/cancel_order', (req: Request, res: Response) => {
+//   let order_id: string = req.body.order_id;
+
+//   console.log(req.body)
+//   let query: string = 'update `Order` as O set status = 0 where O.id = ? ';
+//   let query2 : string = 'insert into Operation(time, detail, order_id) value (now(), 2, ? );'
+//   let arg : string[] = []
+//   try {
+//     if (order_id == '') {
+//       throw "order_id is empty or underfined!!"
+//     }
+//     arg.push(order_id)
+//     pool.getConnection()
+//       .then(conn => {
+//         conn.beginTransaction()
+//         .then(() => {
+//           conn.query(query, arg);
+//           return conn.query(query2, arg);
+//         })
+//         .then(() => {
+//           conn.commit();
+//           res.json({
+//             'error_code': 0,
+//             'error_msg': 'ok'
+//           })
+//         })
+//         .catch((err) => {
+//           conn.rollback();
+//           res.json({
+//             'error_code': 1,
+//             'error_msg': JSON.stringify(err),
+//           })
+//         })
+//         .finally(()=>{
+//           conn.end();
+//         });
+//       })
+//       .catch((error) =>{
+//         console.log(error)
+//         res.json({
+//           'error_code': 1,
+//           'error_msg': JSON.stringify(error),
+//         })
+//       })
+//   } catch (error) {
+//     res.json({
+//       'error_code': 1,
+//       'error_msg': JSON.stringify(error)
+//     })
+//   }
+// })
+
 app.all('/api/cancel_order', (req: Request, res: Response) => {
   let order_id: string = req.body.order_id;
 
   console.log(req.body)
-  let query: string = 'update `Order` as O set status = 0 where O.id = ? ';
-  let query2 : string = 'insert into Operation(time, detail, order_id) value (now(), 2, ? );'
+  let query: string = 'call Proc_cancel_order(?)';
   let arg : string[] = []
   try {
     if (order_id == '') {
@@ -896,37 +947,31 @@ app.all('/api/cancel_order', (req: Request, res: Response) => {
     }
     arg.push(order_id)
     pool.getConnection()
-      .then(conn => {
-        conn.beginTransaction()
-        .then(() => {
-          conn.query(query, arg);
-          return conn.query(query2, arg);
+    .then(conn => {
+      console.log(query, arg)
+      conn.query(query, arg)
+      .then((ret) => {
+        console.log(ret)
+        res.json({
+          'error_code': 0,
+          'error_msg': 'OK'
         })
-        .then(() => {
-          conn.commit();
-          res.json({
-            'error_code': 0,
-            'error_msg': 'ok'
-          })
-        })
-        .catch((err) => {
-          conn.rollback();
-          res.json({
-            'error_code': 1,
-            'error_msg': JSON.stringify(err),
-          })
-        })
-        .finally(()=>{
-          conn.end();
-        });
       })
-      .catch((error) =>{
+      .catch((error) => {
         console.log(error)
         res.json({
           'error_code': 1,
           'error_msg': JSON.stringify(error),
         })
       })
+    })
+    .catch((error) =>{
+      console.log(error)
+      res.json({
+        'error_code': 1,
+        'error_msg': JSON.stringify(error),
+      })
+    })
   } catch (error) {
     res.json({
       'error_code': 1,
@@ -940,31 +985,32 @@ app.all('/api/cancel_order', (req: Request, res: Response) => {
 app.all('/api/query_avail_room', (req: Request, res: Response) => {
   let check_in: string = req.body.check_in;
   let check_out: string = req.body.check_out;
-  let capacity: string = req.body.capacity;
+  let capacity: number = parseInt(req.body.capacity);
   let wifi: string = req.body.wifi;
   let breakfast: string = req.body.breakfast;
 
   console.log(req.body)
-  let query: string = ' select R.id,R.floor, R.room_num,R.price, T.breakfast, T.wifi ,T.name, T.capacity from Room as R, RoomType as T where R.type_id = T.id and T.capacity >= ? and T.wifi like ? and T.breakfast like ? and not exists ( select room_id, O.id from `Order` as O where status = 1 and ((O.check_in <= ? and O.check_out >= ?) or (O.check_in <= ? and O.check_out >= ?)) and O.room_id = R.id );';
-  // [capacity, wifi, breakfast, check_in check_in check_out check_out]
-  let arg : string[] = [ '-1', '%', '%', '-1', '9999-12-31', '-1', '9999-12-31']
+  // let query: string = ' select R.id,R.floor, R.room_num,R.price, T.breakfast, T.wifi ,T.name, T.capacity from Room as R, RoomType as T where R.type_id = T.id and T.capacity >= ? and T.wifi like ? and T.breakfast like ? and not exists ( select room_id, O.id from `Order` as O where status = 1 and ((O.check_in <= ? and O.check_out >= ?) or (O.check_in <= ? and O.check_out >= ?)) and O.room_id = R.id );';
+  let query: string = 'call PROC_find_avail_room(?, ?, ?, ?, ?)';
+  // [check_in, check_out, cacpacity, wifi, breakfast]
+  let arg : (string|number)[] = [ '9999-12-31', '9999-12-31', 0, '%', '%']
   try {
-    if (capacity != ''){
-      arg[0] = capacity;
+    if (capacity != undefined && !isNaN(capacity)){
+      console.log("Here 999");
+      console.log(capacity)
+      arg[2] = capacity;
     }
     if (wifi != ''){
-      arg[1] = wifi;
+      arg[3] = wifi;
     }
     if (breakfast != ''){
-      arg[2] = breakfast;
+      arg[4] = breakfast;
     }
     if (check_in != '') {
-      arg[3] = check_in;
-      arg[4] = check_in;
+      arg[0] = check_in;
     }
     if (check_out != ''){
-      arg[5] = check_out;
-      arg[6] = check_out;
+      arg[1] = check_out;
     }
     pool.getConnection()
       .then(conn => {
@@ -987,6 +1033,13 @@ app.all('/api/query_avail_room', (req: Request, res: Response) => {
             "rooms": JSON.stringify(table),
             'error_code': 0,
             'error_msg': 'ok'
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+          res.json({
+            'error_code': 1,
+            'error_msg': JSON.stringify(error),
           })
         })
         .finally(()=>{
@@ -1019,8 +1072,7 @@ app.all('/api/order_room', (req: Request, res: Response) => {
   console.log(req.body)
 
 
-  let query: string = 'insert into `Order` (room_id, user_id, check_in, check_out, status) value (?, ?, ?, ?, 1);';
-  let query2: string = 'insert into Operation(time, detail, order_id) value( now(), 1, LAST_INSERT_ID());';
+  let query: string = 'call PROC_order_room(?,?,?,?)';
   
   let arg: string[] = [];
   try {
@@ -1043,20 +1095,16 @@ app.all('/api/order_room', (req: Request, res: Response) => {
     console.debug(arg)
     pool.getConnection()
       .then(conn => {
-        conn.beginTransaction()
-          .then(() => {
-            conn.query(query, arg);
-            return conn.query(query2);
-          })
-          .then(() => {
-            conn.commit();
+          conn.query(query, arg)
+          .then((ret) => {
+            console.log(ret)
             res.json({
               'error_code': 0,
               'error_msg': 'ok',
             })
           })
           .catch((err) => {
-            conn.rollback();
+            console.log(err)
             res.json({
               'error_code': 1,
               'error_msg': JSON.stringify(err),
