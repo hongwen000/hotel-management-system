@@ -14,6 +14,7 @@ typora-copy-images-to: report\figure
 | ER       | er图                                     |
 | report   | 实验报告                                 |
 | sql      | 一些sql语句，如存储过程                  |
+| test_vidio      | 多个测试样例的屏幕录像                  |
 
 ## 运行方法
 
