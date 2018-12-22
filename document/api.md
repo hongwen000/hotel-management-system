@@ -1099,6 +1099,7 @@ create or replace procedure PROC_cancel_order
      MYSQL_ERRNO = 30001,
      MESSAGE_TEXT = 'Sorry, cancelling this order is not available';
     elseif (CURDATE() < O_check_in) Then
+    start transaction;
      update User, `Order`
      set User.balance = User.balance + `Order`.fee
      where `Order`.id = Arg_order_id;
@@ -1107,7 +1108,9 @@ create or replace procedure PROC_cancel_order
       where `Order`.id = Arg_order_id;
      insert into Operation(time, detail, order_id)
       value (now(), 2, Arg_order_id );
+    commit;
     else
+    start transaction;
      select DATEDIFF(O_check_out, CURDATE())
       into O_refund_days;
      update User, `Order`
@@ -1118,6 +1121,7 @@ create or replace procedure PROC_cancel_order
       set `Order`.status = 0
       where `Order`.id = Arg_order_id;
      insert into Operation(time, detail, order_id) value (now(), 2, Arg_order_id);
+    commit;
     end if;
   end;
 ```
