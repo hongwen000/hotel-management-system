@@ -248,6 +248,8 @@ get方法
 
 #### URL
 
+post方法
+
 `/api/query_order_details`
 
 #### 请求示例及参数

@@ -883,57 +883,57 @@ app.all('/api/query_order_operations', (req: Request, res: Response) => {
 
 
 
-// app.all('/api/cancel_order', (req: Request, res: Response) => {
-//   let order_id: string = req.body.order_id;
+app.all('/api/cancel_order', (req: Request, res: Response) => {
+  let order_id: string = req.body.order_id;
 
-//   console.log(req.body)
-//   let query: string = 'update `Order` as O set status = 0 where O.id = ? ';
-//   let query2 : string = 'insert into Operation(time, detail, order_id) value (now(), 2, ? );'
-//   let arg : string[] = []
-//   try {
-//     if (order_id == '') {
-//       throw "order_id is empty or underfined!!"
-//     }
-//     arg.push(order_id)
-//     pool.getConnection()
-//       .then(conn => {
-//         conn.beginTransaction()
-//         .then(() => {
-//           conn.query(query, arg);
-//           return conn.query(query2, arg);
-//         })
-//         .then(() => {
-//           conn.commit();
-//           res.json({
-//             'error_code': 0,
-//             'error_msg': 'ok'
-//           })
-//         })
-//         .catch((err) => {
-//           conn.rollback();
-//           res.json({
-//             'error_code': 1,
-//             'error_msg': JSON.stringify(err),
-//           })
-//         })
-//         .finally(()=>{
-//           conn.end();
-//         });
-//       })
-//       .catch((error) =>{
-//         console.log(error)
-//         res.json({
-//           'error_code': 1,
-//           'error_msg': JSON.stringify(error),
-//         })
-//       })
-//   } catch (error) {
-//     res.json({
-//       'error_code': 1,
-//       'error_msg': JSON.stringify(error)
-//     })
-//   }
-// })
+  console.log(req.body)
+  let query: string = 'update `Order` as O set status = 0 where O.id = ? ';
+  let query2 : string = 'insert into Operation(time, detail, order_id) value (now(), 2, ? );'
+  let arg : string[] = []
+  try {
+    if (order_id == '') {
+      throw "order_id is empty or underfined!!"
+    }
+    arg.push(order_id)
+    pool.getConnection()
+      .then(conn => {
+        conn.beginTransaction()
+        .then(() => {
+          conn.query(query, arg);
+          return conn.query(query2, arg);
+        })
+        .then(() => {
+          conn.commit();
+          res.json({
+            'error_code': 0,
+            'error_msg': 'ok'
+          })
+        })
+        .catch((err) => {
+          conn.rollback();
+          res.json({
+            'error_code': 1,
+            'error_msg': JSON.stringify(err),
+          })
+        })
+        .finally(()=>{
+          conn.end();
+        });
+      })
+      .catch((error) =>{
+        console.log(error)
+        res.json({
+          'error_code': 1,
+          'error_msg': JSON.stringify(error),
+        })
+      })
+  } catch (error) {
+    res.json({
+      'error_code': 1,
+      'error_msg': JSON.stringify(error)
+    })
+  }
+})
 
 app.all('/api/cancel_order', (req: Request, res: Response) => {
   let order_id: string = req.body.order_id;
