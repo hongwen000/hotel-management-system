@@ -878,7 +878,7 @@ post方法
         {
         	"op_id":XXXXX,
         	"time":"2018-01-01",
-        	"detail":"2018-01-02"
+        	"detail":1
         },
         {
             //....
@@ -892,7 +892,7 @@ post方法
 | -------- | ---- | -------------------------------- |
 | id | int  | 每个Operation在数据库中的唯一id |
 | time     | date | Operation发生时间                     |
-| detail     | string | 操作细节       'create' 表示 生成订单,'cancel' 表示 取消订单 |
+| detail     | string | 操作细节       '1' 表示 生成订单,'2' 表示 取消订单 |
 | error_code | int    | 0为正常，1为异常 |
 | error_msg  | string | 错误信息   （默认为'ok'）      |
 
