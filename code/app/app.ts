@@ -842,13 +842,13 @@ app.all('/api/query_order_operations', (req: Request, res: Response) => {
       .then(conn => {
         conn.query(query, arg)
         .then((table) => {
-          for (let i = 0; i < table.length; ++i) {
-            if (table[i].detail == 1) {
-              table[i].detail = 'create';
-            } else if (table[i].detail == 2) {
-              table[i].detail = 'cancel';
-            }
-          }
+          // for (let i = 0; i < table.length; ++i) {
+          //   if (table[i].detail == 1) {
+          //     table[i].detail = 'create';
+          //   } else if (table[i].detail == 2) {
+          //     table[i].detail = 'cancel';
+          //   }
+          // }
           res.json({
             "orders": JSON.stringify(table),
             'error_code': 0,
