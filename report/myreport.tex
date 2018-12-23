@@ -423,20 +423,41 @@ full-text索引，否则无效。
 搜索订单几乎是最常见的一种操作。从用户的行为来判断，大部分对订单的搜索都是基于订单日期的。
 故在Order表上对check\_in和check\_out添加索引十分有必要。\\
     
-% %TODO:
-% ``` sql
-% CREATE INDEX Order__index_check_in ON `Order` (check_in DESC);
-% ```
+%\usepackage{minted}
+%\inputminted{c}{hello.c}
+%\fontsize=\footnotesize
+%use the complie option: --shell-escape
+% TODO: how to \autoref
+\begin{minted}[mathescape, linenos, numbersep=5pt, gobble=0, frame=lines, framesep=2mm,breaklines, breakafter=d,fontsize=\footnotesize,escapeinside=||]{sql}
+CREATE INDEX Order__index_check_in ON `Order` (check_in DESC);
+\end{minted}
+
 在上面的索引建立中，显式地指明了索引使用降序排列。
 这是因为根据时间局部性，越``晚(刚刚发生）''的记录越可能被搜索，越``早（年代久远)''
 的记录越不可能被搜索。降序排列索引可以尽可能早地让索引被搜索到。\\
 
 \subsubsection{效果评价}
-% ``` sql
-% explain 
-% select * from `Order`
-% where check_in >= '2019-01-22';
-% ```
+%\usepackage{minted}
+%\inputminted{c}{hello.c}
+%\fontsize=\footnotesize
+%use the complie option: --shell-escape
+\begin{minted}[mathescape, linenos, numbersep=5pt, gobble=0, frame=lines, framesep=2mm,breaklines, breakafter=d,fontsize=\footnotesize,escapeinside=||]{sql}
+explain 
+select * from `Order`
+where check_in >= '2019-01-22';
+\end{minted}
+
+%\usepackage{minted}
+%\inputminted{c}{hello.c}
+%\fontsize=\footnotesize
+%use the complie option: --shell-escape
+\begin{minted}[mathescape, linenos, numbersep=5pt, gobble=0, frame=lines, framesep=2mm,breaklines, breakafter=d,fontsize=\footnotesize,escapeinside=||]{sql}
+explain 
+select * from `Order`
+where check_in >= '2019-01-22';
+\end{minted}
+
+
 比较有索引和无索引时的相关输出。
 没有建立索引时，仅能根据主键索引进行查询。查询了300多行。
 但建立了对check\_in的索引后，以上的语句仅需要搜索75行，大大加快了搜索时间。\\
