@@ -4,6 +4,14 @@ typora-copy-images-to: report\figure
 
 # Hotel Managerment System
 
+小组成员：
+
+| 组员名 | 学号|
+|-|-|
+|李新锐|15323032|
+|颜彬|16337269|
+|王永锋|16337237|
+
 ## 文件说明
 
 | 文件夹名 | 内容说明                                 |
