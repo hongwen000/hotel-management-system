@@ -27,6 +27,12 @@ cd ./code/app
 npm install
 ```
 
+若没有安装`typescript`，还需要执行以下指令：
+
+```
+npm install -g typescript
+```
+
 ### 运行
 
 运行以下指令即可使系统运行起来
@@ -34,6 +40,8 @@ npm install
 ```shell
 tsc app.ts ; node app.js
 ```
+
+
 
 ![1545464771407](report/figure/1545464771407.png)
 
