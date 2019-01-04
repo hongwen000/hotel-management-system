@@ -423,3 +423,5 @@ typings/
 #DynamoDB Local files 
 .dynamodb/ 
 code/app/app.js
+sql.js
+code/app/sql.js
